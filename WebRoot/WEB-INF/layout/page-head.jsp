@@ -20,3 +20,9 @@
 <link href="<c:url value='/resource/css/style.css' />" rel="stylesheet">
 
 <script src="<c:url value='/resource/js/jquery-3.6.0.min.js' />"></script>
+
+<script type="text/javascript">
+	function getTemplate(selector){
+		return $(selector, '#dark-template').clone(false);
+	}
+</script>

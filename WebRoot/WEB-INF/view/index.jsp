@@ -79,6 +79,7 @@ function renderMenu(data){
 	let first;
 	
 	data.forEach((item) => {
+		
 		if(item.type === "PAGE"){
 			let $page = getTemplate("[data-menu-page]");
 			

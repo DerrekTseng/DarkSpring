@@ -30,8 +30,14 @@
         </div>
         <%-- Spinner End --%>
         
-        <div class="container-fluid">
+        <div class="container-fluid pt-4 px-4">
+        
 			<sitemesh:write property="page.content" />
+			
+			<a class="btn btn-lg btn-primary btn-lg-square back-to-top" style="display:none">
+				<i class="bi bi-arrow-up"></i>
+			</a>
+			
         </div>
         
 	</div>

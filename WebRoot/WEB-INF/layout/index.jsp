@@ -10,12 +10,6 @@
 		<sitemesh:write property="title" />
 	</title>
 	
-	<script type="text/javascript">
-		function getTemplate(selector){
-			return $(selector, '#dark-template').clone(false);
-		}
-	</script>
-	
 	<sitemesh:write property="head" />
 	
 </head>

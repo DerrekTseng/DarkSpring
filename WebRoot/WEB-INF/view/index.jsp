@@ -58,6 +58,16 @@ var menus = [
 			{ url : "error", text : "404 Error"},
 			{ url : "blank", text : "Blank Page"}
 		]
+	},
+	{
+		type : "DROPDOWN",
+		icon : "fas fa-object-group me-2",
+		text : "Objects",
+		items : [
+			{ url : "blank", text : "Table"},
+			{ url : "blank", text : "Prompt"},
+			{ url : "blank", text : "Dialog"}
+		]
 	}
 	
 ];
@@ -69,6 +79,14 @@ $(document).ready(function(){
 	$sidebar = $('#sidebar');
 	
 	renderMenu(menus);
+	
+	// Progress Bar
+    $('.pg-bar').waypoint(function () {
+        $('.progress .progress-bar').each(function () {
+            $(this).css("width", $(this).attr("aria-valuenow") + '%');
+        });
+    }, {offset: '80%'});
+	
 	
 });
 
@@ -171,12 +189,80 @@ function setPage(url, i1, i2){
 </content>
 
 <content tag="navbar">
-	<a href="#" class="sidebar-toggler flex-shrink-0">
+
+	<a class="sidebar-toggler flex-shrink-0 clickable">
         <i class="fa fa-bars"></i>
     </a>
   
     <div class="navbar-nav align-items-center ms-auto">
-                          
+        
+        <div class="nav-item dropdown">
+			<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+				<i class="fas fa-window-maximize me-lg-2"></i>
+				<span class="d-none d-lg-inline-flex">Dialog</span>
+			</a>
+			<div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+			
+				<div class="dropdown-item">
+					<div class="d-flex align-items-center none-select clickable">
+						<div class="ms-2" style="width:160px">
+							<div class="fw-normal mb-0" style="overflow: hidden;">Dialog Title Name</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+        
+        
+        <%-- 檔案上傳元件 --%>
+        <div class="nav-item dropdown">
+			<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+				<i class="fas fa-cloud-upload-alt me-lg-2"></i>
+				<span class="d-none d-lg-inline-flex">Upload</span>
+			</a>
+			<div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+			
+				<div class="dropdown-item">
+					<div class="d-flex align-items-center none-select clickable">
+						<div class="ms-2" style="width:100%">
+							<div class="fw-normal mb-0">Uploading 10 Files</div>
+							<div class="pg-bar" style="margin-top: 4px">
+								<div class="progress">
+	                            	<div class="progress-bar progress-bar-striped bg-danger" 
+	                            		role="progressbar" 
+	                            		aria-valuenow="50" 
+	                            		aria-valuemin="0" 
+	                            		aria-valuemax="100"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<hr class="dropdown-divider">
+				
+				<div class="dropdown-item">
+					<div class="d-flex align-items-center none-select clickable">
+						<div class="ms-2" style="width:100%">
+							<div class="fw-normal mb-0">Uploading 5 Files</div>
+							<div class="pg-bar" style="margin-top: 4px">
+								<div class="progress">
+	                            	<div class="progress-bar progress-bar-striped bg-danger" 
+	                            		role="progressbar" 
+	                            		aria-valuenow="20" 
+	                            		aria-valuemin="0" 
+	                            		aria-valuemax="100"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+        
+        <%-- 使用者 Profile --%>
         <div class="nav-item dropdown">
             <a class="nav-link dropdown-toggle none-select clickable" data-bs-toggle="dropdown">
                 <i class="fa fa-user me-lg-2"></i>

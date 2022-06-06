@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>DarkPan</title>
+<title>DarkSpring</title>
 <META name="decorator" content="<%=Decorators.index %>">
 <script type="text/javascript">
 
@@ -97,7 +97,7 @@ function renderMenu(data){
 		} else if(item.type === "DROPDOWN") {
 			
 			let $dropdown = getTemplate("[data-menu-dropdown]");
-
+			
 			let $a = $('a', $dropdown);
 			
 			$('i', $a).attr('class', item.icon);
@@ -111,8 +111,9 @@ function renderMenu(data){
 				
 				$item.html(i.text);
 				
-				$item.click(() => {
+				$item.click((e) => {
 					setPage(i.url, $item, $a);
+					e.stopPropagation();
 				});
 				
 				$dropdownMenu.append($item);
@@ -139,7 +140,6 @@ function setPage(url, i1, i2){
 	}
 }
 
-
 </script>
 </head>
 
@@ -163,8 +163,8 @@ function setPage(url, i1, i2){
 <content tag="sidebar">
 	<span class="navbar-brand mx-4 mb-3 none-select">
 		<span class="text-primary" style="font-size:140%">
-			<i class="fa fa-user-edit me-2"></i>
-			DarkPan
+			<i class="fab fa-envira me-2"></i>
+			DarkSpring
 		</span>
 	</span>
 	<div id="sidebar" class="navbar-nav w-100"></div>
@@ -180,7 +180,7 @@ function setPage(url, i1, i2){
         <div class="nav-item dropdown">
             <a class="nav-link dropdown-toggle none-select clickable" data-bs-toggle="dropdown">
                 <i class="fa fa-user me-lg-2"></i>
-                <span class="d-none d-lg-inline-flex">John Doe</span>
+                <span class="d-none d-lg-inline-flex">Derrek Tseng</span>
             </a>
             <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
                 <a class="dropdown-item none-select clickable">My Profile</a>

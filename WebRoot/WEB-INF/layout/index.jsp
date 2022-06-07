@@ -22,6 +22,12 @@
 	
 	<div class="container-fluid position-relative d-flex p-0">
         
+        <div id="spinner" class="bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        
          <%-- Sidebar Start --%>
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-secondary navbar-dark">
@@ -35,6 +41,7 @@
         
             <%-- Navbar Start --%>
             <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
+            	<div id="top-object-container" style="width:0px;height:0px"></div>
               	<sitemesh:write property="page.navbar" />
             </nav>
             <%-- Navbar End --%>
@@ -46,6 +53,8 @@
 	</div>
 	
 	<%@include file="/WEB-INF/layout/page-tail.jsp" %>
+	
+	<%@include file="/WEB-INF/layout/index-template.jsp" %>
 	
 </body>
 

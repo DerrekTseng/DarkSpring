@@ -11,3 +11,5 @@
 
 <%-- Template Javascript --%>
 <script src="<c:url value='/resource/js/main.js' />"></script>
+
+<script src="<c:url value='/resource/js/dark-spring.js' />"></script>

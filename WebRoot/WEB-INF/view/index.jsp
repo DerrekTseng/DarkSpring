@@ -229,7 +229,7 @@ function setPage(url, i1, i2){
 							<div class="fw-normal mb-0">Uploading 10 Files</div>
 							<div class="pg-bar" style="margin-top: 4px">
 								<div class="progress">
-	                            	<div class="progress-bar progress-bar-striped bg-danger" 
+	                            	<div class="progress-bar progress-bar-animated progress-bar-striped bg-danger" 
 	                            		role="progressbar" 
 	                            		aria-valuenow="50" 
 	                            		aria-valuemin="0" 
@@ -248,7 +248,7 @@ function setPage(url, i1, i2){
 							<div class="fw-normal mb-0">Uploading 5 Files</div>
 							<div class="pg-bar" style="margin-top: 4px">
 								<div class="progress">
-	                            	<div class="progress-bar progress-bar-striped bg-danger" 
+	                            	<div class="progress-bar progress-bar-animated progress-bar-striped bg-danger" 
 	                            		role="progressbar" 
 	                            		aria-valuenow="20" 
 	                            		aria-valuemin="0" 

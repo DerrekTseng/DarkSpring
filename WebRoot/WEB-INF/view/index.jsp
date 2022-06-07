@@ -64,9 +64,9 @@ var menus = [
 		icon : "fas fa-object-group me-2",
 		text : "Objects",
 		items : [
-			{ url : "blank", text : "Table"},
-			{ url : "blank", text : "Prompt"},
-			{ url : "blank", text : "Dialog"}
+			{ url : "grid", text : "Grid"},
+			{ url : "prompt", text : "Prompt"},
+			{ url : "dialog", text : "Dialog"}
 		]
 	}
 	

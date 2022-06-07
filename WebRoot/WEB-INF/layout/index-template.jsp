@@ -5,7 +5,8 @@
 	top: 32px;
 	width: 60%;
 	left: 0px;
-	right: 0px; margin : auto;
+	right: 0px;
+	margin: auto;
 	z-index: 2147483647;
 	margin: auto;
 }
@@ -31,7 +32,6 @@
 	left: 0px;
 	right: 0px;
 	bottom: 0px;
-	margin: auto;
 	z-index: 2147483647;
 	border-color: red;
 	border-style: groove;
@@ -59,68 +59,73 @@
 	border-color: transparent;
 }
 
+.dark-spring-dialog-resize:hover {
+	background: white;
+	opacity: 0.2;
+}
+
 .dark-spring-dialog-resize-top {
 	position: absolute;
-	width: calc( 100% - 8px );
-	height: 4px;
-	top: -4px;
-	left: 4px;
+	width: 100%;
+	height: 16px;
+	top: -16px;
+	left: 0px;
 }
 
 .dark-spring-dialog-resize-right {
 	position: absolute;
-	width: 4px;
-	height: calc( 100% - 8px );
-	top: 4px;
-	right: -4px;
+	width: 16px;
+	height: 100%;
+	top: 0px;
+	right: -16px;
 }
 
 .dark-spring-dialog-resize-left {
 	position: absolute;
-	width: 4px;
-	height: calc( 100% - 8px );
-	top: 4px;
-	left: -4px;
+	width: 16px;
+	height: 100%;
+	top: 0px;
+	left: -16px;
 }
 
 .dark-spring-dialog-resize-bottom {
 	position: absolute;
-	width: calc( 100% - 8px );
-	height: 4px;
-	bottom: -4px;
-	left: 4px;
+	width: 100%;
+	height: 16px;
+	bottom: -16px;
+	left: 0px;
 }
 
 .dark-spring-dialog-resize-top-right {
 	position: absolute;
-	width: 4px;
-	height: 4px;
-	top: -4px;
-	right: -4px;
+	width: 16px;
+	height: 16px;
+	top: -16px;
+	right: -16px;
 }
 
 .dark-spring-dialog-resize-top-left {
 	position: absolute;
-	width: 4px;
-	height: 4px;
-	top: -4px;
-	left: -4px;
+	width: 16px;
+	height: 16px;
+	top: -16px;
+	left: -16px;
 }
 
 .dark-spring-dialog-resize-bottom-right {
 	position: absolute;
-	width: 4px;
-	height: 4px;
-	bottom: -4px;
-	right: -4px;
+	width: 16px;
+	height: 16px;
+	bottom: -16px;
+	right: -16px;
 }
 
 .dark-spring-dialog-resize-bottom-left {
 	position: absolute;
-	width: 4px;
-	height: 4px;
-	bottom: -4px;
-	left: -4px;
+	width: 16px;
+	height: 16px;
+	bottom: -16px;
+	left: -16px;
 }
 
 .dark-spring-dialog-resize-top:hover {
@@ -154,34 +159,12 @@
 .dark-spring-dialog-resize-bottom-left:hover {
 	cursor: sw-resize;
 }
-
 </style>
 
 <div id="index-template" style="display:none">
     
-    <%-- info --%>
-    <div data-index-template-info class="alert alert-dark alert-dismissible fade show dark-spring-prompt">
-        <i class="fa fa-exclamation-circle me-2"></i>
-        <span></span>
-        <button type="button" class="btn-close"></button>
-    </div>
-    
-    <%-- success --%>
-	<div data-index-template-success class="alert alert-success alert-dismissible fade show dark-spring-prompt">
-        <i class="fa fa-exclamation-circle me-2"></i>
-        <span></span>
-        <button type="button" class="btn-close"></button>
-    </div>
-    
-    <%-- warning --%>
-    <div data-index-template-warning class="alert alert-warning alert-dismissible fade show dark-spring-prompt">
-        <i class="fa fa-exclamation-circle me-2"></i>
-        <span></span>
-        <button type="button" class="btn-close"></button>
-    </div>
-    
-    <%-- error --%>
-    <div data-index-template-error class="alert alert-danger alert-dismissible fade show dark-spring-prompt">
+    <%-- prompt --%>
+    <div data-index-template-prompt class="alert alert-dismissible fade show dark-spring-prompt">
         <i class="fa fa-exclamation-circle me-2"></i>
         <span></span>
         <button type="button" class="btn-close"></button>
@@ -191,14 +174,12 @@
     <%-- window --%>
     <div data-index-template-dialog-component>
     	<div data-index-template-shader class="dark-spring-shader"></div>
-    	<div data-index-template-dialog class="bg-secondary rounded dark-spring-dialog">
+    	<div data-index-template-dialog style="margin: auto;" class="bg-secondary rounded dark-spring-dialog">
 			<div class="dark-spring-dialog-header">
 				<table>
 					<tr>
-						<td class="dark-spring-dialog-header-text none-select moveable">
-							
-						</td>
-						<td class="dark-spring-dialog-header-toolbar">
+						<td class="dark-spring-dialog-header-text none-select moveable"></td>
+						<td class="dark-spring-dialog-header-toolbar none-select">
 							<button data-index-template-dialog-minimize type="button" class="btn btn-sm btn-outline-primary">
 								<i class="fas fa-window-minimize"></i>
 							</button>
@@ -215,17 +196,15 @@
 					</tr>
 				</table>
 			</div>
-			<div class="dark-spring-dialog-content">
-				
-			</div>
-			<div class="dark-spring-dialog-resize-top"></div>
-	    	<div class="dark-spring-dialog-resize-right"></div>
-	    	<div class="dark-spring-dialog-resize-left"></div>
-	    	<div class="dark-spring-dialog-resize-bottom"></div>
-	    	<div class="dark-spring-dialog-resize-top-right"></div>
-	    	<div class="dark-spring-dialog-resize-top-left"></div>
-	    	<div class="dark-spring-dialog-resize-bottom-right"></div>
-	    	<div class="dark-spring-dialog-resize-bottom-left"></div>
+			<div class="dark-spring-dialog-content none-select"></div>
+			<div class="dark-spring-dialog-resize dark-spring-dialog-resize-top"></div>
+	    	<div class="dark-spring-dialog-resize dark-spring-dialog-resize-right"></div>
+	    	<div class="dark-spring-dialog-resize dark-spring-dialog-resize-left"></div>
+	    	<div class="dark-spring-dialog-resize dark-spring-dialog-resize-bottom"></div>
+	    	<div class="dark-spring-dialog-resize dark-spring-dialog-resize-top-right"></div>
+	    	<div class="dark-spring-dialog-resize dark-spring-dialog-resize-top-left"></div>
+	    	<div class="dark-spring-dialog-resize dark-spring-dialog-resize-bottom-right"></div>
+	    	<div class="dark-spring-dialog-resize dark-spring-dialog-resize-bottom-left"></div>
 		</div>
     </div>
     

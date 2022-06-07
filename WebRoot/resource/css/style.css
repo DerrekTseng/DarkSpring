@@ -305,11 +305,6 @@
 	cursor: grab;
 }
 
-.moveable:active:hover {
-	cursor: grabbing;
-}
-
-
 /* width */
 ::-webkit-scrollbar {
   width: 10px;

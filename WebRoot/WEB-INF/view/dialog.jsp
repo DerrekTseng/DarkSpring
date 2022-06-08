@@ -40,7 +40,9 @@ $(document).ready(function(){
 			height: "400px",
 			url : "dialog-window",
 			callback : function (callbackData){
-				DarkSpring.info(callbackData);
+				if(callbackData){
+					DarkSpring.info(callbackData);
+				}
 			}
 		});
 	});

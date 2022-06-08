@@ -8,6 +8,7 @@
 <script type="text/javascript">
 
 $(document).ready(function(){
+	
 	$('#info-prompt-button').click(() => {
 		DarkSpring.info($('#info-prompt-message').val());
 	});

@@ -104,5 +104,11 @@ public class DarkController {
 		ModelAndView view = new ModelAndView("dialog");
 		return view;
 	}
+	
+	@GetMapping("dialog-window")
+	public ModelAndView dialogWindow() {
+		ModelAndView view = new ModelAndView("dialog-window");
+		return view;
+	}
 
 }

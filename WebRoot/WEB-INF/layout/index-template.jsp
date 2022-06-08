@@ -185,7 +185,7 @@
     <div data-index-template-prompt class="alert alert-dismissible fade show dark-spring-prompt">
         <i class="fa fa-exclamation-circle me-2"></i>
         <span></span>
-        <button onclick="DarkSpring.fadeOutRemove($(this).parent())" type="button" class="btn-close"></button>
+        <button type="button" class="btn-close"></button>
     </div>
     
     
@@ -273,9 +273,7 @@
 		</div>
 	</div>
     
-    
     <%-- window dialog content --%>
-    
     <iframe data-index-template-dialog-window class="dark-spring-dialog-content"></iframe>
 
 </div>

@@ -11,7 +11,7 @@ $(document).ready(function(){
 	
 	$('#alert-button').click(() => {
 		DarkSpring.alert({
-			title : "Test AlertAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa",
+			title : "Test Alert",
 			message : "Test Message",
 			callback : function(){
 				DarkSpring.info("Alert Closed!");
@@ -35,12 +35,12 @@ $(document).ready(function(){
 	
 	$('#window-button').click(() => {
 		DarkSpring.window({
-			title : "Test Window AlertAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa",
-			width: "800px",
-			height: "600px",
-			url : "dashboard",
+			title : "Test Window",
+			width: "600px",
+			height: "400px",
+			url : "dialog-window",
 			callback : function (callbackData){
-				console.log(callbackData);
+				DarkSpring.info(callbackData);
 			}
 		});
 	});

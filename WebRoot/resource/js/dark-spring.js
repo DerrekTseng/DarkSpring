@@ -7,7 +7,7 @@ class darkspring {
 
 	/** 將 element 加入至 top-object-container */
 	appendToTopObjectContainer($element) {
-		$element.hide().fadeIn(this.fading).appendTo($('#top-object-container', top.DarkSpring.document));
+		$element.appendTo($('#top-object-container', top.DarkSpring.document));
 	}
 
 	/** 取得 index-template.jsp 中的模板 */
@@ -135,9 +135,14 @@ class darkspring {
 
 			$this.appendToTopObjectContainer($prompt);
 
-			setTimeout(() => {
+			let timeout = setTimeout(() => {
 				$prompt.remove();
 			}, dismiss);
+
+			$('button', $prompt).click(() => {
+				clearTimeout(timeout);
+				$prompt.remove();
+			});
 
 		} else {
 			top.DarkSpring.prompt(message, $prompt, dismiss);
@@ -615,7 +620,7 @@ class darkspring {
 				if (typeof callback === "function") {
 					callback($dialogComponent.data("callbackData"));
 				}
-				top.DarkSpring.fadeOutRemove($dialogComponent);
+				$dialogComponent.remove();
 			};
 
 			$("[data-index-template-dialog-close]", $dialog).click(() => {
@@ -801,12 +806,6 @@ class darkspring {
 		margins.push(bottom.trim());
 		margins.push(left.trim());
 		return margins.join(" ");
-	}
-
-	fadeOutRemove($element) {
-		$element.fadeOut(this.fading, () => {
-			$element.remove();
-		});
 	}
 
 	randomUUID() {

@@ -2,11 +2,12 @@ class darkspring {
 
 	constructor(document) {
 		this.document = document;
+		this.fading = 300;
 	}
 
 	/** 將 element 加入至 top-object-container */
 	appendToTopObjectContainer($element) {
-		$('#top-object-container', top.DarkSpring.document).append($element);
+		$element.hide().fadeIn(this.fading).appendTo($('#top-object-container', top.DarkSpring.document));
 	}
 
 	/** 取得 index-template.jsp 中的模板 */
@@ -127,20 +128,17 @@ class darkspring {
 
 	prompt(message, $prompt, dismiss) {
 		if (this === top.DarkSpring) {
+			let $this = this;
 			message = message || "";
 			dismiss = isNaN(dismiss) ? 3000 : dismiss;
 			$('span', $prompt).html(message);
 
-			this.appendToTopObjectContainer($prompt);
+			$this.appendToTopObjectContainer($prompt);
 
-			const timeout = top.window.setTimeout(() => {
+			setTimeout(() => {
 				$prompt.remove();
 			}, dismiss);
 
-			$('button', $prompt).click(() => {
-				top.window.clearTimeout(timeout);
-				$prompt.remove();
-			});
 		} else {
 			top.DarkSpring.prompt(message, $prompt, dismiss);
 		}
@@ -161,14 +159,33 @@ class darkspring {
 			let movable = option.movable === true ? true : false;
 			let callback = option.callback || null;
 
-			let $dialogComponent = this.getIndexTemplate("[data-index-template-dialog-component]");
+			let $dialogComponent = $this.getIndexTemplate("[data-index-template-dialog-component]");
 			let $shader = $("[data-index-template-shader]", $dialogComponent);
 			let $dialog = $("[data-index-template-dialog]", $dialogComponent);
 			let $contentContainer = $(".dark-spring-dialog-content", $dialog);
 
+			let toolbarSize = 106;
+
+			if (parseInt(width) > $(top).width()) {
+				width = $(top).width() + "px";
+			}
+
+			if (parseInt(height) > $(top).height()) {
+				height = $(top).height() + "px";
+			}
+
+			$dialog.data("defaultWidth", width);
+			$dialog.data("defaultHeight", height);
+
 			$dialog.css({
 				width: width,
-				height: height
+				height: height,
+				margin: $this.marginString(
+					($(top).height() / 2 - parseInt(height) / 2) + "px",
+					($(top).width() / 2 - parseInt(width) / 2) + "px",
+					($(top).height() / 2 - parseInt(height) / 2) + "px",
+					($(top).width() / 2 - parseInt(width) / 2) + "px"
+				)
 			});
 
 			$('.dark-spring-dialog-header-text', $dialog).html(title);
@@ -224,6 +241,8 @@ class darkspring {
 					}
 
 					function resolveSizing(mousemovedX, mousemovedY, name) {
+
+						$contentContainer.hide();
 
 						let gapX = mousemovedX - $dialog.data('mousedownX');
 						let gapY = mousemovedY - $dialog.data('mousedownY');
@@ -360,12 +379,29 @@ class darkspring {
 				$dialog.resizing(true);
 			} else {
 				$dialog.resizing = function() { };
-				$(".dark-spring-dialog-resize", $dialog).remove();
+				$(".dark-spring-dialog-resize", $dialog).css("cursor", "default");
 			}
 
 			if (minimize) {
 
+				let $minDialog = $this.getIndexTemplate("[data-index-template-min-dialog-component]");
+
+				$('[data-index-template-min-dialog-title]', $minDialog).html(title);
+
+				$minDialog.attr("title", title);
+
+				$("[data-index-template-dialog-minimize]", $dialog).click(() => {
+					$dialogComponent.hide();
+					$minDialog.appendTo("#top-dialogs-container");
+				});
+
+				$minDialog.click(() => {
+					$minDialog.detach();
+					$dialogComponent.show();
+				});
+
 			} else {
+				toolbarSize -= 32;
 				$("[data-index-template-dialog-minimize]", $dialog).remove();
 			}
 
@@ -383,18 +419,19 @@ class darkspring {
 					$dialog.animate({
 						width: width,
 						height: height,
-						bottom: '0',
-						left: '0',
-						right: '0',
-						top: '0',
-						"margin-left": ($(top).width() / 2 - parseInt(width) / 2) + "px",
-						"margin-top": ($(top).height() / 2 - parseInt(height) / 2) + "px",
+						inset: '0px',
+						margin: $this.marginString(
+							($(top).height() / 2 - parseInt(height) / 2) + "px",
+							($(top).width() / 2 - parseInt(width) / 2) + "px",
+							($(top).height() / 2 - parseInt(height) / 2) + "px",
+							($(top).width() / 2 - parseInt(width) / 2) + "px"
+						)
 					}, 500, () => {
 						$contentContainer.show();
+						$dialog.resizing(true);
+						$dialog.movable(true);
 					});
 
-					$dialog.movable(true);
-					$dialog.resizing(true);
 				});
 
 				$maximize.click(() => {
@@ -406,20 +443,18 @@ class darkspring {
 					$dialog.animate({
 						width: '100%',
 						height: $this.isMobileDevice() ? "-webkit-fill-available" : "100vh",
-						bottom: '0',
-						left: '0',
-						right: '0',
-						top: '0',
-						margin: '0'
+						inset: '0px',
+						margin: $this.marginString("0px", "0px", "0px", "0px")
 					}, 500, () => {
 						$contentContainer.show();
+						$dialog.resizing(false);
+						$dialog.movable(false);
 					});
 
-					$dialog.movable(false);
-					$dialog.resizing(false);
 				});
 
 			} else {
+				toolbarSize -= 32;
 				$("[data-index-template-dialog-normalize]", $dialog).remove();
 				$("[data-index-template-dialog-maximize]", $dialog).remove();
 			}
@@ -428,7 +463,40 @@ class darkspring {
 
 				$dialog.movable = function(enabled) {
 
-					let $header = $(".dark-spring-dialog-header-text", $dialog);
+					let $header = $(".dark-spring-dialog-header-title", $dialog);
+
+					function resolveMoving(mousemoveX, mousemoveY) {
+
+						let gapX = mousemoveX - $dialog.data('mousedownX');
+						let gapY = mousemoveY - $dialog.data('mousedownY');
+
+						let newX = $dialog.data('contentX') + gapX;
+						let newY = $dialog.data('contentY') + gapY;
+
+						let windowWidth = $(top).width();
+						let windowHeight = $(top).height();
+
+						let contentWidth = $dialog.width();
+						let contentHeight = $dialog.height();
+
+						if (newX < 0) {
+							newX = 0;
+						} else if (newX + contentWidth + 5 > windowWidth) {
+							newX = windowWidth - contentWidth - 5;
+						}
+
+						if (newY < 0) {
+							newY = 0;
+						} else if (newY + contentHeight + 5 > windowHeight) {
+							newY = windowHeight - contentHeight - 5;
+						}
+
+						$dialog.css({
+							top: newY + "px",
+							left: newX + "px",
+							margin: ''
+						});
+					}
 
 					function registerEvent() {
 
@@ -447,35 +515,8 @@ class darkspring {
 								let mousemoveX = e.originalEvent.touches[0].pageX;
 								let mousemoveY = e.originalEvent.touches[0].pageY;
 
-								let gapX = mousemoveX - $dialog.data('mousedownX');
-								let gapY = mousemoveY - $dialog.data('mousedownY');
+								resolveMoving(mousemoveX, mousemoveY);
 
-								let newX = $dialog.data('contentX') + gapX;
-								let newY = $dialog.data('contentY') + gapY;
-
-								let windowWidth = $(top).width();
-								let windowHeight = $(top).height();
-
-								let contentWidth = $dialog.width();
-								let contentHeight = $dialog.height();
-
-								if (newX < 0) {
-									newX = 0;
-								} else if (newX + contentWidth > windowWidth) {
-									newX = windowWidth - contentWidth;
-								}
-
-								if (newY < 0) {
-									newY = 0;
-								} else if (newY + contentHeight > windowHeight) {
-									newY = windowHeight - contentHeight;
-								}
-
-								$dialog.css({
-									top: newY + "px",
-									left: newX + "px",
-									margin: ''
-								});
 							});
 
 						} else {
@@ -496,35 +537,8 @@ class darkspring {
 								let mousemoveX = e.pageX;
 								let mousemoveY = e.pageY;
 
-								let gapX = mousemoveX - $dialog.data('mousedownX');
-								let gapY = mousemoveY - $dialog.data('mousedownY');
+								resolveMoving(mousemoveX, mousemoveY);
 
-								let newX = $dialog.data('contentX') + gapX;
-								let newY = $dialog.data('contentY') + gapY;
-
-								let windowWidth = $(top).width();
-								let windowHeight = $(top).height();
-
-								let contentWidth = $dialog.width();
-								let contentHeight = $dialog.height();
-
-								if (newX < 0) {
-									newX = 0;
-								} else if (newX + contentWidth > windowWidth) {
-									newX = windowWidth - contentWidth;
-								}
-
-								if (newY < 0) {
-									newY = 0;
-								} else if (newY + contentHeight > windowHeight) {
-									newY = windowHeight - contentHeight;
-								}
-
-								$dialog.css({
-									top: newY + "px",
-									left: newX + "px",
-									margin: ""
-								});
 							});
 
 						}
@@ -545,7 +559,7 @@ class darkspring {
 
 					if (enabled) {
 
-						$('.dark-spring-dialog-header-text', $dialog).addClass("moveable");
+						$('.dark-spring-dialog-header-title', $dialog).addClass("moveable");
 
 						if ($this.isMobileDevice()) {
 							$header.on('touchstart', (e) => {
@@ -575,7 +589,7 @@ class darkspring {
 
 					} else {
 
-						$('.dark-spring-dialog-header-text', $dialog).removeClass("moveable");
+						$('.dark-spring-dialog-header-title', $dialog).removeClass("moveable");
 
 						if ($this.isMobileDevice()) {
 							$(top).unbind('touchend');
@@ -594,14 +608,14 @@ class darkspring {
 
 			} else {
 				$dialog.movable = function() { };
-				$('.dark-spring-dialog-header-text', $dialog).removeClass("moveable");
+				$('.dark-spring-dialog-header-title', $dialog).removeClass("moveable");
 			}
 
 			$dialogComponent.doClose = () => {
 				if (typeof callback === "function") {
-					callback($dialogComponent.callbackData);
+					callback($dialogComponent.data("callbackData"));
 				}
-				$dialogComponent.remove();
+				top.DarkSpring.fadeOutRemove($dialogComponent);
 			};
 
 			$("[data-index-template-dialog-close]", $dialog).click(() => {
@@ -609,22 +623,155 @@ class darkspring {
 			});
 
 			this.appendToTopObjectContainer($dialogComponent);
+
+			$('.dark-spring-dialog-header-title', $dialog).css({
+				width: "calc( 100% - " + toolbarSize + "px )"
+			});
+
+			$('.dark-spring-dialog-header-toolbar', $dialog).css({
+				width: (toolbarSize - 8) + "px"
+			});
+
 			return $dialogComponent;
 		} else {
 			return top.DarkSpring.dialog(option, $content);
 		}
 	}
 
-	alert() {
+	alert(option = {}) {
+
+		let title = option.title || "";
+		let message = option.message || "";
+		let width = option.width;
+		let height = option.height;
+		let callback = option.callback;
+
+		let dialogOption = {
+			title: title,
+			width: width,
+			height: height,
+			shader: true,
+			resize: true,
+			maximize: false,
+			minimize: false,
+			movable: true,
+			callback: function(callbackData) {
+				if (typeof callback === 'function') {
+					callback(callbackData);
+				}
+			}
+		}
+
+		let $content = this.getIndexTemplate("[data-index-template-dialog-alert]");
+
+		$('[data-index-template-dialog-alert-message]', $content).html(message);
+
+		let $dialogComponent = this.dialog(dialogOption, $content);
+
+		$('[data-index-template-dialog-alert-close]', $content).click(() => {
+			$dialogComponent.doClose();
+		});
 
 	}
 
-	confirm() {
+	confirm(option = {}) {
+		let title = option.title || "";
+		let message = option.message || "";
+		let width = option.width;
+		let height = option.height;
+		let callback = option.callback;
+
+		let dialogOption = {
+			title: title,
+			width: width,
+			height: height,
+			shader: true,
+			resize: true,
+			maximize: false,
+			minimize: false,
+			movable: true,
+			callback: function(callbackData) {
+				if (typeof callback === 'function') {
+					callback(callbackData);
+				}
+			}
+		}
+
+		let $content = this.getIndexTemplate("[data-index-template-dialog-confirm]");
+
+		$('[data-index-template-dialog-confirm-message]', $content).html(message);
+
+		let $dialogComponent = this.dialog(dialogOption, $content);
+
+		$dialogComponent.data("callbackData", false);
+
+		$('[data-index-template-dialog-confirm-cancel]', $content).click(() => {
+			$dialogComponent.doClose();
+		});
+
+		$('[data-index-template-dialog-confirm-accept]', $content).click(() => {
+			$dialogComponent.data("callbackData", true);
+			$dialogComponent.doClose();
+		});
 
 	}
 
-	window() {
+	window(option = {}) {
+		let title = option.title || "";
+		let url = option.url || "";
+		let width = option.width;
+		let height = option.height;
+		let callback = option.callback;
 
+		let dialogOption = {
+			title: title,
+			width: width,
+			height: height,
+			shader: false,
+			resize: true,
+			maximize: true,
+			minimize: true,
+			movable: true,
+			callback: function(callbackData) {
+				if (typeof callback === 'function') {
+					callback(callbackData);
+				}
+			}
+		}
+
+		let $content = this.getIndexTemplate("[data-index-template-dialog-window]");
+
+		let uuid = this.randomUUID();
+
+		$content.attr("src", url);
+
+		let $dialogComponent = this.dialog(dialogOption, $content);
+
+		$dialogComponent.attr('id', uuid);
+
+		$dialogComponent.data("doCloseCallback", function(callbackData) {
+			$dialogComponent.data("callbackData", callbackData);
+			$dialogComponent.doClose();
+		});
+
+		$content.on("load", () => {
+			let $iframeBody = $content.contents().find('body');
+			let doCloseScript = [];
+			doCloseScript.push("<script>");
+			doCloseScript.push("function doCloseWindow(callbackData) {");
+			doCloseScript.push("DarkSpring.closeWindow('" + uuid + "', callbackData);");
+			doCloseScript.push("}");
+			doCloseScript.push("</script>");
+			$iframeBody.append($(doCloseScript.join(" ")));
+		});
+	}
+
+	closeWindow(uuid, callbackData) {
+		if (this === top.DarkSpring) {
+			$('#' + uuid, top.document).data("doCloseCallback")(callbackData);
+		} else {
+			top.DarkSpring.closeWindow(uuid, callbackData);
+		}
 	}
 
 	table() {
@@ -645,6 +792,33 @@ class darkspring {
 		} else {
 			return false;
 		}
+	}
+
+	marginString(top, right, bottom, left) {
+		let margins = [];
+		margins.push(top.trim());
+		margins.push(right.trim());
+		margins.push(bottom.trim());
+		margins.push(left.trim());
+		return margins.join(" ");
+	}
+
+	fadeOutRemove($element) {
+		$element.fadeOut(this.fading, () => {
+			$element.remove();
+		});
+	}
+
+	randomUUID() {
+		let d = Date.now();
+		if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+			d += performance.now();
+		}
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+			let r = (d + Math.random() * 16) % 16 | 0;
+			d = Math.floor(d / 16);
+			return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+		});
 	}
 
 }

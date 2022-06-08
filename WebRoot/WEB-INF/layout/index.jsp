@@ -41,7 +41,6 @@
         
             <%-- Navbar Start --%>
             <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
-            	<div id="top-object-container" style="width:0px;height:0px"></div>
               	<sitemesh:write property="page.navbar" />
             </nav>
             <%-- Navbar End --%>

@@ -76,6 +76,8 @@ var $sidebar;
 
 $(document).ready(function(){
 	
+	registerIndexWindowEvent();
+	
 	$sidebar = $('#sidebar');
 	
 	renderMenu(menus);
@@ -158,7 +160,76 @@ function setPage(url, i1, i2){
 	}
 }
 
+function registerIndexWindowEvent(){
+	
+	$("#top-dialogs-container").on('DOMNodeInserted', (e) => {
+		$("#top-dialogs-component").fadeIn();
+	});
+	$("#top-dialogs-container").on('DOMNodeRemoved', (e) => {
+		if($('.dropdown-item', "#top-dialogs-container").length <= 1){
+			$("#top-dialogs-component").fadeOut();			
+		}else{
+			$("#top-dialogs-component").fadeIn();
+		}
+	});
+	
+	$("#top-uploadings-container").on('DOMNodeInserted', (e) => {
+		$("#top-uploadings-component").fadeIn();
+	});
+	$("#top-uploadings-container").on('DOMNodeRemoved', (e) => {
+		if($('.dropdown-item', "#top-uploadings-container").length <= 1){
+			$("#top-uploadings-component").fadeOut();			
+		}else{
+			$("#top-uploadings-component").fadeIn();
+		}
+	});
+	
+	$(window).resize(() => {
+		
+		let windowWidth = $(window).width();
+		let windowHeight = $(window).height();
+		
+		$('[data-index-template-dialog]', '#top-object-container').each((_index, dialog) => {
+			
+			let $dialog = $(dialog);
+			
+			let dialogX = $dialog[0].offsetLeft;
+			let dialogY = $dialog[0].offsetTop;
+			let dialogWidth = $dialog.width();
+			let dialogHeight = $dialog.height();
+			
+			if(dialogX < 0 || dialogY < 0 || dialogX + dialogWidth > windowWidth || dialogY + dialogHeight > windowHeight) {
+				
+				let dialogDefaultWidth = $dialog.data("defaultWidth");;
+				let dialogDefaultHeight = $dialog.data("defaultHeight");
+				
+				let widthGap = ( windowWidth / 2 - parseInt(dialogDefaultWidth) / 2 ) + "px";
+				let heightGap = ( windowHeight / 2 - parseInt(dialogDefaultHeight) / 2 ) + "px";
+				
+				$dialog.css({
+					width : dialogDefaultWidth,
+					height : dialogDefaultHeight,
+					inset: '0px',
+					margin : DarkSpring.marginString(heightGap, widthGap, heightGap, widthGap)
+				});
+				
+			}
+			
+		});
+		
+	});
+}
+
+
 </script>
+
+<style>
+.dark-spring-dropdown-menu {
+	border : #ff00004d 3px groove !important;
+	border-radius: 0px 0px 8px 8px !important;
+}
+</style>
+
 </head>
 
 <content tag="template">
@@ -190,38 +261,32 @@ function setPage(url, i1, i2){
 
 <content tag="navbar">
 
+	<div id="top-object-container" style="width:0px; height:0px"></div>
+
 	<a class="sidebar-toggler flex-shrink-0 clickable">
         <i class="fa fa-bars"></i>
     </a>
   
     <div class="navbar-nav align-items-center ms-auto">
         
-        <div class="nav-item dropdown">
+        <div id="top-dialogs-component" class="nav-item dropdown" style="display: none">
 			<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
 				<i class="fas fa-window-maximize me-lg-2"></i>
 				<span class="d-none d-lg-inline-flex">Dialog</span>
 			</a>
-			<div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-			
-				<div class="dropdown-item">
-					<div class="d-flex align-items-center none-select clickable">
-						<div class="ms-2" style="width:160px">
-							<div class="fw-normal mb-0" style="overflow: hidden;">Dialog Title Name</div>
-						</div>
-					</div>
-				</div>
+			<div id="top-dialogs-container" style="border: red" class="dark-spring-dropdown-menu dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
 				
 			</div>
 		</div>
         
         
         <%-- 檔案上傳元件 --%>
-        <div class="nav-item dropdown">
+        <div id="top-uploadings-component" class="nav-item dropdown">
 			<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
 				<i class="fas fa-cloud-upload-alt me-lg-2"></i>
 				<span class="d-none d-lg-inline-flex">Upload</span>
 			</a>
-			<div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+			<div id="top-uploadings-container" class="dark-spring-dropdown-menu dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
 			
 				<div class="dropdown-item">
 					<div class="d-flex align-items-center none-select clickable">
@@ -268,7 +333,7 @@ function setPage(url, i1, i2){
                 <i class="fa fa-user me-lg-2"></i>
                 <span class="d-none d-lg-inline-flex">Derrek Tseng</span>
             </a>
-            <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+            <div class="dark-spring-dropdown-menu dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
                 <a class="dropdown-item none-select clickable">My Profile</a>
                 <a class="dropdown-item none-select clickable">Settings</a>
                 <a class="dropdown-item none-select clickable">Log Out</a>

@@ -10,27 +10,37 @@
 $(document).ready(function(){
 	
 	$('#alert-button').click(() => {
-		DarkSpring.alert();
+		DarkSpring.alert({
+			title : "Test AlertAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa",
+			message : "Test Message",
+			callback : function(){
+				DarkSpring.info("Alert Closed!");
+			}
+		});
 	});
 	
 	$('#confirm-button').click(() => {
-		DarkSpring.confirm();
+		DarkSpring.confirm({
+			title : "Test Alert",
+			message : "Test Message",
+			callback : function(confirm){
+				if(confirm) {
+					DarkSpring.info("Confirm Accept!");
+				} else {
+					DarkSpring.info("Confirm Cancel!");
+				}
+			}
+		});
 	});
 	
 	$('#window-button').click(() => {
-		DarkSpring.window();
-	});
-	
-	$('#dialog-button').click(() => {
-		DarkSpring.dialog({
-			title : "test",
-			shader : true,
-			resize : true,
-			maximize : true,
-			minimize : true,
-			movable : true,
-			callback : function(){
-				DarkSpring.info("Closed!");
+		DarkSpring.window({
+			title : "Test Window AlertAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa",
+			width: "800px",
+			height: "600px",
+			url : "dashboard",
+			callback : function (callbackData){
+				console.log(callbackData);
 			}
 		});
 	});
@@ -70,15 +80,6 @@ $(document).ready(function(){
 	               <h6 class="mb-4">Window Dialog</h6>
 	               <div class="m-n2">
 	                   <button type="button" id="window-button" class="btn btn-light m-2">Window</button>
-	               </div>
-	           </div>
-	       </div>
-	       
-	       <div class="col-sm-12 col-xl-6">
-	           <div class="bg-secondary rounded h-100 p-4">
-	               <h6 class="mb-4">Test Dialog</h6>
-	               <div class="m-n2">
-	                   <button type="button" id="dialog-button" class="btn btn-light m-2">Window</button>
 	               </div>
 	           </div>
 	       </div>

@@ -4,7 +4,7 @@
 <html>
 <head>
 	
-	<%@include file="/WEB-INF/layout/page-head.jsp" %>
+	<%@include file="/WEB-INF/template/page-head.jsp" %>
     
 	<title>
 		<sitemesh:write property="title" />
@@ -51,9 +51,9 @@
         
 	</div>
 	
-	<%@include file="/WEB-INF/layout/page-tail.jsp" %>
+	<%@include file="/WEB-INF/template/page-tail.jsp" %>
 	
-	<%@include file="/WEB-INF/layout/index-template.jsp" %>
+	<%@include file="/WEB-INF/template/index-template.jsp" %>
 	
 </body>
 

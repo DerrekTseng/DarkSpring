@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%-- JavaScript Libraries --%>
-<script src="<c:url value='/resource/js/bootstrap.bundle.min.js' />"></script>
+<script src="<c:url value='/resource/lib/bootstrap/js/bootstrap.bundle.min.js' />"></script>
 <script src="<c:url value='/resource/lib/chart/chart.min.js' />"></script>
 <script src="<c:url value='/resource/lib/easing/easing.min.js' />"></script>
 <script src="<c:url value='/resource/lib/waypoints/waypoints.min.js' />"></script>

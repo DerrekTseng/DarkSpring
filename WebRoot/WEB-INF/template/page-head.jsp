@@ -17,12 +17,13 @@
 <link href="<c:url value='/resource/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css' />" rel="stylesheet" />
 
 <%-- Customized Bootstrap Stylesheet --%>
-<link href="<c:url value='/resource/css/bootstrap.min.css' />" rel="stylesheet">
+<link href="<c:url value='/resource/lib/bootstrap/css/bootstrap.min.css' />" rel="stylesheet">
 
 <%-- Template Stylesheet --%>
 <link href="<c:url value='/resource/css/style.css' />" rel="stylesheet">
 
-<script src="<c:url value='/resource/js/jquery-3.6.0.min.js' />"></script>
+<%-- JQuery --%>
+<script src="<c:url value='/resource/lib/jquery-3.6.0/jquery-3.6.0.min.js' />"></script>
 
 <script type="text/javascript">
 	function getTemplate(selector){

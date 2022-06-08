@@ -157,7 +157,7 @@ class darkspring {
 			let width = option.width || "300px";
 			let height = option.height || "200px";
 
-			let shader = option.shader === false ? false : true;
+			let shader = option.shader === true ? true : false;
 			let resize = option.resize === true ? true : false;
 			let maximize = option.maximize === true ? true : false;
 			let minimize = option.minimize === true ? true : false;
@@ -727,16 +727,21 @@ class darkspring {
 		let width = option.width;
 		let height = option.height;
 		let callback = option.callback;
-
+		let shader = option.shader === false ? false : true;
+		let resize = option.resize === false ? false : true;
+		let maximize = option.maximize === false ? false : true;
+		let minimize = option.minimize === false ? false : true;
+		let movable = option.movable === false ? false : true;
+		
 		let dialogOption = {
 			title: title,
 			width: width,
 			height: height,
-			shader: false,
-			resize: true,
-			maximize: true,
-			minimize: true,
-			movable: true,
+			shader: shader,
+			resize: resize,
+			maximize: maximize,
+			minimize: minimize,
+			movable: movable,
 			callback: function(callbackData) {
 				if (typeof callback === 'function') {
 					callback(callbackData);

@@ -27,20 +27,20 @@ $(document).ready(function(){
 </content>
 
 <content tag="body">
-	 <div class="container-fluid pt-4 px-4">
-         <div class="row g-4">
-         	<div class="col-sm-12 col-xl-6">
-				<div class="bg-secondary rounded h-100 p-4">
-					<h3 style="text-align: center">Test open dialog window</h3>
-	         		<textarea id="callback-data" class="form-control" placeholder="CallbackData" style="height: 150px; resize: none"></textarea>
-					<button id="close-btn" type="button" class="btn btn-primary m-2" style="float:right">
-						<i class="fas fa-times me-2"></i>
-						Close
-					</button>
-				</div>
-         	</div>
+	
+	<div class="container-fluid pt-4 px-4">
+         <div class="row bg-secondary rounded align-items-center justify-content-center mx-0">
+             <div class="col-md-6 text-center">
+                <h3 style="text-align: center">Test open dialog window</h3>
+         		<textarea id="callback-data" class="form-control" placeholder="CallbackData" style="height: 150px; resize: none"></textarea>
+				<button id="close-btn" type="button" class="btn btn-primary m-2" style="float:right">
+					<i class="fas fa-times me-2"></i>
+					Close
+				</button>
+             </div>
          </div>
      </div>
+	
 </content>
 
 </html>

@@ -1,4 +1,4 @@
-package com.dark.core.sitemesh;
+package com.darkspring.core.sitemesh;
 
 public class Decorators {
 	private static String defaultdir = "/WEB-INF/layout/";

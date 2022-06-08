@@ -1,4 +1,4 @@
-package com.dark.core.scheduler;
+package com.darkspring.core.scheduler;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

@@ -1,4 +1,4 @@
-package com.dark.core.listener;
+package com.darkspring.core.listener;
 
 import java.io.Closeable;
 

@@ -1,4 +1,4 @@
-<%@ page language="java" import="com.dark.core.sitemesh.Decorators" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" import="com.darkspring.core.sitemesh.Decorators" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -62,7 +62,7 @@ var menus = [
 	{
 		type : "DROPDOWN",
 		icon : "fas fa-object-group me-2",
-		text : "Objects",
+		text : "Components",
 		items : [
 			{ url : "grid", text : "Grid"},
 			{ url : "prompt", text : "Prompt"},

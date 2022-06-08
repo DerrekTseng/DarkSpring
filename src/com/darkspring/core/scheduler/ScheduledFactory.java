@@ -1,4 +1,4 @@
-package com.dark.core.scheduler;
+package com.darkspring.core.scheduler;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import com.dark.core.listener.SpringApplicationListener;
+import com.darkspring.core.listener.SpringApplicationListener;
 
 @Component
 public class ScheduledFactory implements AutoCloseable {

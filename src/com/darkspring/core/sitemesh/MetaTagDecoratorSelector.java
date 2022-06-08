@@ -1,4 +1,4 @@
-package com.dark.core.sitemesh;
+package com.darkspring.core.sitemesh;
 
 import java.io.IOException;
 

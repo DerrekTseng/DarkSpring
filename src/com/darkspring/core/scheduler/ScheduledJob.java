@@ -1,4 +1,4 @@
-package com.dark.core.scheduler;
+package com.darkspring.core.scheduler;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.quartz.Job;

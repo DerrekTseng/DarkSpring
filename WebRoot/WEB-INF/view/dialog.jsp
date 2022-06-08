@@ -1,4 +1,4 @@
-<%@ page language="java" import="com.dark.core.sitemesh.Decorators" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" import="com.darkspring.core.sitemesh.Decorators" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -11,8 +11,8 @@ $(document).ready(function(){
 	
 	$('#alert-button').click(() => {
 		DarkSpring.alert({
-			title : "Test Alert",
-			message : "Test Message",
+			title : "Alert Dialog",
+			message : "Messages....",
 			callback : function(){
 				DarkSpring.info("Alert Closed!");
 			}
@@ -21,8 +21,8 @@ $(document).ready(function(){
 	
 	$('#confirm-button').click(() => {
 		DarkSpring.confirm({
-			title : "Test Alert",
-			message : "Test Message",
+			title : "Confirm Dialog ",
+			message : "Messages....",
 			callback : function(confirm){
 				if(confirm) {
 					DarkSpring.info("Confirm Accept!");
@@ -35,7 +35,7 @@ $(document).ready(function(){
 	
 	$('#window-button').click(() => {
 		DarkSpring.window({
-			title : "Test Window",
+			title : "Window Confirm",
 			width: "600px",
 			height: "400px",
 			url : "dialog-window",

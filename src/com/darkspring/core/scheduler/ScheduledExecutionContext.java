@@ -1,4 +1,4 @@
-package com.dark.core.scheduler;
+package com.darkspring.core.scheduler;
 
 import java.util.Date;
 import java.util.Map;

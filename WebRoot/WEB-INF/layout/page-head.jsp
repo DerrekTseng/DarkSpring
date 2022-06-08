@@ -1,7 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <meta charset="UTF-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-   
+
+<link rel="icon" href="<c:url value='/favicon.ico' />" type="image/x-icon" />
+<link rel="shortcut icon" href="<c:url value='/favicon.ico' />" type="image/x-icon" />
+  
 <%-- Google Web Fonts --%>
 <link href="<c:url value='/resource/lib/googleapis/css/googleapis.com.css' />" rel="stylesheet">
 

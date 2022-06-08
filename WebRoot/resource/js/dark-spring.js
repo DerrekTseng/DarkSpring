@@ -98,8 +98,14 @@ class darkspring {
 
 	}
 
-	doDownolad() {
-
+	doDownolad(option = {}) {
+		let url = option.url || "";
+		let data = option.data || {};
+		let urlQueryString = url + this.objectToQuerystring(data);
+		let $a = document.createElement("a");
+		$a.setAttribute("href", urlQueryString);
+		$a.setAttribute("download", "");
+		$a.click();
 	}
 
 	info(message) {
@@ -732,7 +738,7 @@ class darkspring {
 		let maximize = option.maximize === false ? false : true;
 		let minimize = option.minimize === false ? false : true;
 		let movable = option.movable === false ? false : true;
-		
+
 		let dialogOption = {
 			title: title,
 			width: width,
@@ -823,6 +829,33 @@ class darkspring {
 			d = Math.floor(d / 16);
 			return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
 		});
+	}
+
+	objectToQuerystring(obj = {}) {
+		return Object.keys(obj).filter((key) => obj[key] != undefined && obj[key] != '').reduce((str, key, i) => {
+			let delimiter, val;
+			delimiter = (i === 0) ? '?' : '&';
+			if (Array.isArray(obj[key])) {
+				key = encodeURIComponent(key);
+				let arrayVar = obj[key].reduce((str, item) => {
+					if (typeof item == "object") {
+						val = encodeURIComponent(JSON.stringify(item));
+					} else {
+						val = encodeURIComponent(item);
+					}
+					return [str, key, '=', val, '&'].join('');
+				}, '');
+				return [str, delimiter, arrayVar.trimRightString('&')].join('');
+			} else {
+				key = encodeURIComponent(key);
+				if (typeof obj[key] == "object") {
+					val = encodeURIComponent(JSON.stringify(obj[key]));
+				} else {
+					val = encodeURIComponent(obj[key]);
+				}
+				return [str, delimiter, key, '=', val].join('');
+			}
+		}, '');
 	}
 
 }

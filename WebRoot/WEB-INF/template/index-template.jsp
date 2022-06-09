@@ -275,5 +275,40 @@
     
     <%-- window dialog content --%>
     <iframe data-index-template-dialog-window class="dark-spring-dialog-content"></iframe>
+    
+    <%-- table pager --%>
+    <div data-index-template-table-pager class="row bg-secondary rounded align-items-center justify-content-center mx-0">
+	    <div class="col-md-6 text-center">
+		     <div class="btn-group" role="group">
+		        <button type="button" class="btn btn-outline-primary" style="width: 52px;">
+		        	<i class="fas fa-angle-double-left"></i>
+		        </button>
+		        
+		        <button type="button" class="btn btn-outline-primary" style="width: 52px;">
+		        	<i class="fas fa-angle-left"></i>
+		        </button>
+    
+		        <select class="form-select form-select-sm" style="width: 82px; text-align: center;">
+		        	<option>1</option>
+		        	<option>2</option>
+		        	<option>3</option>
+		        	<option>4</option>
+		        	<option>5</option>
+		        </select>
+		        
+	            <button type="button" class="btn btn-outline-primary" style="width: 52px;">
+		       		<i class="fas fa-angle-right"></i>
+		        </button>
+		        
+		        <button type="button" class="btn btn-outline-primary" style="width: 52px;">
+		        	<i class="fas fa-angle-double-right"></i>
+		        </button>
+		     
+		    </div>
+	    </div>
+	   
+	    
+    </div>
+    
 
 </div>

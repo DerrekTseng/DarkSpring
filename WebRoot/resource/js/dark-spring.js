@@ -806,7 +806,6 @@ class darkspring {
 				};
 				this.pager = {
 					enabled: false,
-					render: null,
 					feed: null
 				};
 			}
@@ -833,9 +832,6 @@ class darkspring {
 			}
 			setPagerEnabled(enabled) {
 				this.pager.enabled = enabled;
-			}
-			setPagerRender(render) {
-				this.pager.render = render;
 			}
 			setPagerFeed(feed) {
 				this.pager.feed = feed;
@@ -919,12 +915,17 @@ class darkspring {
 						}
 					});
 				}
-
+				
+				$this.renderer.pager = () => {
+					let $pager = DarkSpring.getIndexTemplate("[data-index-template-table-pager]");
+					$this.$pager.append($pager);
+				}
+				
 				if ($this.$gridConfig.pager.enabled) {
-					$this.$pager = $("<caption>");
+					$this.$pager = $("<caption class='container-fluid'>");
 					let $pager = $this.$pager;
 					$this.$table.append($pager);
-					$this.renderer.pager.render($this);
+					$this.renderer.pager();
 				}
 
 				$this.renderer.thead();
@@ -945,31 +946,8 @@ class darkspring {
 		return new Grid(gridConfig);
 	}
 
-	table(option = {}) {
-
-		let table = option.table || null;
-		let data = option.data || [];
-		let thead = option.thead || [];
-		let theadEach = option.theadEach || null;
-		let tbody = option.tbody || [];
-		let tbodyEach = option.tbodyEach || null;
-
-		let config = this.gridConfig();
-
-		config.setTable(table);
-		config.setData(data);
-		thead.forEach((i) => {
-			config.addTheadMeta(i);
-		});
-		config.setTbodyRendered(theadEach);
-
-		tbody.forEach((i) => {
-			config.addTbodyMeta(i);
-		});
-
-		config.setTbodyRendered(tbodyEach);
-
-		config.setTheadSorter(($grid, $th, key) => {
+	tableDefaultSorter() {
+		return ($grid, $th, key) => {
 
 			if (!$grid.data('original-list')) {
 				let originalList = [];
@@ -1044,14 +1022,74 @@ class darkspring {
 				}
 				$grid.renderer.tbody();
 			});
+		}
+	}
 
+	table(option = {}) {
 
+		let table = option.table || null;
+		let data = option.data || [];
+		let thead = option.thead || [];
+		let theadEach = option.theadEach || null;
+		let tbody = option.tbody || [];
+		let tbodyEach = option.tbodyEach || null;
+
+		let config = this.gridConfig();
+
+		config.setTable(table);
+		config.setData(data);
+		thead.forEach((i) => {
+			config.addTheadMeta(i);
 		});
+		config.setTbodyRendered(theadEach);
+
+		tbody.forEach((i) => {
+			config.addTbodyMeta(i);
+		});
+
+		config.setTbodyRendered(tbodyEach);
+
+		config.setTheadSorter(this.tableDefaultSorter());
 		return this.grid(config);
 	}
 
-	pageTable() {
+	pageTable(option = {}) {
+		let table = option.table || null;
+		let data = option.data || [];
+		let thead = option.thead || [];
+		let theadEach = option.theadEach || null;
+		let tbody = option.tbody || [];
+		let tbodyEach = option.tbodyEach || null;
+		let pageNum = option.pageNum || 1;
+		let pageSize = option.pageSize || 10;
 
+		let config = this.gridConfig();
+
+		config.setTable(table);
+		config.setData(data);
+		thead.forEach((i) => {
+			config.addTheadMeta(i);
+		});
+		config.setTbodyRendered(theadEach);
+
+		tbody.forEach((i) => {
+			config.addTbodyMeta(i);
+		});
+
+		config.setTbodyRendered(tbodyEach);
+
+		config.setTheadSorter(this.tableDefaultSorter());
+
+		config.setPagerEnabled(true);
+
+		config.pager.pageNum = pageNum;
+		config.pager.pageSize = pageSize;
+
+		config.setPagerFeed(($grid) => {
+			return $grid.$gridConfig.data;
+		});
+
+		return this.grid(config);
 	}
 
 	fetchTable() {

@@ -14,7 +14,7 @@ $(document).ready(function(){
 function doRenderTable(){
 	let data = [];
 
-	for (let i = 0; i < 100; i++) {
+	for (let i = 0; i < 5; i++) {
 		data.push({
 			data_1: "A" + i,
 			data_2: "B" + i,
@@ -22,7 +22,7 @@ function doRenderTable(){
 		});
 	}
 	
-	DarkSpring.table({
+	DarkSpring.pageTable({
 		table : $('#table'),
 		data : data,
 		thead : [

@@ -891,6 +891,7 @@ class darkspring {
 					let list = [];
 					if ($this.$gridConfig.pager.enabled) {
 						list = $this.$gridConfig.pager.feed($this);
+						$this.renderer.pagerUpdate();
 					} else {
 						list = $this.$gridConfig.data;
 					}
@@ -918,7 +919,47 @@ class darkspring {
 					});
 				}
 
-				$this.renderer.pager = () => {
+				$this.renderer.pagerUpdate = () => {
+					let pageNum = $this.$gridConfig.pager.pageNum;
+					let pageSize = $this.$gridConfig.pager.pageSize;
+					let totalSize = $this.$gridConfig.pager.totalSize;
+					let pageCount = Math.ceil(totalSize / pageSize);
+					$this.$gridConfig.pager.pageCount = pageCount;
+					
+					$("[data-pager-num]", $this.$pager).empty();
+
+					for (let count = 0; count < pageCount; count++) {
+						let pc = count + 1;
+						$("[data-pager-num]", $this.$pager).append("<option value='" + pc + "'>" + pc + "</option>");
+					}
+
+					$("[data-pager-num]", $this.$pager).val(pageNum);
+
+					if (pageNum <= 1) {
+						$("[data-pager-first]", $this.$pager).attr('disabled', true);
+						$("[data-pager-previous]", $this.$pager).attr('disabled', true);
+					} else {
+						$("[data-pager-first]", $this.$pager).attr('disabled', false);
+						$("[data-pager-previous]", $this.$pager).attr('disabled', false);
+					}
+
+					if (pageNum >= pageCount) {
+						$("[data-pager-next]", $this.$pager).attr('disabled', true);
+						$("[data-pager-last]", $this.$pager).attr('disabled', true);
+					} else {
+						$("[data-pager-next]", $this.$pager).attr('disabled', false);
+						$("[data-pager-last]", $this.$pager).attr('disabled', false);
+					}
+
+					if (pageCount <= 1) {
+						$("[data-pager-num]", $this.$pager).attr('disabled', true);
+					} else {
+						$("[data-pager-num]", $this.$pager).attr('disabled', false);
+					}
+
+				}
+
+				$this.renderer.pagerEvent = () => {
 					let $pager = DarkSpring.getIndexTemplate("[data-index-template-table-pager]");
 					$this.$pager.append($pager);
 
@@ -953,7 +994,7 @@ class darkspring {
 					$this.$pager = $("<caption align='bottom' class='container-fluid'>");
 					let $pager = $this.$pager;
 					$this.$table.append($pager);
-					$this.renderer.pager();
+					$this.renderer.pagerEvent();
 				}
 
 				$this.renderer.thead();
@@ -1112,51 +1153,18 @@ class darkspring {
 
 		config.pager.pageNum = pageNum;
 		config.pager.pageSize = pageSize;
-		config.pager.pageCount = Math.ceil(data.length / pageSize);
+		config.pager.totalSize = data.length;
 
 		config.setPagerFeed(($grid) => {
 
 			let pageNum = $grid.$gridConfig.pager.pageNum;
 			let pageSize = $grid.$gridConfig.pager.pageSize;
-			let totalSize = $grid.$gridConfig.data.length;
+			let totalSize = $grid.$gridConfig.pager.totalSize;
 
 			let sliceStart = (pageNum - 1) * pageSize;
 			let sliceEnd = sliceStart + pageSize - 1;
 			if (sliceEnd > totalSize - 1) {
 				sliceEnd = totalSize;
-			}
-
-			let pageCount = Math.ceil(totalSize / pageSize);
-
-			$("[data-pager-num]", $grid.$pager).empty();
-
-			for (let count = 0; count < pageCount; count++) {
-				let pc = count + 1;
-				$("[data-pager-num]", $grid.$pager).append("<option value='" + pc + "'>" + pc + "</option>");
-			}
-
-			$("[data-pager-num]", $grid.$pager).val(pageNum);
-
-			if (pageNum <= 1) {
-				$("[data-pager-first]", $grid.$pager).attr('disabled', true);
-				$("[data-pager-previous]", $grid.$pager).attr('disabled', true);
-			} else {
-				$("[data-pager-first]", $grid.$pager).attr('disabled', false);
-				$("[data-pager-previous]", $grid.$pager).attr('disabled', false);
-			}
-
-			if (pageNum >= pageCount) {
-				$("[data-pager-next]", $grid.$pager).attr('disabled', true);
-				$("[data-pager-last]", $grid.$pager).attr('disabled', true);
-			} else {
-				$("[data-pager-next]", $grid.$pager).attr('disabled', false);
-				$("[data-pager-last]", $grid.$pager).attr('disabled', false);
-			}
-
-			if (pageCount <= 1) {
-				$("[data-pager-num]", $grid.$pager).attr('disabled', true);
-			} else {
-				$("[data-pager-num]", $grid.$pager).attr('disabled', false);
 			}
 
 			return $grid.$gridConfig.data.slice(sliceStart, sliceEnd);
@@ -1165,8 +1173,121 @@ class darkspring {
 		return this.grid(config);
 	}
 
-	fetchTable() {
+	fetchTable(option = {}) {
+		let table = option.table || null;
+		let url = option.url || null;
+		let parameter = option.parameter || {};
+		let thead = option.thead || [];
+		let theadEach = option.theadEach || null;
+		let tbody = option.tbody || [];
+		let tbodyEach = option.tbodyEach || null;
+		let pageNum = option.pageNum || 1;
+		let pageSize = option.pageSize || 10;
 
+		let config = this.gridConfig();
+
+		config.fetch = {};
+		config.fetch.url = url;
+		config.fetch.parameter = parameter;
+
+		config.setTable(table);
+
+		thead.forEach((i) => {
+			config.addTheadMeta(i);
+		});
+		config.setTbodyRendered(theadEach);
+
+		tbody.forEach((i) => {
+			config.addTbodyMeta(i);
+		});
+
+		config.setTbodyRendered(tbodyEach);
+
+		config.setPagerEnabled(true);
+
+		config.pager.pageNum = pageNum;
+		config.pager.pageSize = pageSize;
+
+		config.setTheadSorter(($grid, $th, key) => {
+
+			$grid.data("orderby", "");
+			$th.data("sort", "");
+			let $sort = $("<i data-sort-default class='fas fa-sort'></i>");
+			let $sortAsc = $("<i data-sort class='fas fa-sort-up' style='color:red'></i>").hide();
+			let $sortDesc = $("<i data-sort class='fas fa-sort-down' style='color:red'></i>").hide();
+
+			$th.append($sort).append($sortAsc).append($sortDesc);
+
+			$th.click(() => {
+				let sort = $th.data("sort");
+
+				$("[data-sort]", $grid.$table).hide();
+				$("[data-sort-default]", $grid.$table).show();
+				$sort.hide();
+
+				$("[data-sort]", $grid.$table).parent().data("sort", "");
+
+				if (sort === "") {
+					sort = "asc";
+					$sortAsc.show();
+				} else if (sort === "asc") {
+					sort = "desc";
+					$sortDesc.show();
+				} else if (sort === "desc") {
+					sort = "";
+					$sort.show();
+				}
+
+				$th.data("sort", sort);
+
+				let orderbys = [];
+
+				if (Array.isArray(key)) {
+					key.forEach((k) => {
+						orderbys.push(k + " " + sort);
+					});
+				} else {
+					orderbys.push(key + " " + sort);
+				}
+
+				$grid.data("orderby", orderbys.join(","));
+
+				$grid.renderer.tbody();
+			});
+		});
+
+		config.setPagerFeed(($grid) => {
+
+			let pageNum = $grid.$gridConfig.pager.pageNum;
+			let pageSize = $grid.$gridConfig.pager.pageSize;
+
+			let orderby = $grid.data("orderby");
+
+			let resultData = [];
+			let url = $grid.$gridConfig.fetch.url;
+			let parameter = $.extend({}, $grid.$gridConfig.fetch.parameter, {
+				pageNum: pageNum,
+				pageSize: pageSize,
+				orderby: orderby
+			});
+			
+			DarkSpring.doPost({
+				url : url,
+				data : parameter,
+				async : false,
+				success : (result) => {
+					$grid.$gridConfig.pager.pageNum = result.pageNum;
+					$grid.$gridConfig.pager.pageSize = result.pageSize;
+					$grid.$gridConfig.pager.totalSize = result.totalSize;
+					resultData = result.data;
+				}
+			})
+
+
+			return resultData;
+		});
+
+		return this.grid(config);
 	}
 
 	isMobileDevice() {

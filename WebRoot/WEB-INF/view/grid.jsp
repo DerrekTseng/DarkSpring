@@ -91,7 +91,12 @@ function renderPageTable(){
 }
 
 function renderFetchTable(){
-	
+	DarkSpring.fetchTable({
+		table : $('#table'),
+		url : "getTableData",
+		thead : theadMeta,
+		tbody : tbodyMeta
+	});
 }
 
 </script>

@@ -38,6 +38,11 @@ $(document).ready(function(){
 			title : "Window Confirm",
 			width: "600px",
 			height: "400px",
+			shadow : $("#window-shadow").prop("checked"),
+			resize : $("#window-resize").prop("checked"),
+			maximize : $("#window-maximize").prop("checked"),
+			minimize : $("#window-minimize").prop("checked"),
+			movable  : $("#window-movable").prop("checked"),
 			url : "dialog-window",
 			callback : function (callbackData){
 				if(callbackData){
@@ -79,7 +84,38 @@ $(document).ready(function(){
 	       </div>
 	       <div class="col-sm-12 col-xl-6">
 	           <div class="bg-secondary rounded h-100 p-4">
+	           
 	               <h6 class="mb-4">Window Dialog</h6>
+	               
+	               <div class="row mb-2">
+		               <div class="form-check form-switch col-sm-6">
+							<input class="form-check-input pointer" type="checkbox" role="switch" id="window-shadow" checked>
+							<label class="form-check-label pointer" for="window-shadow">Shadow</label>
+						</div>
+						
+						<div class="form-check form-switch col-sm-6">
+							<input class="form-check-input pointer" type="checkbox" role="switch" id="window-resize" checked>
+							<label class="form-check-label pointer" for="window-resize">Resize</label>
+						</div>
+						
+						<div class="form-check form-switch col-sm-6">
+							<input class="form-check-input pointer" type="checkbox" role="switch" id="window-maximize" checked>
+							<label class="form-check-label pointer" for="window-maximize">Maximize</label>
+						</div>
+						
+						<div class="form-check form-switch col-sm-6">
+							<input class="form-check-input pointer" type="checkbox" role="switch" id="window-minimize" checked>
+							<label class="form-check-label pointer" for="window-minimize">Minimize</label>
+						</div>
+						
+						<div class="form-check form-switch col-sm-6">
+							<input class="form-check-input pointer" type="checkbox" role="switch" id="window-movable" checked>
+							<label class="form-check-label pointer" for="window-movable">Movable</label>
+						</div>
+						
+	               </div>
+					
+	               
 	               <div class="m-n2">
 	                   <button type="button" id="window-button" class="btn btn-light m-2">Window</button>
 	               </div>

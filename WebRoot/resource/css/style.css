@@ -305,6 +305,10 @@
 	cursor: grab;
 }
 
+.pointer:hover {
+	cursor: pointer;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;

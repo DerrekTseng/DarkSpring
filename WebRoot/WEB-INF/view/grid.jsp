@@ -8,9 +8,39 @@
 <script type="text/javascript">
 
 $(document).ready(function(){
-	    
-	
+	doRenderTable();
 });
+
+function doRenderTable(){
+	let data = [];
+
+	for (let i = 0; i < 100; i++) {
+		data.push({
+			data_1: "A" + i,
+			data_2: "B" + i,
+			data_3: "C" + i
+		});
+	}
+	
+	DarkSpring.table({
+		table : $('#table'),
+		data : data,
+		thead : [
+			[
+				{ content: "col-1", sort: "data_1", attrs: { style: "text-align: center" } },
+				{ content: "col-2", sort: "data_2", attrs: { style: "text-align: center" } },
+				{ content: "col-3", sort: "data_3", attrs: { style: "text-align: center" } }
+			]
+		],
+		tbody : [
+			[
+				{ content: "@{data_1}", attrs: { style: "text-align: center" } },
+				{ content: "@{data_1}", attrs: { style: "text-align: center" } },
+				{ content: "@{data_1}", attrs: { style: "text-align: center" } }
+			]
+		]
+	});
+}
 
 </script>
 </head>
@@ -22,10 +52,10 @@ $(document).ready(function(){
 <content tag="body">
 	 <!-- Blank Start -->
      <div class="container-fluid pt-4 px-4">
-         <div class="row vh-100 bg-secondary rounded align-items-center justify-content-center mx-0">
-             <div class="col-md-6 text-center">
-                 <h3>This is blank page</h3>
-             </div>
+         <div class="row bg-secondary rounded mx-0">
+	         <div class="table-responsive">
+	         	<table id="table" class="table"></table>
+	         </div>
          </div>
      </div>
      <!-- Blank End -->

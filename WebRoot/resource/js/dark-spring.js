@@ -790,335 +790,264 @@ class darkspring {
 		}
 	}
 
-	grid(config) {
-
-		let $table = config.table || null;
-
-		if (!$table) {
-			throw "table cannot be null";
-		}
-
-
-		/////  thead theads 二選一 
-		// 單一 header 
-		let thead = config.thead || null;
-		/* 格式
-		[
-			{ 
-				tag: "td 或 th 預設為 th",
-				content : "要放入的東西 可以是 String、JQuery 物件、DOM 物件",
-				sort : 點擊後會傳入 sort() 裡面進行排序
-				attrs : { 其他屬性 }
-			 },
-			 {
-				同上	
-			 }
-		]
-		*/
-		// 多個 header
-		let theads = config.theads || null;
-		/* 格式
-		[
-			[ 同上方 thead 格式 ],
-			[ 同上方 thead 格式 ],
-		]
-		*/
-
-		if (thead && theads) {
-			throw "thead and theads cannot be set together";
-		}
-
-
-		/////  tbody tbodys 二選一 與 thead和theads 類似 沒有 sort 但 content可以用@{key} 來進行替換
-		let tbody = config.tbody || null;
-		let tbodys = config.tbodys || null;
-
-		if (tbody && tbodys) {
-			throw "tbody and tbodys cannot be set together";
-		}
-
-
-		// 渲染 tr
-		let render = config.render || {};
-		/* 格式 未標記則忽略
-			{
-				thead : ($thead) => {},
-				tbody : ($tbody, data) => {}
+	gridConfig() {
+		class GridConfig {
+			constructor() {
+				this.table = null;
+				this.data = null;
+				this.thead = {
+					meta: [],
+					rendered: null,
+					sorter: null
+				};
+				this.tbody = {
+					meta: [],
+					rendered: null
+				};
+				this.pager = {
+					enabled: false,
+					render: null,
+					feed: null
+				};
 			}
-		*/
-
-		// 要如何處理資料
-		let resolve = config.resolve || {};
-		/* 格式
-			{
-				data : [ json 陣列，為 null 則，必須要定義 page ]
-				page : { // data 為 null 則會直接觸發 onPage
-					pageNum : 1,
-					pageSize: 10,
-					onPage : (pageNum, pageSize, data, sort) => { return } // 當上方 data 不為 null 時，這裡的 data 才會有值
-																   // sort 為 JSON 物件 { key : "", direction : " '' 或 'asc' 或 'desc' " }
-																   // 必須要 return { data: 資料, size: 總頁數 } 會呼叫  render.tbody 進行渲染
-																    
-				},
-				filter : (pageNum, pageSize, data, sort, filter) => { return } // 當呼叫 $grid.filter(key, value) 時，會調用此method 
-																			  //  前段參數與 resolve.page.onPage 相同
-																			  // filter 則為 json 物件 { key:"", value:"" }
-																			  // 必須要 return JSON陣列 會呼叫  render.tbody 進行渲染
-				
+			setTable(table) {
+				this.table = table;
 			}
-		 */
-
-		$table.empty();
-
-		let $thead = $("<thead>");
-		let $tbody = $("<tbody>");
-		$table.append($thead);
-		$table.append($tbody);
-
-		$table = $table.extend({
-			_data: resolve.data,
-			_treach: render.tbody,
-			_isPage: resolve.page ? true : false,
-			_pageNum: resolve.page ? resolve.page.pageNum : 1,
-			_pageSize: resolve.page ? resolve.page.pageSize : 10,
-			_totalSize: resolve.page ? 0 : null,
-			_sortKey: "",
-			_sortDir: "",
-			_onPage: resolve.page ? resolve.page.onPage : null,
-			_onFilter: resolve.filter,
-			_tranPattern: (text, item) => {
-				Object.keys(item).forEach(function(k) {
-					let key = "@{" + k + "}";
-					while (text.includes(key)) {
-						text = text.replace(key, item[k]);
-					}
-					key = "@{" + k + ":date}";
-					while (text.includes(key)) {
-						let dateTime = ('' + item[k]).trim();
-						let replacement = dateTime;
-						if (dateTime.length == 14) {
-							let t = [];
-							t.push(dateTime.substring(0, 4));
-							t.push('/');
-							t.push(dateTime.substring(4, 6));
-							t.push('/');
-							t.push(dateTime.substring(6, 8));
-							t.push(' ');
-							t.push(dateTime.substring(8, 10));
-							t.push(':');
-							t.push(dateTime.substring(10, 12));
-							t.push(':');
-							t.push(dateTime.substring(12, 14));
-							replacement = t.join('');
-						} else if (dateTime.length == 8) {
-							let t = [];
-							t.push(dateTime.substring(0, 4));
-							t.push('/');
-							t.push(dateTime.substring(4, 6));
-							t.push('/');
-							t.push(dateTime.substring(6, 8));
-							t.push(' ');
-							t.push(dateTime.substring(8, 10));
-							t.push(':');
-							t.push(dateTime.substring(10, 12));
-							t.push(':');
-							t.push(dateTime.substring(12, 14));
-							replacement = t.join('');
-						}
-						text = text.replace(key, replacement);
-					}
-
-					key = "@{" + k + ":time}";
-					while (text.includes(key)) {
-						let dateTime = ('' + item[k]).trim();
-						let replacement = dateTime;
-						if (dateTime.length == 6) {
-							let t = [];
-							t.push(dateTime.substring(0, 2));
-							t.push(':');
-							t.push(dateTime.substring(2, 4));
-							t.push(':');
-							t.push(dateTime.substring(4, 6));
-							replacement = t.join('');
-						} else if (dateTime.length == 9) {
-							let t = [];
-							t.push(dateTime.substring(0, 2));
-							t.push(':');
-							t.push(dateTime.substring(2, 4));
-							t.push(':');
-							t.push(dateTime.substring(4, 6));
-							t.push('.');
-							t.push(dateTime.substring(6, 9));
-							replacement = t.join('');
-						}
-						text = text.replace(key, replacement);
-					}
-				});
-				return text;
-			},
-			_getHtmlString: (obj = null) => {
-				if (obj) {
-					if (typeof obj === 'string') {
-						return obj;
-					} else if (obj instanceof jQuery) {
-						return obj.get(0).outerHTML
-					} else if (obj instanceof HTMLElement) {
-						return obj.outerHTML;
-					} else {
-						return "";
-					}
-				} else {
-					return "";
-				}
-			},
-			_bindTbodyItems: (items, resultData) => {
-				let $this = this;
-				let $items = [];
-				items.forEach((item) => {
-					let $tItem = $("<" + (item.tag || "td") + ">");
-					if (item.content) {
-						$tItem.append($this.tranPattern($this.getHtmlString(item.content), resultData));
-					}
-					if (typeof item.attrs === "object") {
-						Object.keys(item.attrs).forEach((key) => {
-							$tItem.attr(key, item.attrs[key]);
-						});
-					}
-					$items.push(($tItem));
-				});
-				return $items;
-			},
-			_bindTbodyResultData: (resultData) => {
-				let $this = this;
-				resultData.forEach((item) => {
-					if (tbody) {
-						let $tr = $("<tr>");
-						let $tds = $this.bindTbodyItems(tbody, item);
-						$tds.forEach((td) => {
-							$tr.append(td);
-						});
-						if (typeof render.tbody === "function") {
-							render.tbody($tr, item);
-						}
-						$tbody.append($tr);
-					} else if (tbodys) {
-						let $trs = [];
-						tbodys.forEach((tbody) => {
-							let $tr = $("<tr>");
-							let $tds = $this.bindTbodyItems(tbody, item);
-							$tds.forEach((td) => {
-								$tr.append(td);
-							});
-							$trs.push($tr);
-						});
-						if (typeof render.tbody === "function") {
-							render.tbody($trs, item);
-						}
-						$trs.forEach((tr) => {
-							$tbody.append(tr);
-						});
-					} else {
-						throw "One of the tbody and tbodys must be set";
-					}
-				});
-			},
-			_doBody: () => {
-				$tbody.empty();
-				if (this._data === null && this._isPage) {
-					let resultData = this._onPage(this._pageNum, this._pageSize, null, { key: this._sortKey, direction: this._sortDir });
-					this.bindTbodyResultData(resultData.data);
-					this._totalSize = resultData.size;
-				} else if (typeof this._data === "object" && this._isPage) {
-					let resultData = this._onPage(this._pageNum, this._pageSize, this._data, { key: this._sortKey, direction: this._sortDir });
-					this.bindTbodyResultData(resultData.data);
-					this._totalSize = resultData.size;
-				} else if (typeof this._data === "object") {
-					this.bindTbodyResultData(this._data);
-				} else if (this._data === null && !this._isPage) {
-					throw "resolve.page must be set";
-				}
-			},
-			_bindTheadItems: (items) => {
-				let $this = this;
-				let $items = [];
-				items.forEach((item) => {
-					let $tItem = $("<" + (item.tag || "th") + ">");
-					if (item.content) {
-						$tItem.append(item.content);
-					}
-					if (item.sort) {
-						// TODO 要 append 排序圖示
-						$tItem.click(() => {
-							$this._sortKey = item.sort;
-							$this._sortDir = ""; // 判斷當前欄位順序
-							// 清除所有欄位順序
-
-							$this._doBody();
-						});
-					}
-					if (typeof item.attrs === "object") {
-						Object.keys(item.attrs).forEach((key) => {
-							$tItem.attr(key, item.attrs[key]);
-						});
-					}
-					$items.push(($tItem));
-				});
-				return $items;
-			},
-			_doHead: () => {
-				let $this = this;
-				if (thead) {
-					let $theadTr = $("<tr>");
-					let $items = $this.bindTheadItems(thead);
-					$items.forEach((item) => {
-						$theadTr.append(item);
-					});
-					if (typeof render.thead === "function") {
-						render.thead($theadTr);
-					}
-					$thead.append($theadTr);
-				} else if (theads) {
-					let $theadTrs = [];
-					theads.forEach((thead) => {
-						let $theadTr = $("<tr>");
-						let $items = $this.bindTheadItems(thead);
-						$items.forEach((item) => {
-							$theadTr.append(item);
-						});
-						$theadTrs.push($theadTr);
-					});
-					if (typeof render.thead === "function") {
-						render.thead($theadTrs);
-					}
-					$theadTrs.forEach((theadTr) => {
-						$thead.append(theadTr);
-					});
-				} else {
-					throw "One of the thead and theads must be set";
-				}
-			},
-			_doPager: () => {
-				if (this._isPage) {
-					// let $pager = DarkSpring.getIndexTemplate("[pager]"); // TODO
-
-
-
-
-
-					// this.append($pager);
-				}
+			setData(data) {
+				this.data = data;
 			}
-		});
-
-		$table._doHead();
-		$table._doBody();
-		$table._doPager();
-
-		return $table;
+			addTheadMeta(meta) {
+				this.thead.meta.push(meta);
+			}
+			setTheadRendered(rendered) {
+				this.thead.rendered = rendered;
+			}
+			setTheadSorter(sorter) {
+				this.thead.sorter = sorter;
+			}
+			addTbodyMeta(meta) {
+				this.tbody.meta.push(meta);
+			}
+			setTbodyRendered(rendered) {
+				this.tbody.rendered = rendered;
+			}
+			setPagerEnabled(enabled) {
+				this.pager.enabled = enabled;
+			}
+			setPagerRender(render) {
+				this.pager.render = render;
+			}
+			setPagerFeed(feed) {
+				this.pager.feed = feed;
+			}
+		}
+		return new GridConfig();
 	}
 
-	table() {
+	grid(gridConfig = this.gridConfig()) {
+		class Grid {
+			constructor(gridConfig) {
+				let $this = this;
 
+				$this.$gridConfig = gridConfig;
+				$this.list = [];
+				$this._data = new Map();
+
+				$this.$table = $this.$gridConfig.table;
+				$this.$thead = $('<thead>');
+				$this.$tbody = $('<tbody>');
+
+				$this.$table.empty();
+
+				$this.$table.append($this.$thead);
+				$this.$table.append($this.$tbody);
+
+				$this.renderer = {};
+
+				$this.renderer.thead = () => {
+					let $trs = [];
+					$this.$gridConfig.thead.meta.forEach((meta) => {
+						let $tr = $('<tr>');
+						meta.forEach((item) => {
+							let $th = $("<th>");
+							$th.html(item.content);
+							if (typeof item.attrs === "object") {
+								Object.keys(item.attrs).forEach((key) => {
+									$th.attr(key, item.attrs[key]);
+								});
+							}
+							if (item.sort && typeof $this.$gridConfig.thead.sorter === "function") {
+								$this.$gridConfig.thead.sorter($this, $th, item.sort);
+							}
+							$tr.append($th);
+						});
+						$trs.push($tr);
+						$this.$thead.append($tr);
+					});
+					if (typeof $this.$gridConfig.thead.rendered === "function") {
+						$this.$gridConfig.thead.rendered($trs);
+					}
+				};
+
+				$this.renderer.tbody = () => {
+					$this.$tbody.empty();
+					if ($this.$gridConfig.pager.enabled) {
+						$this.list = $this.$gridConfig.pager.feed($this);
+					} else {
+						$this.list = $this.$gridConfig.data;
+					}
+					$this.list.forEach((listItem) => {
+						let $trs = [];
+						$this.$gridConfig.tbody.meta.forEach((meta) => {
+							let $tr = $('<tr>');
+							meta.forEach((item) => {
+								let $td = $('<td>');
+								$td.html(DarkSpring.tranPattern(DarkSpring.getHtmlString(item.content), listItem));
+								if (typeof item.attrs === "object") {
+									Object.keys(item.attrs).forEach((key) => {
+										$td.attr(key, item.attrs[key]);
+									});
+								}
+								$td.data("data", listItem);
+								$tr.append($td);
+							});
+							$trs.push($tr);
+							$this.$tbody.append($tr);
+						});
+						if (typeof $this.$gridConfig.tbody.rendered === "function") {
+							$this.$gridConfig.tbody.rendered($trs);
+						}
+					});
+				}
+
+				if ($this.$gridConfig.pager.enabled) {
+					$this.$pager = $("<caption>");
+					let $pager = $this.$pager;
+					$this.$table.append($pager);
+					$this.renderer.pager.render($this);
+				}
+
+				$this.renderer.thead();
+				$this.renderer.tbody();
+
+			}
+
+			data(key, value) {
+				if (value === undefined) {
+					return this._data.get(key);
+				} else {
+					this._data.set(key, value);
+					return value;
+				}
+			}
+
+		}
+		return new Grid(gridConfig);
+	}
+
+	table(option = {}) {
+
+		let table = option.table || null;
+		let data = option.data || [];
+		let thead = option.thead || [];
+		let theadEach = option.theadEach || null;
+		let tbody = option.tbody || [];
+		let tbodyEach = option.tbodyEach || null;
+
+		let config = this.gridConfig();
+
+		config.setTable(table);
+		config.setData(data);
+		thead.forEach((i) => {
+			config.addTheadMeta(i);
+		});
+		config.setTbodyRendered(theadEach);
+
+		tbody.forEach((i) => {
+			config.addTbodyMeta(i);
+		});
+
+		config.setTbodyRendered(tbodyEach);
+
+		config.setTheadSorter(($grid, $th, key) => {
+
+			if (!$grid.data('original-list')) {
+				let originalList = [];
+				$grid.$gridConfig.data.forEach((item) => {
+					originalList.push(item);
+				});
+				$grid.data('original-list', originalList);
+			}
+
+			$th.data("sort", "");
+			let $sort = $("<i data-sort-default class='fas fa-sort'></i>");
+			let $sortAsc = $("<i data-sort class='fas fa-sort-up' style='color:red'></i>").hide();
+			let $sortDesc = $("<i data-sort class='fas fa-sort-down' style='color:red'></i>").hide();
+
+			$th.append($sort).append($sortAsc).append($sortDesc);
+
+			$th.click(() => {
+
+				let originalList = $grid.data('original-list');
+
+				let sort = $th.data("sort");
+				$("[data-sort]", $grid.$table).hide();
+				$("[data-sort-default]", $grid.$table).show();
+				$sort.hide();
+				$("[data-sort]", $grid.$table).parent().data("sort", "");
+
+				if (sort === "") {
+					sort = "asc";
+					$sortAsc.show();
+				} else if (sort === "asc") {
+					sort = "desc";
+					$sortDesc.show();
+				} else if (sort === "desc") {
+					sort = "";
+					$sort.show();
+				}
+
+				$th.data("sort", sort);
+
+				if (sort === "asc" || sort === "desc") {
+					let sortedData = [];
+					let sortkeyArray = Array.isArray(key);
+					originalList.map((value, index) => {
+						return { index, value }
+					}).sort((a, b) => {
+						let aText = '', bText = '';
+						if (sortkeyArray) {
+							let aTextBuffer = [], bTextBuffer = [];
+							key.forEach(function(item) {
+								aTextBuffer.push(JSON.stringify(a.value[item]));
+								bTextBuffer.push(JSON.stringify(b.value[item]));
+							});
+							aText = aTextBuffer.join('');
+							bText = bTextBuffer.join('');
+						} else {
+							aText = JSON.stringify(a.value[key]);
+							bText = JSON.stringify(b.value[key]);
+						}
+						if (sort === 'desc') {
+							return aText.localeCompare(bText, 'zh-Hant-TW');
+						} else {
+							return bText.localeCompare(aText, 'zh-Hant-TW');
+						}
+					}).map((obj) => {
+						return obj.index;
+					}).forEach(function(item) {
+						sortedData.push(originalList[item]);
+					});
+					$grid.$gridConfig.data = sortedData;
+				} else {
+					$grid.$gridConfig.data = originalList;
+				}
+				$grid.renderer.tbody();
+			});
+
+
+		});
+		return this.grid(config);
 	}
 
 	pageTable() {
@@ -1183,6 +1112,93 @@ class darkspring {
 				return [str, delimiter, key, '=', val].join('');
 			}
 		}, '');
+	}
+
+	getHtmlString(obj = null) {
+		if (obj) {
+			if (typeof obj === 'string') {
+				return obj;
+			} else if (obj instanceof jQuery) {
+				return obj.get(0).outerHTML
+			} else if (obj instanceof HTMLElement) {
+				return obj.outerHTML;
+			} else {
+				return "";
+			}
+		} else {
+			return "";
+		}
+	}
+
+	tranPattern(text, item) {
+		Object.keys(item).forEach(function(k) {
+			let key = "@{" + k + "}";
+			while (text.includes(key)) {
+				text = text.replace(key, item[k]);
+			}
+			key = "@{" + k + ":date}";
+			while (text.includes(key)) {
+				let dateTime = ('' + item[k]).trim();
+				let replacement = dateTime;
+				if (dateTime.length == 14) {
+					let t = [];
+					t.push(dateTime.substring(0, 4));
+					t.push('/');
+					t.push(dateTime.substring(4, 6));
+					t.push('/');
+					t.push(dateTime.substring(6, 8));
+					t.push(' ');
+					t.push(dateTime.substring(8, 10));
+					t.push(':');
+					t.push(dateTime.substring(10, 12));
+					t.push(':');
+					t.push(dateTime.substring(12, 14));
+					replacement = t.join('');
+				} else if (dateTime.length == 8) {
+					let t = [];
+					t.push(dateTime.substring(0, 4));
+					t.push('/');
+					t.push(dateTime.substring(4, 6));
+					t.push('/');
+					t.push(dateTime.substring(6, 8));
+					t.push(' ');
+					t.push(dateTime.substring(8, 10));
+					t.push(':');
+					t.push(dateTime.substring(10, 12));
+					t.push(':');
+					t.push(dateTime.substring(12, 14));
+					replacement = t.join('');
+				}
+				text = text.replace(key, replacement);
+			}
+
+			key = "@{" + k + ":time}";
+			while (text.includes(key)) {
+				let dateTime = ('' + item[k]).trim();
+				let replacement = dateTime;
+				if (dateTime.length == 6) {
+					let t = [];
+					t.push(dateTime.substring(0, 2));
+					t.push(':');
+					t.push(dateTime.substring(2, 4));
+					t.push(':');
+					t.push(dateTime.substring(4, 6));
+					replacement = t.join('');
+				} else if (dateTime.length == 9) {
+					let t = [];
+					t.push(dateTime.substring(0, 2));
+					t.push(':');
+					t.push(dateTime.substring(2, 4));
+					t.push(':');
+					t.push(dateTime.substring(4, 6));
+					t.push('.');
+					t.push(dateTime.substring(6, 9));
+					replacement = t.join('');
+				}
+				text = text.replace(key, replacement);
+			}
+		});
+		return text;
 	}
 
 }

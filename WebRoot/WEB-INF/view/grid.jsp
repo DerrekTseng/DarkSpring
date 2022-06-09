@@ -47,14 +47,17 @@ $(document).ready(function(){
 	});
 	
 	$('#table-btn').click(() =>{
+		$('#table-show').show();
 		renderTable();
 	});
 	
 	$('#pageTable-btn').click(() =>{
+		$('#table-show').show();
 		renderPageTable();
 	});
 	
 	$('#fetchTable-btn').click(() =>{
+		$('#table-show').show();
 		renderFetchTable();
 	});
 });
@@ -157,20 +160,23 @@ function renderFetchTable(){
 	</div>
 	
 	<div class="container-fluid pt-4 px-4">
-		<div class="row bg-secondary rounded mx-0">
+		<div class="row bg-secondary rounded mx-0 p-2">
 		  	<div class="col-sm-4 text-center">
-		  		<button id="table-btn" type="button" class="btn btn-primary m-2">Table</button>
+		  		<input type="radio" class="btn-check" name="table" id="table-btn" autocomplete="off">
+		  		<label class="btn btn-outline-primary" for="table-btn">Table</label>
 		  	</div>
 		  	<div class="col-sm-4 text-center">
-		  		<button id="pageTable-btn" type="button" class="btn btn-primary m-2">PageTable</button>
+		  		<input type="radio" class="btn-check" name="table" id="pageTable-btn" autocomplete="off">
+		  		<label class="btn btn-outline-primary" for="pageTable-btn">Page Table</label>
 		  	</div>
 		  	<div class="col-sm-4 text-center">
-		  		<button id="fetchTable-btn" type="button" class="btn btn-primary m-2">FetchTable</button>
+		  		<input type="radio" class="btn-check" name="table" id="fetchTable-btn" autocomplete="off">
+		  		<label class="btn btn-outline-primary" for="fetchTable-btn">Fetch Table</label>
 		  	</div>
 		</div>
 	</div>
 	 
-	<div class="container-fluid pt-4 px-4">
+	<div id="table-show" class="container-fluid pt-4 px-4" style="display: none">
 		<div class="row bg-secondary rounded mx-0">
 			<div class="table-responsive">
 				<table id="table" class="table"></table>

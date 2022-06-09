@@ -8,6 +8,8 @@
 <script src="<c:url value='/resource/lib/tempusdominus/js/moment.min.js' />"></script>
 <script src="<c:url value='/resource/lib/tempusdominus/js/moment-timezone.min.js' />"></script>
 <script src="<c:url value='/resource/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js' />"></script>
+<script src="<c:url value='/resource/lib/css-element-queries/ElementQueries.js' />"></script>
+<script src="<c:url value='/resource/lib/css-element-queries/ResizeSensor.js' />"></script>
 
 <%-- Template Javascript --%>
 <script src="<c:url value='/resource/js/main.js' />"></script>

@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -135,22 +137,40 @@ public class DarkController {
 
 	@ResponseBody
 	@PostMapping("getTableData")
-	public FetchTable getTableData(Integer pageNum, Integer pageSize) {
+	public FetchTable getTableData(Integer pageNum, Integer pageSize, String orderby) throws InterruptedException {
 		FetchTable fetchTable = new FetchTable();
 		if (pageNum != null && pageSize != null) {
+			Thread.sleep(100);
 			if (pageNum < 1) {
 				pageNum = 1;
 			}
 			fetchTable.setPageNum(pageNum);
 			fetchTable.setPageSize(pageSize);
 			fetchTable.setTotalSize(tableData.size());
-			List<List<Map<String, String>>> partition = ListUtils.partition(tableData, pageSize);
+
+			List<Map<String, String>> copy = tableData.stream().collect(Collectors.toList());
+
+			if (StringUtils.isNoneBlank(orderby)) {
+				String key = orderby.split(" ")[0];
+				String dir = orderby.split(" ")[1];
+				copy.sort((m1, m2) -> {
+					String v1 = m1.get(key);
+					String v2 = m2.get(key);
+					if (dir.equals("asc")) {
+						return v1.compareTo(v2);
+					} else {
+						return v2.compareTo(v1);
+					}
+				});
+			}
+
+			List<List<Map<String, String>>> partition = ListUtils.partition(copy, pageSize);
 			if (partition.size() < pageNum) {
 				fetchTable.setData(new ArrayList<>());
 			} else {
 				fetchTable.setData(partition.get(pageNum - 1));
 			}
-
+			System.out.println(orderby);
 		} else {
 			fetchTable.setData(tableData);
 		}

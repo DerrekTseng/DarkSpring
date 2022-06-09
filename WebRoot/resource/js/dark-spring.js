@@ -44,8 +44,11 @@ class darkspring {
 		let beforeSend = option.beforeSend || null;
 		let success = option.success || null;
 		let error = option.error || null;
+		let spinner = option.spinner === false ? false : true;
 
-		$this.spinner(true);
+		if (spinner) {
+			$this.spinner(true);
+		}
 
 		$.ajax({
 			url: url,
@@ -58,7 +61,9 @@ class darkspring {
 					if (beforeSend(jqXHR, settings)) {
 						return true;
 					} else {
-						$this.spinner(false);
+						if (spinner) {
+							$this.spinner(false);
+						}
 						return false;
 					}
 				} else {
@@ -71,7 +76,9 @@ class darkspring {
 						success(res);
 					}
 				} finally {
-					$this.spinner(false);
+					if (spinner) {
+						$this.spinner(false);
+					}
 				}
 			},
 			error: function(err) {
@@ -80,7 +87,9 @@ class darkspring {
 						error(err);
 					}
 				} finally {
-					$this.spinner(false);
+					if (spinner) {
+						$this.spinner(false);
+					}
 				}
 			}
 		});
@@ -163,7 +172,7 @@ class darkspring {
 			let width = option.width || "300px";
 			let height = option.height || "200px";
 
-			let shader = option.shader === true ? true : false;
+			let shadow = option.shadow === true ? true : false;
 			let resize = option.resize === true ? true : false;
 			let maximize = option.maximize === true ? true : false;
 			let minimize = option.minimize === true ? true : false;
@@ -171,7 +180,7 @@ class darkspring {
 			let callback = option.callback || null;
 
 			let $dialogComponent = $this.getIndexTemplate("[data-index-template-dialog-component]");
-			let $shader = $("[data-index-template-shader]", $dialogComponent);
+			let $shadow = $("[data-index-template-shadow]", $dialogComponent);
 			let $dialog = $("[data-index-template-dialog]", $dialogComponent);
 			let $contentContainer = $(".dark-spring-dialog-content", $dialog);
 
@@ -205,8 +214,8 @@ class darkspring {
 				$contentContainer.append($content);
 			}
 
-			if (!shader) {
-				$shader.remove();
+			if (!shadow) {
+				$shadow.remove();
 			}
 
 			if (resize) {
@@ -661,7 +670,7 @@ class darkspring {
 			title: title,
 			width: width,
 			height: height,
-			shader: true,
+			shadow: true,
 			resize: true,
 			maximize: false,
 			minimize: false,
@@ -696,7 +705,7 @@ class darkspring {
 			title: title,
 			width: width,
 			height: height,
-			shader: true,
+			shadow: true,
 			resize: true,
 			maximize: false,
 			minimize: false,
@@ -733,7 +742,7 @@ class darkspring {
 		let width = option.width;
 		let height = option.height;
 		let callback = option.callback;
-		let shader = option.shader === false ? false : true;
+		let shadow = option.shadow === false ? false : true;
 		let resize = option.resize === false ? false : true;
 		let maximize = option.maximize === false ? false : true;
 		let minimize = option.minimize === false ? false : true;
@@ -743,7 +752,7 @@ class darkspring {
 			title: title,
 			width: width,
 			height: height,
-			shader: shader,
+			shadow: shadow,
 			resize: resize,
 			maximize: maximize,
 			minimize: minimize,
@@ -851,6 +860,23 @@ class darkspring {
 
 				$this.$table = $this.$gridConfig.table;
 				$this.$title = $("<caption align='top' class='container-fluid'>");
+				$this.$spinner = DarkSpring.getIndexTemplate("[data-index-template-table-spinner]");
+				$this.$title.append($this.$spinner);
+
+				new ResizeSensor($this.$table.parent(), () => {
+					let x = $this.$table[0].offsetLeft;
+					let y = $this.$table[0].offsetTop;
+					let width = $this.$table.width();
+					let height = $this.$table.height();
+					$this.$spinner.css({
+						position: "absolute",
+						width: width,
+						height: height,
+						top: y + "px",
+						left: x + "px",
+					})
+				});
+
 				$this.$thead = $('<thead>');
 				$this.$tbody = $('<tbody>');
 
@@ -887,36 +913,49 @@ class darkspring {
 				};
 
 				$this.renderer.tbody = () => {
-					$this.$tbody.empty();
-					let list = [];
-					if ($this.$gridConfig.pager.enabled) {
-						list = $this.$gridConfig.pager.feed($this);
-						$this.renderer.pagerUpdate();
-					} else {
-						list = $this.$gridConfig.data;
-					}
-					list.forEach((listItem) => {
-						let $trs = [];
-						$this.$gridConfig.tbody.meta.forEach((meta) => {
-							let $tr = $('<tr>');
-							meta.forEach((item) => {
-								let $td = $('<td>');
-								$td.html(DarkSpring.tranPattern(DarkSpring.getHtmlString(item.content), listItem));
-								if (typeof item.attrs === "object") {
-									Object.keys(item.attrs).forEach((key) => {
-										$td.attr(key, item.attrs[key]);
-									});
-								}
-								$td.data("data", listItem);
-								$tr.append($td);
+
+					$this.spinner(true);
+
+					let tbodyListCallbackComplated = () => {
+						$this.spinner(false);
+					};
+
+					let tbodyListCallback = (list) => {
+						$this.$tbody.empty();
+						list.forEach((listItem) => {
+							let $trs = [];
+							$this.$gridConfig.tbody.meta.forEach((meta) => {
+								let $tr = $('<tr>');
+								meta.forEach((item) => {
+									let $td = $('<td>');
+									$td.html(DarkSpring.tranPattern(DarkSpring.getHtmlString(item.content), listItem));
+									if (typeof item.attrs === "object") {
+										Object.keys(item.attrs).forEach((key) => {
+											$td.attr(key, item.attrs[key]);
+										});
+									}
+									$td.data("data", listItem);
+									$tr.append($td);
+								});
+								$trs.push($tr);
+								$this.$tbody.append($tr);
 							});
-							$trs.push($tr);
-							$this.$tbody.append($tr);
+							if (typeof $this.$gridConfig.tbody.rendered === "function") {
+								$this.$gridConfig.tbody.rendered($trs);
+							}
 						});
-						if (typeof $this.$gridConfig.tbody.rendered === "function") {
-							$this.$gridConfig.tbody.rendered($trs);
-						}
-					});
+
+						tbodyListCallbackComplated();
+					};
+					if ($this.$gridConfig.pager.enabled) {
+						tbodyListCallbackComplated = () => {
+							$this.spinner(false);
+							$this.renderer.pagerUpdate();
+						};
+						$this.$gridConfig.pager.feed($this, tbodyListCallback);
+					} else {
+						tbodyListCallback($this.$gridConfig.data);
+					}
 				}
 
 				$this.renderer.pagerUpdate = () => {
@@ -925,7 +964,7 @@ class darkspring {
 					let totalSize = $this.$gridConfig.pager.totalSize;
 					let pageCount = Math.ceil(totalSize / pageSize);
 					$this.$gridConfig.pager.pageCount = pageCount;
-					
+
 					$("[data-pager-num]", $this.$pager).empty();
 
 					for (let count = 0; count < pageCount; count++) {
@@ -1000,6 +1039,32 @@ class darkspring {
 				$this.renderer.thead();
 				$this.renderer.tbody();
 
+			}
+
+			spinner(show) {
+
+				let $this = this;
+
+				if (show) {
+					let x = $this.$table[0].offsetLeft;
+					let y = $this.$table[0].offsetTop;
+					let width = $this.$table.width();
+					let height = $this.$table.height();
+					$this.$spinner.css({
+						position: "absolute",
+						width: width,
+						height: height,
+						top: y + "px",
+						left: x + "px",
+					})
+					$this.$spinner.addClass("show");
+					$this.$spinner.show();
+					$this.$spinner.appendTo($this.$title);
+				} else {
+					$this.$spinner.removeClass("show");
+					$this.$spinner.hide();
+					$this.$spinner.detach();
+				}
 			}
 
 			data(key, value) {
@@ -1155,22 +1220,21 @@ class darkspring {
 		config.pager.pageSize = pageSize;
 		config.pager.totalSize = data.length;
 
-		config.setPagerFeed(($grid) => {
+		config.setPagerFeed(($grid, callback) => {
 
 			let pageNum = $grid.$gridConfig.pager.pageNum;
 			let pageSize = $grid.$gridConfig.pager.pageSize;
 			let totalSize = $grid.$gridConfig.pager.totalSize;
 
 			let sliceStart = (pageNum - 1) * pageSize;
-			let sliceEnd = sliceStart + pageSize - 1;
+			let sliceEnd = sliceStart + pageSize;
 			if (sliceEnd > totalSize - 1) {
 				sliceEnd = totalSize;
 			}
-
-			return $grid.$gridConfig.data.slice(sliceStart, sliceEnd);
+			callback($grid.$gridConfig.data.slice(sliceStart, sliceEnd));
 		});
 
-		return this.grid(config);
+		return this.grid(config);;
 	}
 
 	fetchTable(option = {}) {
@@ -1242,12 +1306,14 @@ class darkspring {
 
 				let orderbys = [];
 
-				if (Array.isArray(key)) {
-					key.forEach((k) => {
-						orderbys.push(k + " " + sort);
-					});
-				} else {
-					orderbys.push(key + " " + sort);
+				if (sort) {
+					if (Array.isArray(key)) {
+						key.forEach((k) => {
+							orderbys.push(k + " " + sort);
+						});
+					} else {
+						orderbys.push(key + " " + sort);
+					}
 				}
 
 				$grid.data("orderby", orderbys.join(","));
@@ -1256,35 +1322,33 @@ class darkspring {
 			});
 		});
 
-		config.setPagerFeed(($grid) => {
+		config.setPagerFeed(($grid, callback) => {
 
 			let pageNum = $grid.$gridConfig.pager.pageNum;
 			let pageSize = $grid.$gridConfig.pager.pageSize;
 
 			let orderby = $grid.data("orderby");
 
-			let resultData = [];
 			let url = $grid.$gridConfig.fetch.url;
 			let parameter = $.extend({}, $grid.$gridConfig.fetch.parameter, {
 				pageNum: pageNum,
 				pageSize: pageSize,
 				orderby: orderby
 			});
-			
+
 			DarkSpring.doPost({
-				url : url,
-				data : parameter,
-				async : false,
-				success : (result) => {
+				url: url,
+				data: parameter,
+				spinner: false,
+				success: (result) => {
 					$grid.$gridConfig.pager.pageNum = result.pageNum;
 					$grid.$gridConfig.pager.pageSize = result.pageSize;
 					$grid.$gridConfig.pager.totalSize = result.totalSize;
-					resultData = result.data;
+					callback(result.data);
 				}
 			})
 
 
-			return resultData;
 		});
 
 		return this.grid(config);

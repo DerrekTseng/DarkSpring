@@ -15,7 +15,7 @@
 	word-break: break-all;
 }
 
-.dark-spring-shader {
+.dark-spring-shadow {
 	background: white;
 	opacity: 0.2;
 	width: 100vw;
@@ -191,7 +191,7 @@
     
     <%-- dialog --%>
     <div data-index-template-dialog-component>
-    	<div data-index-template-shader class="dark-spring-shader"></div>
+    	<div data-index-template-shadow class="dark-spring-shadow"></div>
     	<div data-index-template-dialog class="bg-secondary rounded dark-spring-dialog">
 			<div class="dark-spring-dialog-header">
 				<div class="dark-spring-dialog-header-title none-select moveable">
@@ -302,8 +302,13 @@
 		     
 		    </div>
 	    </div>
-	   
-	    
+    </div>
+    
+    <%-- table spinner --%>
+    <div data-index-template-table-spinner style="z-index: 2147483647; opacity: 0.5" class="bg-dark d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
     </div>
     
 

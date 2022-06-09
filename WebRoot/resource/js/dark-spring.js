@@ -850,11 +850,12 @@ class darkspring {
 				$this._data = new Map();
 
 				$this.$table = $this.$gridConfig.table;
+				$this.$title = $("<caption align='top' class='container-fluid'>");
 				$this.$thead = $('<thead>');
 				$this.$tbody = $('<tbody>');
 
 				$this.$table.empty();
-
+				$this.$table.append($this.$title);
 				$this.$table.append($this.$thead);
 				$this.$table.append($this.$tbody);
 
@@ -887,12 +888,13 @@ class darkspring {
 
 				$this.renderer.tbody = () => {
 					$this.$tbody.empty();
+					let list = [];
 					if ($this.$gridConfig.pager.enabled) {
-						$this.list = $this.$gridConfig.pager.feed($this);
+						list = $this.$gridConfig.pager.feed($this);
 					} else {
-						$this.list = $this.$gridConfig.data;
+						list = $this.$gridConfig.data;
 					}
-					$this.list.forEach((listItem) => {
+					list.forEach((listItem) => {
 						let $trs = [];
 						$this.$gridConfig.tbody.meta.forEach((meta) => {
 							let $tr = $('<tr>');
@@ -915,14 +917,40 @@ class darkspring {
 						}
 					});
 				}
-				
+
 				$this.renderer.pager = () => {
 					let $pager = DarkSpring.getIndexTemplate("[data-index-template-table-pager]");
 					$this.$pager.append($pager);
+
+					$("[data-pager-first]", $pager).click(() => {
+						$this.$gridConfig.pager.pageNum = 1;
+						$this.renderer.tbody();
+					});
+
+					$("[data-pager-previous]", $pager).click(() => {
+						$this.$gridConfig.pager.pageNum--;
+						$this.renderer.tbody();
+					});
+
+					$("[data-pager-next]", $pager).click(() => {
+						$this.$gridConfig.pager.pageNum++;
+						$this.renderer.tbody();
+					});
+
+					$("[data-pager-last]", $pager).click(() => {
+						$this.$gridConfig.pager.pageNum = $this.$gridConfig.pager.pageCount;
+						$this.renderer.tbody();
+					});
+
+					$("[data-pager-num]", $pager).change(() => {
+						$this.$gridConfig.pager.pageNum = $("[data-pager-num]", $pager).val();
+						$this.renderer.tbody();
+					});
+
 				}
-				
+
 				if ($this.$gridConfig.pager.enabled) {
-					$this.$pager = $("<caption class='container-fluid'>");
+					$this.$pager = $("<caption align='bottom' class='container-fluid'>");
 					let $pager = $this.$pager;
 					$this.$table.append($pager);
 					$this.renderer.pager();
@@ -1084,9 +1112,54 @@ class darkspring {
 
 		config.pager.pageNum = pageNum;
 		config.pager.pageSize = pageSize;
+		config.pager.pageCount = Math.ceil(data.length / pageSize);
 
 		config.setPagerFeed(($grid) => {
-			return $grid.$gridConfig.data;
+
+			let pageNum = $grid.$gridConfig.pager.pageNum;
+			let pageSize = $grid.$gridConfig.pager.pageSize;
+			let totalSize = $grid.$gridConfig.data.length;
+
+			let sliceStart = (pageNum - 1) * pageSize;
+			let sliceEnd = sliceStart + pageSize - 1;
+			if (sliceEnd > totalSize - 1) {
+				sliceEnd = totalSize;
+			}
+
+			let pageCount = Math.ceil(totalSize / pageSize);
+
+			$("[data-pager-num]", $grid.$pager).empty();
+
+			for (let count = 0; count < pageCount; count++) {
+				let pc = count + 1;
+				$("[data-pager-num]", $grid.$pager).append("<option value='" + pc + "'>" + pc + "</option>");
+			}
+
+			$("[data-pager-num]", $grid.$pager).val(pageNum);
+
+			if (pageNum <= 1) {
+				$("[data-pager-first]", $grid.$pager).attr('disabled', true);
+				$("[data-pager-previous]", $grid.$pager).attr('disabled', true);
+			} else {
+				$("[data-pager-first]", $grid.$pager).attr('disabled', false);
+				$("[data-pager-previous]", $grid.$pager).attr('disabled', false);
+			}
+
+			if (pageNum >= pageCount) {
+				$("[data-pager-next]", $grid.$pager).attr('disabled', true);
+				$("[data-pager-last]", $grid.$pager).attr('disabled', true);
+			} else {
+				$("[data-pager-next]", $grid.$pager).attr('disabled', false);
+				$("[data-pager-last]", $grid.$pager).attr('disabled', false);
+			}
+
+			if (pageCount <= 1) {
+				$("[data-pager-num]", $grid.$pager).attr('disabled', true);
+			} else {
+				$("[data-pager-num]", $grid.$pager).attr('disabled', false);
+			}
+
+			return $grid.$gridConfig.data.slice(sliceStart, sliceEnd);
 		});
 
 		return this.grid(config);

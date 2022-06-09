@@ -1,9 +1,19 @@
 package com.darkspring.web.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.darkspring.core.component.FetchTable;
 
 @Controller
 @RequestMapping
@@ -104,11 +114,47 @@ public class DarkController {
 		ModelAndView view = new ModelAndView("dialog");
 		return view;
 	}
-	
+
 	@GetMapping("dialog-window")
 	public ModelAndView dialogWindow() {
 		ModelAndView view = new ModelAndView("dialog-window");
 		return view;
+	}
+
+	private static final List<Map<String, String>> tableData = new ArrayList<>();
+
+	static {
+		for (int i = 0; i < 107; i++) {
+			Map<String, String> data = new HashMap<>();
+			data.put("data_1", "A" + i);
+			data.put("data_2", "B" + i);
+			data.put("data_3", "C" + i);
+			tableData.add(data);
+		}
+	}
+
+	@ResponseBody
+	@PostMapping("getTableData")
+	public FetchTable getTableData(Integer pageNum, Integer pageSize) {
+		FetchTable fetchTable = new FetchTable();
+		if (pageNum != null && pageSize != null) {
+			if (pageNum < 1) {
+				pageNum = 1;
+			}
+			fetchTable.setPageNum(pageNum);
+			fetchTable.setPageSize(pageSize);
+			fetchTable.setTotalSize(tableData.size());
+			List<List<Map<String, String>>> partition = ListUtils.partition(tableData, pageSize);
+			if (partition.size() < pageNum) {
+				fetchTable.setData(new ArrayList<>());
+			} else {
+				fetchTable.setData(partition.get(pageNum - 1));
+			}
+
+		} else {
+			fetchTable.setData(tableData);
+		}
+		return fetchTable;
 	}
 
 }

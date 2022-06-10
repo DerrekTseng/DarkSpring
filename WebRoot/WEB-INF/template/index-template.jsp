@@ -71,72 +71,76 @@
 	opacity: 0.1;
 }
 
+:root {
+  --resizer-gap: 16px;
+}
+
 .dark-spring-dialog-resize-top {
 	position: absolute;
 	width: 100%;
-	height: 16px;
-	top: -16px;
+	height: var(--resizer-gap);
+	top: calc( 0px - var(--resizer-gap) );
 	left: 0px;
 }
 
 .dark-spring-dialog-resize-right {
 	position: absolute;
-	width: 16px;
+	width: var(--resizer-gap);
 	height: 100%;
 	top: 0px;
-	right: -16px;
+	right: calc( 0px - var(--resizer-gap) );
 }
 
 .dark-spring-dialog-resize-left {
 	position: absolute;
-	width: 16px;
+	width: var(--resizer-gap);
 	height: 100%;
 	top: 0px;
-	left: -16px;
+	left: calc( 0px - var(--resizer-gap) );
 }
 
 .dark-spring-dialog-resize-bottom {
 	position: absolute;
 	width: 100%;
-	height: 16px;
-	bottom: -16px;
+	height: var(--resizer-gap);
+	bottom: calc( 0px - var(--resizer-gap) );
 	left: 0px;
 }
 
 .dark-spring-dialog-resize-top-right {
 	position: absolute;
-	width: 16px;
-	height: 16px;
-	top: -16px;
-	right: -16px;
-	border-radius: 0px 16px 0px 0px;
+	width: var(--resizer-gap);
+	height: var(--resizer-gap);
+	top: calc( 0px - var(--resizer-gap) );
+	right: calc( 0px - var(--resizer-gap) );
+	border-radius: 0px var(--resizer-gap) 0px 0px;
 }
 
 .dark-spring-dialog-resize-top-left {
 	position: absolute;
-	width: 16px;
-	height: 16px;
-	top: -16px;
-	left: -16px;
-	border-radius: 16px 0px 0px 0px;
+	width: var(--resizer-gap);
+	height: var(--resizer-gap);
+	top: calc( 0px - var(--resizer-gap) );
+	left: calc( 0px - var(--resizer-gap) );
+	border-radius: var(--resizer-gap) 0px 0px 0px;
 }
 
 .dark-spring-dialog-resize-bottom-right {
 	position: absolute;
-	width: 16px;
-	height: 16px;
-	bottom: -16px;
-	right: -16px;
-	border-radius: 0px 0px 16px 0px;
+	width: var(--resizer-gap);
+	height: var(--resizer-gap);
+	bottom: calc( 0px - var(--resizer-gap) );
+	right: calc( 0px - var(--resizer-gap) );
+	border-radius: 0px 0px var(--resizer-gap) 0px;
 }
 
 .dark-spring-dialog-resize-bottom-left {
 	position: absolute;
-	width: 16px;
-	height: 16px;
-	bottom: -16px;
-	left: -16px;
-	border-radius: 0px 0px 0px 16px;
+	width: var(--resizer-gap);
+	height: var(--resizer-gap);
+	bottom: calc( 0px - var(--resizer-gap) );
+	left: calc( 0px - var(--resizer-gap) );
+	border-radius: 0px 0px 0px var(--resizer-gap);
 }
 
 .dark-spring-dialog-resize-top:hover {

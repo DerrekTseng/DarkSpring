@@ -239,7 +239,9 @@ class darkspring {
 							$(top).unbind('touchmove');
 						} else {
 							$(top).unbind('mousemove');
-							$resizers.unbind('mouseleave');
+							//$(top).unbind('mouseleave');
+							//$resizers.unbind('mouseleave');
+							$(window).unbind('mouseup');
 							$resizers.unbind('mouseup');
 						}
 						$contentContainer.show();
@@ -337,11 +339,22 @@ class darkspring {
 							});
 
 						} else {
+							/*
 							$resizer.mouseleave((e) => {
 								e.preventDefault();
 								releaseEvent();
 							});
-
+							$(top).mouseleave((e) => {
+								e.preventDefault();
+								releaseEvent();
+							});
+							*/
+							
+							$(window).mouseup((e) => {
+								e.preventDefault();
+								releaseEvent();
+							});
+							
 							$resizer.mouseup((e) => {
 								e.preventDefault();
 								releaseEvent();
@@ -486,7 +499,9 @@ class darkspring {
 					let $header = $(".dark-spring-dialog-header-title", $dialog);
 
 					function resolveMoving(mousemoveX, mousemoveY) {
-
+						
+						$contentContainer.hide();
+						
 						let gapX = mousemoveX - $dialog.data('mousedownX');
 						let gapY = mousemoveY - $dialog.data('mousedownY');
 
@@ -540,12 +555,19 @@ class darkspring {
 							});
 
 						} else {
-
+							
+							/*
 							$header.mouseleave((e) => {
 								e.preventDefault();
 								releaseEvent();
 							});
-
+							*/
+							
+							$(window).mouseup((e) => {
+								e.preventDefault();
+								releaseEvent();
+							});
+							
 							$header.mouseup((e) => {
 								e.preventDefault();
 								releaseEvent();
@@ -565,13 +587,16 @@ class darkspring {
 					}
 
 					function releaseEvent() {
-
+						
+						$contentContainer.show();
+						
 						if ($this.isMobileDevice()) {
 							$(top).unbind('touchend');
 							$(top).unbind('touchmove');
 						} else {
 							$(top).unbind('mousemove');
-							$header.unbind('mouseleave');
+							//$header.unbind('mouseleave');
+							$(window).unbind('mouseup');
 							$header.unbind('mouseup');
 						}
 

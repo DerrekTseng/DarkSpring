@@ -273,41 +273,28 @@ class darkspring {
 						let contentWidth = $dialog.data('contentWidth') + 6;
 						let contentHeight = $dialog.data('contentHeight') + 6;
 
-						switch (name) {
-							case 'Top':
-								contentY += gapY;
-								contentHeight -= gapY;
-								break;
-							case 'Right':
-								contentWidth += gapX;
-								break;
-							case 'Left':
-								contentX += gapX;
-								contentWidth -= gapX;
-								break;
-							case 'Bottom':
-								contentHeight += gapY;
-								break;
-							case 'TopRight':
-								contentY += gapY;
-								contentHeight -= gapY;
-								contentWidth += gapX;
-								break;
-							case 'TopLeft':
-								contentY += gapY;
-								contentHeight -= gapY;
-								contentX += gapX;
-								contentWidth -= gapX;
-								break;
-							case 'BottomRight':
-								contentHeight += gapY;
-								contentWidth += gapX;
-								break;
-							case 'BottomLeft':
-								contentHeight += gapY;
-								contentX += gapX;
-								contentWidth -= gapX;
-								break;
+						let contentMinWidth = parseInt($dialog.css("min-width"));
+						let contentMinHeight = parseInt($dialog.css("min-height"));
+
+						if (name.includes("Top")) {
+							if (contentHeight - gapY < contentMinHeight) {
+								gapY = contentHeight - contentMinHeight;
+							}
+							contentY += gapY;
+							contentHeight -= gapY;
+						}
+						if (name.includes("Right")) {
+							contentWidth += gapX;
+						}
+						if (name.includes("Left")) {
+							if (contentWidth - gapX < contentMinWidth) {
+								gapX = contentWidth - contentMinWidth;
+							}
+							contentX += gapX;
+							contentWidth -= gapX;
+						}
+						if (name.includes("Bottom")) {
+							contentHeight += gapY;
 						}
 
 						let topWidth = $(top).width();

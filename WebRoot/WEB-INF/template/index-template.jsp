@@ -47,7 +47,7 @@
 	white-space: nowrap;
 	text-align: center;
 	overflow: hidden;
-	min-width: 100px;
+	min-width: 96px;
 	display: inline-block;
     vertical-align: middle;
     padding-left: 6px;

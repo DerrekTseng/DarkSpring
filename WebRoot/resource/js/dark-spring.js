@@ -239,8 +239,6 @@ class darkspring {
 							$(top).unbind('touchmove');
 						} else {
 							$(top).unbind('mousemove');
-							//$(top).unbind('mouseleave');
-							//$resizers.unbind('mouseleave');
 							$(window).unbind('mouseup');
 							$resizers.unbind('mouseup');
 						}
@@ -312,13 +310,24 @@ class darkspring {
 								break;
 						}
 
-						$dialog.css({
-							top: contentY + "px",
-							left: contentX + "px",
-							width: contentWidth + "px",
-							height: contentHeight + "px",
-							margin: ''
-						});
+						let topWidth = $(top).width();
+						let topHeight = $(top).height();
+
+						if (contentX + contentWidth < topWidth && contentX > 0) {
+							$dialog.css({
+								left: contentX + "px",
+								width: contentWidth + "px",
+								margin: ''
+							});
+						}
+
+						if (contentY + contentHeight < topHeight && contentY > 0) {
+							$dialog.css({
+								top: contentY + "px",
+								height: contentHeight + "px",
+								margin: ''
+							});
+						}
 
 					}
 
@@ -339,22 +348,12 @@ class darkspring {
 							});
 
 						} else {
-							/*
-							$resizer.mouseleave((e) => {
-								e.preventDefault();
-								releaseEvent();
-							});
-							$(top).mouseleave((e) => {
-								e.preventDefault();
-								releaseEvent();
-							});
-							*/
-							
+
 							$(window).mouseup((e) => {
 								e.preventDefault();
 								releaseEvent();
 							});
-							
+
 							$resizer.mouseup((e) => {
 								e.preventDefault();
 								releaseEvent();
@@ -449,15 +448,21 @@ class darkspring {
 					$maximize.show();
 					$contentContainer.hide();
 
+					let topWidth = $(top).width();
+					let topHeight = $(top).height();
+
+					let newWidth = parseInt(width) > topWidth ? topWidth + "px" : width;
+					let newHeight = parseInt(height) > topHeight ? topHeight + "px" : height;
+
 					$dialog.animate({
-						width: width,
-						height: height,
+						width: newWidth,
+						height: newHeight,
 						inset: '0px',
 						margin: $this.marginString(
-							($(top).height() / 2 - parseInt(height) / 2) + "px",
-							($(top).width() / 2 - parseInt(width) / 2) + "px",
-							($(top).height() / 2 - parseInt(height) / 2) + "px",
-							($(top).width() / 2 - parseInt(width) / 2) + "px"
+							($(top).height() / 2 - parseInt(newHeight) / 2) + "px",
+							($(top).width() / 2 - parseInt(newWidth) / 2) + "px",
+							($(top).height() / 2 - parseInt(newHeight) / 2) + "px",
+							($(top).width() / 2 - parseInt(newWidth) / 2) + "px"
 						)
 					}, 500, () => {
 						$contentContainer.show();
@@ -499,9 +504,9 @@ class darkspring {
 					let $header = $(".dark-spring-dialog-header-title", $dialog);
 
 					function resolveMoving(mousemoveX, mousemoveY) {
-						
+
 						$contentContainer.hide();
-						
+
 						let gapX = mousemoveX - $dialog.data('mousedownX');
 						let gapY = mousemoveY - $dialog.data('mousedownY');
 
@@ -555,19 +560,12 @@ class darkspring {
 							});
 
 						} else {
-							
-							/*
-							$header.mouseleave((e) => {
-								e.preventDefault();
-								releaseEvent();
-							});
-							*/
-							
+
 							$(window).mouseup((e) => {
 								e.preventDefault();
 								releaseEvent();
 							});
-							
+
 							$header.mouseup((e) => {
 								e.preventDefault();
 								releaseEvent();
@@ -587,15 +585,14 @@ class darkspring {
 					}
 
 					function releaseEvent() {
-						
+
 						$contentContainer.show();
-						
+
 						if ($this.isMobileDevice()) {
 							$(top).unbind('touchend');
 							$(top).unbind('touchmove');
 						} else {
 							$(top).unbind('mousemove');
-							//$header.unbind('mouseleave');
 							$(window).unbind('mouseup');
 							$header.unbind('mouseup');
 						}

@@ -190,8 +190,8 @@ function registerIndexWindowEvent(){
 	
 	$(window).resize(() => {
 		
-		let windowWidth = $(window).width();
-		let windowHeight = $(window).height();
+		let topWidth = $(top).width();
+		let topHeight = $(top).height();
 		
 		$('[data-index-template-dialog]', '#top-object-container').each((_index, dialog) => {
 			
@@ -202,13 +202,32 @@ function registerIndexWindowEvent(){
 			let dialogWidth = $dialog.width();
 			let dialogHeight = $dialog.height();
 			
-			if(dialogX < 0 || dialogY < 0 || dialogX + dialogWidth > windowWidth || dialogY + dialogHeight > windowHeight) {
+			if(dialogX < 0 || dialogY < 0 || dialogX + dialogWidth > topWidth || dialogY + dialogHeight > topHeight) {
 				
-				let dialogDefaultWidth = $dialog.data("defaultWidth");;
-				let dialogDefaultHeight = $dialog.data("defaultHeight");
+				let dialogDefaultWidth = parseInt($dialog.data("defaultWidth"));
+				let dialogDefaultHeight = parseInt($dialog.data("defaultHeight"));
 				
-				let widthGap = ( windowWidth / 2 - parseInt(dialogDefaultWidth) / 2 ) + "px";
-				let heightGap = ( windowHeight / 2 - parseInt(dialogDefaultHeight) / 2 ) + "px";
+				if(dialogDefaultWidth > topWidth){
+					dialogDefaultWidth = topWidth;
+				}
+				
+				if(dialogDefaultHeight > topHeight){
+					dialogDefaultHeight = topHeight;
+				}
+				
+				let widthGap = ( topWidth / 2 - dialogDefaultWidth / 2 );
+				let heightGap = ( topHeight / 2 - dialogDefaultHeight / 2 );
+				
+				if(widthGap < 0){
+					widthGap = 0;
+				}
+				
+				if(heightGap < 0){
+					heightGap = 0;
+				}
+				
+				widthGap += "px";
+				heightGap += "px";
 				
 				$dialog.css({
 					width : dialogDefaultWidth,

@@ -31,7 +31,8 @@
 	inset: 0px;
 	z-index: 2147483647;
 	border-color: red;
-	border-style: groove;
+	border-style: outset;
+	border-width: 6px;
 	min-width: 200px;
 	min-height: 100px;
 }
@@ -39,7 +40,7 @@
 .dark-spring-dialog-header {
 	width: 100%;
 	border-bottom-color: red;
-	border-bottom-style: groove;
+	border-bottom-style: ridge;
 	min-height: 32px;
 }
 
@@ -47,7 +48,7 @@
 	white-space: nowrap;
 	text-align: center;
 	overflow: hidden;
-	min-width: 96px;
+	min-width: 90px;
 	display: inline-block;
     vertical-align: middle;
     padding-left: 6px;
@@ -67,12 +68,11 @@
 }
 
 .dark-spring-dialog-resize {
-	background: red;
-	opacity: 0.1;
+	background: transparent;
 }
 
 :root {
-  --resizer-gap: 16px;
+  --resizer-gap: 8px;
 }
 
 .dark-spring-dialog-resize-top {

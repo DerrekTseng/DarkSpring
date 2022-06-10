@@ -246,11 +246,11 @@ class darkspring {
 					}
 
 					function registerInfo(e) {
-						e.preventDefault();
 						if ($this.isMobileDevice()) {
 							$dialog.data('mousedownX', e.originalEvent.touches[0].pageX);
 							$dialog.data('mousedownY', e.originalEvent.touches[0].pageY);
 						} else {
+							e.preventDefault();
 							$dialog.data('mousedownX', e.pageX);
 							$dialog.data('mousedownY', e.pageY);
 						}
@@ -336,12 +336,10 @@ class darkspring {
 						if ($this.isMobileDevice()) {
 
 							$(top).on('touchend', (e) => {
-								e.preventDefault();
 								releaseEvent();
 							});
 
 							$(top).on('touchmove', (e) => {
-								e.preventDefault();
 								let mousemovedX = e.originalEvent.touches[0].pageX;
 								let mousemovedY = e.originalEvent.touches[0].pageY;
 								resolveSizing(mousemovedX, mousemovedY, name);
@@ -372,7 +370,6 @@ class darkspring {
 					function registerHolderEvent($resizer, name) {
 						if ($this.isMobileDevice()) {
 							$resizer.on('touchstart', (e) => {
-								registerInfo(e);
 								registerMoveingEvent($resizer, name);
 							});
 						} else {
@@ -545,12 +542,10 @@ class darkspring {
 						if ($this.isMobileDevice()) {
 
 							$(top).on('touchend', (e) => {
-								e.preventDefault();
 								releaseEvent();
 							});
 
 							$(top).on('touchmove', (e) => {
-								e.preventDefault();
 
 								let mousemoveX = e.originalEvent.touches[0].pageX;
 								let mousemoveY = e.originalEvent.touches[0].pageY;
@@ -605,7 +600,6 @@ class darkspring {
 
 						if ($this.isMobileDevice()) {
 							$header.on('touchstart', (e) => {
-								e.preventDefault();
 
 								$dialog.data('mousedownX', e.originalEvent.touches[0].pageX);
 								$dialog.data('mousedownY', e.originalEvent.touches[0].pageY);

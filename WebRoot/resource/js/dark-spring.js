@@ -208,8 +208,6 @@ class darkspring {
 				)
 			});
 
-			title = "AASSAA"
-
 			$('.dark-spring-dialog-header-text', $dialog).html(title);
 
 			if ($content) {
@@ -477,16 +475,25 @@ class darkspring {
 					$maximize.hide();
 					$contentContainer.hide();
 
+					if ($dialog.css("margin").split(" ").length == 2) {
+						$dialog.css({
+							margin: "auto"
+						});
+					}
+
 					$dialog.animate({
 						width: '100%',
 						height: "100vh",
-						inset: '0px',
-						margin: $this.marginString("0px", "0px", "0px", "0px")
+						top: "0px",
+						left: "0px",
+						right: "0px",
+						bottom: "0px"
 					}, 500, () => {
-
-						if ($this.isMobileDevice()) {
-							$dialog.css('height', "-webkit-fill-available");
-						}
+						$dialog.css({
+							height: $this.isMobileDevice() ? "-webkit-fill-available" : "100vh",
+							margin: $this.marginString("0px", "0px", "0px", "0px"),
+							inset: '0px'
+						});
 						$contentContainer.show();
 						$dialog.resizing(false);
 						$dialog.movable(false);
@@ -676,6 +683,12 @@ class darkspring {
 				width: (toolbarSize - 8) + "px"
 			});
 
+
+			$(".dark-spring-dialog-header", $dialog).on($this.isMobileDevice() ? "touchstart" : "mousedown", () => {
+				$('[data-index-template-dialog]', top.document).css("z-index", "2147483646")
+				$dialog.css("z-index", "2147483647");
+			});
+
 			return $dialogComponent;
 		} else {
 			return top.DarkSpring.dialog(option, $content);
@@ -711,7 +724,10 @@ class darkspring {
 			$('[data-index-template-dialog-alert-message]', $content).html(message);
 
 			let $dialogComponent = this.dialog(dialogOption, $content);
-
+			
+			$("[data-index-template-shadow]", $dialogComponent).css("z-index", "2147483646");
+			$("[data-index-template-dialog]", $dialogComponent).css("z-index", "2147483647");
+			
 			$('[data-index-template-dialog-alert-close]', $content).click(() => {
 				$dialogComponent.doClose();
 			});
@@ -749,7 +765,10 @@ class darkspring {
 			$('[data-index-template-dialog-confirm-message]', $content).html(message);
 
 			let $dialogComponent = this.dialog(dialogOption, $content);
-
+			
+			$("[data-index-template-shadow]", $dialogComponent).css("z-index", "2147483646");
+			$("[data-index-template-dialog]", $dialogComponent).css("z-index", "2147483647");
+			
 			$dialogComponent.data("callbackData", false);
 
 			$('[data-index-template-dialog-confirm-cancel]', $content).click(() => {
@@ -821,6 +840,13 @@ class darkspring {
 				doCloseScript.push("function doCloseWindow(callbackData) {");
 				doCloseScript.push("DarkSpring.closeWindow('" + uuid + "', callbackData);");
 				doCloseScript.push("}");
+
+				doCloseScript.push("$(document).ready(function(){");
+				doCloseScript.push("$('html').on(DarkSpring.isMobileDevice() ? 'touchstart' : 'mousedown', () => {");
+				doCloseScript.push("$('[data-index-template-dialog]', top.document).css('z-index', '2147483646'); ");
+				doCloseScript.push("$('[data-index-template-dialog]', $('#" + uuid + "', top.document)).css('z-index', '2147483647');");
+				doCloseScript.push("});});");
+
 				doCloseScript.push("</script>");
 				$iframeBody.append($(doCloseScript.join(" ")));
 			});

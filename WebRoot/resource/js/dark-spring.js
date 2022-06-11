@@ -7,7 +7,11 @@ class darkspring {
 
 	/** 將 element 加入至 top-object-container */
 	appendToTopObjectContainer($element) {
-		$element.appendTo($('#top-object-container', top.DarkSpring.document));
+		$element.appendTo(DarkSpring.getTopObjectContiner());
+	}
+
+	getTopObjectContiner() {
+		return $('#top-object-container', top.DarkSpring.document);
 	}
 
 	/** 取得 index-template.jsp 中的模板 */
@@ -183,6 +187,11 @@ class darkspring {
 			let $shadow = $("[data-index-template-shadow]", $dialogComponent);
 			let $dialog = $("[data-index-template-dialog]", $dialogComponent);
 			let $contentContainer = $(".dark-spring-dialog-content", $dialog);
+
+			let uuid = this.randomUUID();
+
+			$dialogComponent.attr('id', uuid);
+			$dialogComponent.data('id', uuid);
 
 			let toolbarSize = 106;
 
@@ -685,9 +694,10 @@ class darkspring {
 
 
 			$(".dark-spring-dialog-header", $dialog).on($this.isMobileDevice() ? "touchstart" : "mousedown", () => {
-				$('[data-index-template-dialog]', top.document).css("z-index", "2147483646")
-				$dialog.css("z-index", "2147483647");
+				DarkSpring.setDialogTop(uuid);
 			});
+
+			DarkSpring.setDialogTop(uuid);
 
 			return $dialogComponent;
 		} else {
@@ -724,10 +734,10 @@ class darkspring {
 			$('[data-index-template-dialog-alert-message]', $content).html(message);
 
 			let $dialogComponent = this.dialog(dialogOption, $content);
-			
+
 			$("[data-index-template-shadow]", $dialogComponent).css("z-index", "2147483646");
 			$("[data-index-template-dialog]", $dialogComponent).css("z-index", "2147483647");
-			
+
 			$('[data-index-template-dialog-alert-close]', $content).click(() => {
 				$dialogComponent.doClose();
 			});
@@ -765,10 +775,10 @@ class darkspring {
 			$('[data-index-template-dialog-confirm-message]', $content).html(message);
 
 			let $dialogComponent = this.dialog(dialogOption, $content);
-			
+
 			$("[data-index-template-shadow]", $dialogComponent).css("z-index", "2147483646");
 			$("[data-index-template-dialog]", $dialogComponent).css("z-index", "2147483647");
-			
+
 			$dialogComponent.data("callbackData", false);
 
 			$('[data-index-template-dialog-confirm-cancel]', $content).click(() => {
@@ -815,13 +825,11 @@ class darkspring {
 
 			let $content = this.getIndexTemplate("[data-index-template-dialog-window]");
 
-			let uuid = this.randomUUID();
-
 			$content.attr("src", url);
 
 			let $dialogComponent = this.dialog(dialogOption, $content);
 
-			$dialogComponent.attr('id', uuid);
+			let uuid = $dialogComponent.data('id');
 
 			$dialogComponent.data("doCloseCallback", function(callbackData) {
 				try {
@@ -843,8 +851,7 @@ class darkspring {
 
 				doCloseScript.push("$(document).ready(function(){");
 				doCloseScript.push("$('html').on(DarkSpring.isMobileDevice() ? 'touchstart' : 'mousedown', () => {");
-				doCloseScript.push("$('[data-index-template-dialog]', top.document).css('z-index', '2147483646'); ");
-				doCloseScript.push("$('[data-index-template-dialog]', $('#" + uuid + "', top.document)).css('z-index', '2147483647');");
+				doCloseScript.push("DarkSpring.setDialogTop('" + uuid + "')");
 				doCloseScript.push("});});");
 
 				doCloseScript.push("</script>");
@@ -860,6 +867,31 @@ class darkspring {
 			$('#' + uuid, top.document).data("doCloseCallback")(callbackData);
 		} else {
 			top.DarkSpring.closeWindow(uuid, callbackData);
+		}
+	}
+
+	setDialogTop(uuid) {
+		if (this === top.DarkSpring) {
+			let topObjectContiner = DarkSpring.getTopObjectContiner();
+
+			let dialogComponents = $('[data-index-template-dialog-component]', topObjectContiner);
+
+			let nextZindex = 1000;
+
+			dialogComponents.each((_index, item) => {
+				let dialogZindex = parseInt($('[data-index-template-dialog]', item).css('z-index'));
+				if (nextZindex < dialogZindex) {
+					nextZindex = dialogZindex;
+				}
+			});
+
+			let targetDialogComponent = $('#' + uuid, topObjectContiner);
+
+			$('[data-index-template-shadow]', targetDialogComponent).css('z-index', nextZindex++);
+			$('[data-index-template-dialog]', targetDialogComponent).css('z-index', nextZindex++);
+
+		} else {
+			top.DarkSpring.setDialogTop(uuid);
 		}
 	}
 

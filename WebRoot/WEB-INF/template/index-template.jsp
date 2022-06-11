@@ -23,7 +23,7 @@
 	left: 0px;
 	top: 0px;
 	position: fixed;
-	z-index: 2147483645;
+	z-index: 1000;
 }
 
 .dark-spring-dialog {
@@ -34,7 +34,7 @@
 	border-width: 6px;
 	min-width: 200px;
 	min-height: 100px;
-	z-index: 2147483646;
+	z-index: 1001;
 }
 
 .dark-spring-dialog-header {

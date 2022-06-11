@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.darkspring.core.component.FetchTable;
+import com.darkspring.core.component.RequestFile;
 
 @Controller
 @RequestMapping
@@ -170,11 +171,22 @@ public class DarkController {
 			} else {
 				fetchTable.setData(partition.get(pageNum - 1));
 			}
-			System.out.println(orderby);
 		} else {
 			fetchTable.setData(tableData);
 		}
 		return fetchTable;
+	}
+
+	@GetMapping("upload")
+	public ModelAndView upload() {
+		ModelAndView view = new ModelAndView("upload");
+		return view;
+	}
+
+	@ResponseBody
+	@PostMapping("doUpload")
+	public void doUpload(RequestFile requestFile) {
+		requestFile.getData();
 	}
 
 }

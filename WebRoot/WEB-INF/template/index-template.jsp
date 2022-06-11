@@ -229,13 +229,14 @@
 		</div>
     </div>
     
-    <%-- maximize dialog --%>
+    <%-- minimize dialog --%>
     <div data-index-template-min-dialog-component class="dropdown-item none-select clickable">
     	<div class="d-flex align-items-center">
 			<div class="ms-2" style="width:160px">
 				<div data-index-template-min-dialog-title class="fw-normal mb-0" style="overflow: hidden;"></div>
 			</div>
 		</div>
+		<hr class="dropdown-divider">
     </div>
     
     <%-- alert dialog content --%>
@@ -314,6 +315,35 @@
             <span class="sr-only">Loading...</span>
         </div>
     </div>
+    
+    <%-- minimize uploading --%>
+    <div data-index-template-min-upload-component class="dropdown-item">
+		<div class="d-flex align-items-center none-select clickable">
+			<div class="ms-2" style="width:100%">
+				<div data-index-template-min-upload-text class="fw-normal mb-0"></div>
+				<div class="pg-bar" style="margin-top: 4px">
+					<div class="progress">
+                       	<div data-index-template-min-upload-progress-bar 
+                       		class="progress-bar progress-bar-animated progress-bar-striped bg-danger" 
+                       		role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                       	</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<hr class="dropdown-divider">
+	</div>
+	
+	 <%-- dialog uploading --%>
+	<div data-index-template-dialog-upload-component class="dark-spring-dialog-content container-fluid">
+		<div class="row bg-secondary rounded" style="overflow: auto; height: 100%;  padding: 4px">
+			<div class="col-sm-12 col-md-12 col-xl-12" >
+				<div class="table-responsive">
+					<table class='table table-bordered'></table>
+				</div>
+			</div>
+		</div>
+	</div>
     
 
 </div>

@@ -40,7 +40,7 @@ class darkspring {
 		this.doService(option);
 	}
 
-	doService(option) {
+	doService(option = {}) {
 		let $this = this;
 
 		let url = option.url || null;
@@ -102,16 +102,199 @@ class darkspring {
 		});
 	}
 
-	doUploadFile() {
+	doUpload(options = {}) {
 
-	}
+		if (this === top.DarkSpring) {
 
-	doUploadFiles() {
+			let url = options.url || "";
+			let data = options.data || {};
+			let beforeSend = options.beforeSend || null;
+			let abort = options.abort || null;
+			let success = options.success || null;
+			let error = options.error || null;
+			let type = options.type || 'file';  // file; files; folder
 
-	}
+			let message = options.message || {
+				list: "上傳清單",
+				cancelTitle: "取消上傳",
+				cancelMessage: "是否要取消上傳?"
+			};
 
-	doUploadFolder() {
+			let $fileUpload = document.createElement("input");
 
+			$fileUpload.setAttribute("type", "file");
+
+			if (type.toLocaleLowerCase() === 'files') {
+				$fileUpload.setAttribute("multiple", "multiple");
+			} else if (type.toLocaleLowerCase() === 'folder') {
+				$fileUpload.setAttribute("multiple", "multiple");
+				$fileUpload.setAttribute("webkitdirectory", "");
+			}
+
+			$fileUpload.addEventListener("change", () => {
+
+				let formdata = new FormData();
+				let files = []
+				for (let i = 0; i < $fileUpload.files.length; i++) {
+					formdata.append("files", $fileUpload.files[i]);
+					files.push($fileUpload.files[i]);
+				}
+				formdata.append("data", JSON.stringify(data));
+				if (typeof beforeSend === 'function') {
+					beforeSend(files, (beforeSendResult) => {
+						if (beforeSendResult) {
+							doUpload();
+						}
+					});
+				} else {
+					doUpload();
+				}
+
+				function doUpload() {
+
+					let uploading = {};
+
+					let $xhr = new window.XMLHttpRequest();
+					$xhr.upload.addEventListener("progress", function(evt) {
+						if (evt.lengthComputable) {
+							var percentComplete = evt.loaded / evt.total;
+							percentComplete = parseInt(percentComplete * 100);
+							$uploadMinimizeComponent.updateProgressBar(percentComplete);
+							$uploadDialogContent.updateProgressBar(percentComplete);
+							if (percentComplete === 100) {
+								$uploadDialogContent.disableCancel();
+							}
+						}
+					}, false);
+
+					let title = "Uploading " + files.length + " files";
+
+					let $uploadMinimizeComponent = DarkSpring.getIndexTemplate("[data-index-template-min-upload-component]");
+
+					$uploadMinimizeComponent.appendTo($('#top-uploadings-container', top.document));
+
+					uploading.min = $uploadMinimizeComponent;
+
+					$uploadMinimizeComponent.click(() => {
+						uploading.dialog.show();
+					});
+
+					$('[data-index-template-min-upload-text]', $uploadMinimizeComponent).html(title);
+
+					$uploadMinimizeComponent.updateProgressBar = (percent) => {
+						$('[data-index-template-min-upload-progress-bar]', $uploadMinimizeComponent).css('width', percent + '%').attr('aria-valuenow', percent);
+					};
+
+					let $uploadDialogContent = DarkSpring.getIndexTemplate("[data-index-template-dialog-upload-component");
+					
+					let canceled = false;
+					
+					DarkSpring.table({
+						table: $('table', $uploadDialogContent),
+						data: files,
+						thead: [[
+							{ content: "<span></span>", attrs: { class: "none-select", style: 'width: 48px; text-align: center; vertical-align: middle;' } },
+							{ content: message.list, attrs: { class: "none-select", style: 'text-align: center; vertical-align: middle;' } },
+							{
+								content: '<button type="button" class="btn btn-sm btn-sm-square btn-outline-primary"><i class="fas fa-times"></i></button>',
+								attrs: { class: "none-select", style: 'width: 48px; vertical-align: middle;' }
+							}
+						]],
+						theadEach: ($theads) => {
+							$('button', $theads[0]).click(() => {
+								uploading.cencalDialog = DarkSpring.confirm({
+									title: message.cancelTitle,
+									message: message.cancelMessage,
+									callback: (confirmResult) => {
+										if (confirmResult) {
+											canceled = true;
+											Object.values(uploading).forEach(val => {
+												if (val) {
+													val.remove();
+												}
+											});
+											$xhr.abort();
+											if (typeof abort === 'function') {
+												abort();
+											}
+										}
+									}
+								});
+							});
+						},
+						tbody: [[
+							{ content: "", attrs: { colspan: "3" } }
+						]],
+						tbodyEach: ($trs, data) => {
+							$("td", $trs[0]).html(data.webkitRelativePath)
+						}
+					});
+
+					$uploadDialogContent.disableCancel = () => {
+						$('button', $uploadDialogContent).remove();
+					}
+
+					$uploadDialogContent.updateProgressBar = (percent) => {
+						$uploadDialogContent.data('percent', percent);
+						$('span', $uploadDialogContent).html(percent + "%");
+					}
+
+					let $uploadDialogComponent = DarkSpring.dialog({
+						title: title,
+						shadow: true,
+						resize: true,
+						maximize: true,
+						minimize: false,
+						movable: true,
+						width: "70vw",
+						height: "70vh"
+					}, $uploadDialogContent).hide();
+
+					uploading.dialog = $uploadDialogComponent;
+
+					$uploadDialogComponent.doClose = () => {
+						$uploadDialogComponent.hide();
+					};
+
+					$.ajax({
+						url: url,
+						headers: { 'X-Requested-With': 'XMLHttpRequest' },
+						xhr: () => $xhr,
+						method: "POST",
+						data: data,
+						contentType: false,
+						processData: false,
+						mimeType: 'multipart/form-data',
+						data: formdata
+					}).done((response) => {
+						Object.values(uploading).forEach(val => {
+							if (val) {
+								val.remove();
+							}
+						});
+						if (typeof success === 'function') {
+							success(response);
+						}
+					}).fail((response) => {
+						Object.values(uploading).forEach(val => {
+							if (val) {
+								val.remove();
+							}
+						});
+						if (typeof error === 'function') {
+							if(!canceled){
+								error(response);
+							}
+						}
+					});
+				}
+			});
+
+			$fileUpload.click();
+
+		} else {
+			top.DarkSpring.doUpload(options);
+		}
 	}
 
 	doDownolad(option = {}) {
@@ -198,26 +381,13 @@ class darkspring {
 
 			let toolbarSize = 106;
 
-			if (parseInt(width) > $(top).width()) {
-				width = $(top).width() + "px";
-			}
-
-			if (parseInt(height) > $(top).height()) {
-				height = $(top).height() + "px";
-			}
-
 			$dialog.data("defaultWidth", width);
 			$dialog.data("defaultHeight", height);
 
 			$dialog.css({
 				width: width,
 				height: height,
-				margin: $this.marginString(
-					($(top).height() / 2 - parseInt(height) / 2) + "px",
-					($(top).width() / 2 - parseInt(width) / 2) + "px",
-					($(top).height() / 2 - parseInt(height) / 2) + "px",
-					($(top).width() / 2 - parseInt(width) / 2) + "px"
-				)
+				margin: "auto"
 			});
 
 			$('.dark-spring-dialog-header-text', $dialog).html(title);
@@ -467,12 +637,7 @@ class darkspring {
 						width: newWidth,
 						height: newHeight,
 						inset: '0px',
-						margin: $this.marginString(
-							($(top).height() / 2 - parseInt(newHeight) / 2) + "px",
-							($(top).width() / 2 - parseInt(newWidth) / 2) + "px",
-							($(top).height() / 2 - parseInt(newHeight) / 2) + "px",
-							($(top).width() / 2 - parseInt(newWidth) / 2) + "px"
-						)
+						margin: "auto"
 					}, 500, () => {
 						$contentContainer.show();
 						$dialog.resizing(true);
@@ -503,7 +668,7 @@ class darkspring {
 					}, 500, () => {
 						$dialog.css({
 							height: $this.isMobileDevice() ? "-webkit-fill-available" : "100vh",
-							margin: $this.marginString("0px", "0px", "0px", "0px"),
+							margin: "auto",
 							inset: '0px'
 						});
 						$contentContainer.show();
@@ -744,8 +909,10 @@ class darkspring {
 			$('[data-index-template-dialog-alert-close]', $content).click(() => {
 				$dialogComponent.doClose();
 			});
+
+			return $dialogComponent;
 		} else {
-			top.DarkSpring.alert(option);
+			return top.DarkSpring.alert(option);
 		}
 	}
 
@@ -792,8 +959,10 @@ class darkspring {
 				$dialogComponent.data("callbackData", true);
 				$dialogComponent.doClose();
 			});
+
+			return $dialogComponent;
 		} else {
-			top.DarkSpring.confirm(option);
+			return top.DarkSpring.confirm(option);
 		}
 	}
 
@@ -860,8 +1029,10 @@ class darkspring {
 				doCloseScript.push("</script>");
 				$iframeBody.append($(doCloseScript.join(" ")));
 			});
+
+			return $dialogComponent;
 		} else {
-			top.DarkSpring.window(option);
+			return top.DarkSpring.window(option);
 		}
 	}
 
@@ -1044,7 +1215,7 @@ class darkspring {
 								$this.$tbody.append($tr);
 							});
 							if (typeof $this.$gridConfig.tbody.rendered === "function") {
-								$this.$gridConfig.tbody.rendered($trs);
+								$this.$gridConfig.tbody.rendered($trs, listItem);
 							}
 						});
 
@@ -1285,7 +1456,7 @@ class darkspring {
 		thead.forEach((i) => {
 			config.addTheadMeta(i);
 		});
-		config.setTbodyRendered(theadEach);
+		config.setTheadRendered(theadEach);
 
 		tbody.forEach((i) => {
 			config.addTbodyMeta(i);
@@ -1337,7 +1508,7 @@ class darkspring {
 		thead.forEach((i) => {
 			config.addTheadMeta(i);
 		});
-		config.setTbodyRendered(theadEach);
+		config.setTheadRendered(theadEach);
 
 		tbody.forEach((i) => {
 			config.addTbodyMeta(i);
@@ -1417,7 +1588,7 @@ class darkspring {
 		thead.forEach((i) => {
 			config.addTheadMeta(i);
 		});
-		config.setTbodyRendered(theadEach);
+		config.setTheadRendered(theadEach);
 
 		tbody.forEach((i) => {
 			config.addTbodyMeta(i);

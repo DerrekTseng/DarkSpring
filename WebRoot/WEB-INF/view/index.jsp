@@ -66,7 +66,8 @@ var menus = [
 		items : [
 			{ url : "grid", text : "Grid"},
 			{ url : "prompt", text : "Prompt"},
-			{ url : "dialog", text : "Dialog"}
+			{ url : "dialog", text : "Dialog"},
+			{ url : "upload", text : "Upload"}
 		]
 	}
 	
@@ -304,48 +305,12 @@ function registerIndexWindowEvent(){
         
         
         <%-- 檔案上傳元件 --%>
-        <div id="top-uploadings-component" class="nav-item dropdown">
+        <div id="top-uploadings-component" class="nav-item dropdown" style="display: none">
 			<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
 				<i class="fas fa-cloud-upload-alt me-lg-2"></i>
 				<span class="d-none d-lg-inline-flex">Upload</span>
 			</a>
 			<div id="top-uploadings-container" class="dark-spring-dropdown-menu dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-			
-				<div class="dropdown-item">
-					<div class="d-flex align-items-center none-select clickable">
-						<div class="ms-2" style="width:100%">
-							<div class="fw-normal mb-0">Uploading 10 Files</div>
-							<div class="pg-bar" style="margin-top: 4px">
-								<div class="progress">
-	                            	<div class="progress-bar progress-bar-animated progress-bar-striped bg-danger" 
-	                            		role="progressbar" 
-	                            		aria-valuenow="50" 
-	                            		aria-valuemin="0" 
-	                            		aria-valuemax="100"></div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				<hr class="dropdown-divider">
-				
-				<div class="dropdown-item">
-					<div class="d-flex align-items-center none-select clickable">
-						<div class="ms-2" style="width:100%">
-							<div class="fw-normal mb-0">Uploading 5 Files</div>
-							<div class="pg-bar" style="margin-top: 4px">
-								<div class="progress">
-	                            	<div class="progress-bar progress-bar-animated progress-bar-striped bg-danger" 
-	                            		role="progressbar" 
-	                            		aria-valuenow="20" 
-	                            		aria-valuemin="0" 
-	                            		aria-valuemax="100"></div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
 				
 			</div>
 		</div>

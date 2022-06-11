@@ -12,6 +12,6 @@
 <script src="<c:url value='/resource/lib/css-element-queries/ResizeSensor.js' />"></script>
 
 <%-- Template Javascript --%>
-<script src="<c:url value='/resource/js/main.js?v=' /> <%= java.util.UUID.randomUUID().toString() %>"></script>
+<script src="<c:url value='/resource/js/main.js' />"></script>
 
-<script src="<c:url value='/resource/js/dark-spring.js?v=' /> <%= java.util.UUID.randomUUID().toString() %> "></script>
+<script src="<c:url value='/resource/js/dark-spring.js' />"></script>

@@ -258,7 +258,7 @@
     <%-- confirm dialog content --%>
     <div data-index-template-dialog-confirm class="dark-spring-dialog-content">
 		<div style="width:100%; height: calc( 100% - 52px)">
-			<div class="col-sm-12 col-md-12 col-xl-12" style="overflow: auto; height: 100%">
+			<div class="col-sm-12 col-md-12 col-xl-12" style="overflow: auto; height: 100%;  padding: 4px">
 				<p data-index-template-dialog-confirm-message style="word-break: break-all"></p>
 			</div>
 		</div>

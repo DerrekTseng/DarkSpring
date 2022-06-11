@@ -18,10 +18,12 @@ var theadMeta = [
 var tbodyMeta = [
 	[
 		{ content: "@{data_1}", attrs: { style: "text-align: center" } },
-		{ content: "@{data_1}", attrs: { style: "text-align: center" } },
-		{ content: "@{data_1}", attrs: { style: "text-align: center" } }
+		{ content: "@{data_2}", attrs: { style: "text-align: center" } },
+		{ content: "@{data_3}", attrs: { style: "text-align: center" } }
 	]
 ];
+
+var $table;
 
 function removeAllColor(e){
 	
@@ -158,7 +160,7 @@ function doQuery(callback){
 
 function renderTable(){
 	doQuery((data) => {
-		DarkSpring.table({
+		$table = DarkSpring.table({
 			table : $('#table'),
 			data : data,
 			thead : theadMeta,
@@ -169,7 +171,7 @@ function renderTable(){
 
 function renderPageTable(){
 	doQuery((data) => {
-		DarkSpring.pageTable({
+		$table = DarkSpring.pageTable({
 			table : $('#table'),
 			data : data,
 			thead : theadMeta,
@@ -179,7 +181,7 @@ function renderPageTable(){
 }
 
 function renderFetchTable(){
-	DarkSpring.fetchTable({
+	$table = DarkSpring.fetchTable({
 		table : $('#table'),
 		url : "getTableData",
 		thead : theadMeta,

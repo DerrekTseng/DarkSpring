@@ -984,6 +984,10 @@ class darkspring {
 				$this.$table.append($this.$thead);
 				$this.$table.append($this.$tbody);
 
+				$this.filteror = (list) => {
+					return list;
+				};
+
 				$this.renderer = {};
 
 				$this.renderer.thead = () => {
@@ -1053,7 +1057,7 @@ class darkspring {
 						};
 						$this.$gridConfig.pager.feed($this, tbodyListCallback);
 					} else {
-						tbodyListCallback($this.$gridConfig.data);
+						tbodyListCallback($this.filteror($this.$gridConfig.data));
 					}
 				}
 
@@ -1071,7 +1075,14 @@ class darkspring {
 						$("[data-pager-num]", $this.$pager).append("<option value='" + pc + "'>" + pc + "</option>");
 					}
 
-					$("[data-pager-num]", $this.$pager).val(pageNum);
+					if (pageCount == 0) {
+						$("[data-pager-num]", $this.$pager).append("<option value='1'>" + 1 + "</option>");
+						$("[data-pager-num]", $this.$pager).val(1);
+						pageNum = 1;
+						$this.$gridConfig.pager.pageNum = 1;
+					} else {
+						$("[data-pager-num]", $this.$pager).val(pageNum);
+					}
 
 					if (pageNum <= 1) {
 						$("[data-pager-first]", $this.$pager).attr('disabled', true);
@@ -1084,15 +1095,15 @@ class darkspring {
 					if (pageNum >= pageCount) {
 						$("[data-pager-next]", $this.$pager).attr('disabled', true);
 						$("[data-pager-last]", $this.$pager).attr('disabled', true);
+						if (pageNum > pageCount && pageCount != 0) {
+							$this.$gridConfig.pager.pageNum = pageCount;
+							$("[data-pager-num]", $this.$pager).val(pageCount);
+							$this.renderer.tbody();
+							return;
+						}
 					} else {
 						$("[data-pager-next]", $this.$pager).attr('disabled', false);
 						$("[data-pager-last]", $this.$pager).attr('disabled', false);
-					}
-
-					if (pageCount <= 1) {
-						$("[data-pager-num]", $this.$pager).attr('disabled', true);
-					} else {
-						$("[data-pager-num]", $this.$pager).attr('disabled', false);
 					}
 
 				}
@@ -1283,7 +1294,30 @@ class darkspring {
 		config.setTbodyRendered(tbodyEach);
 
 		config.setTheadSorter(this.tableDefaultSorter());
-		return this.grid(config);
+
+		let $grid = this.grid(config);
+
+		$grid.doFilter = (key, value) => {
+			$grid.filterKey = key;
+			$grid.filterValue = value;
+			$grid.renderer.tbody();
+		}
+
+		$grid.filteror = (list) => {
+			return list.filter((item) => {
+				if (item[$grid.filterKey] !== undefined) {
+					if ($grid.filterKey && $grid.filterValue) {
+						return JSON.stringify(item[$grid.filterKey]).includes($grid.filterValue);
+					} else {
+						return true;
+					}
+				} else {
+					return true;
+				}
+			});
+		}
+
+		return $grid;
 	}
 
 	pageTable(option = {}) {
@@ -1323,6 +1357,22 @@ class darkspring {
 
 			let pageNum = $grid.$gridConfig.pager.pageNum;
 			let pageSize = $grid.$gridConfig.pager.pageSize;
+
+
+			let returnList = $grid.$gridConfig.data.filter((item) => {
+				if ($grid.filterKey && $grid.filterValue) {
+					if (item[$grid.filterKey] !== undefined) {
+						return JSON.stringify(item[$grid.filterKey]).includes($grid.filterValue);
+					} else {
+						return true;
+					}
+				} else {
+					return true;
+				}
+			});
+
+			$grid.$gridConfig.pager.totalSize = returnList.length;
+
 			let totalSize = $grid.$gridConfig.pager.totalSize;
 
 			let sliceStart = (pageNum - 1) * pageSize;
@@ -1330,10 +1380,19 @@ class darkspring {
 			if (sliceEnd > totalSize - 1) {
 				sliceEnd = totalSize;
 			}
-			callback($grid.$gridConfig.data.slice(sliceStart, sliceEnd));
+
+			callback(returnList.slice(sliceStart, sliceEnd));
 		});
 
-		return this.grid(config);;
+		let $grid = this.grid(config);
+
+		$grid.doFilter = (key, value) => {
+			$grid.filterKey = key;
+			$grid.filterValue = value;
+			$grid.renderer.tbody();
+		}
+
+		return $grid;
 	}
 
 	fetchTable(option = {}) {

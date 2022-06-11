@@ -208,6 +208,8 @@ class darkspring {
 				)
 			});
 
+			title = "AASSAA"
+
 			$('.dark-spring-dialog-header-text', $dialog).html(title);
 
 			if ($content) {
@@ -216,6 +218,16 @@ class darkspring {
 
 			if (!shadow) {
 				$shadow.remove();
+			} else {
+				if ($this.isMobileDevice()) {
+					$shadow.on('touchmove', (e) => {
+						e.preventDefault();
+					});
+					$shadow.on('touchstart', (e) => {
+						e.preventDefault();
+					});
+				}
+
 			}
 
 			if (resize) {
@@ -250,7 +262,6 @@ class darkspring {
 							$dialog.data('mousedownX', e.originalEvent.touches[0].pageX);
 							$dialog.data('mousedownY', e.originalEvent.touches[0].pageY);
 						} else {
-							e.preventDefault();
 							$dialog.data('mousedownX', e.pageX);
 							$dialog.data('mousedownY', e.pageY);
 						}
@@ -258,6 +269,7 @@ class darkspring {
 						$dialog.data('contentHeight', $dialog.height());
 						$dialog.data('contentX', $dialog[0].offsetLeft);
 						$dialog.data('contentY', $dialog[0].offsetTop);
+						e.preventDefault();
 					}
 
 					function resolveSizing(mousemovedX, mousemovedY, name) {
@@ -324,31 +336,33 @@ class darkspring {
 
 							$(top).on('touchend', (e) => {
 								releaseEvent();
+								e.preventDefault();
 							});
 
 							$(top).on('touchmove', (e) => {
 								let mousemovedX = e.originalEvent.touches[0].pageX;
 								let mousemovedY = e.originalEvent.touches[0].pageY;
 								resolveSizing(mousemovedX, mousemovedY, name);
+								e.preventDefault();
 							});
 
 						} else {
 
 							$(window).mouseup((e) => {
-								e.preventDefault();
 								releaseEvent();
+								e.preventDefault();
 							});
 
 							$resizer.mouseup((e) => {
-								e.preventDefault();
 								releaseEvent();
+								e.preventDefault();
 							});
 
 							$(top).mousemove((e) => {
-								e.preventDefault();
 								let mousemovedX = e.pageX;
 								let mousemovedY = e.pageY;
 								resolveSizing(mousemovedX, mousemovedY, name);
+								e.preventDefault();
 							});
 
 						}
@@ -357,6 +371,7 @@ class darkspring {
 					function registerHolderEvent($resizer, name) {
 						if ($this.isMobileDevice()) {
 							$resizer.on('touchstart', (e) => {
+								registerInfo(e);
 								registerMoveingEvent($resizer, name);
 							});
 						} else {
@@ -464,10 +479,14 @@ class darkspring {
 
 					$dialog.animate({
 						width: '100%',
-						height: $this.isMobileDevice() ? "-webkit-fill-available" : "100vh",
+						height: "100vh",
 						inset: '0px',
 						margin: $this.marginString("0px", "0px", "0px", "0px")
 					}, 500, () => {
+
+						if ($this.isMobileDevice()) {
+							$dialog.css('height', "-webkit-fill-available");
+						}
 						$contentContainer.show();
 						$dialog.resizing(false);
 						$dialog.movable(false);
@@ -529,11 +548,12 @@ class darkspring {
 						if ($this.isMobileDevice()) {
 
 							$(top).on('touchend', (e) => {
+								e.preventDefault();
 								releaseEvent();
 							});
 
 							$(top).on('touchmove', (e) => {
-
+								e.preventDefault();
 								let mousemoveX = e.originalEvent.touches[0].pageX;
 								let mousemoveY = e.originalEvent.touches[0].pageY;
 
@@ -587,6 +607,7 @@ class darkspring {
 
 						if ($this.isMobileDevice()) {
 							$header.on('touchstart', (e) => {
+								e.preventDefault();
 
 								$dialog.data('mousedownX', e.originalEvent.touches[0].pageX);
 								$dialog.data('mousedownY', e.originalEvent.touches[0].pageY);
@@ -662,136 +683,150 @@ class darkspring {
 	}
 
 	alert(option = {}) {
+		if (this === top.DarkSpring) {
+			let title = option.title || "";
+			let message = option.message || "";
+			let width = option.width;
+			let height = option.height;
+			let callback = option.callback;
 
-		let title = option.title || "";
-		let message = option.message || "";
-		let width = option.width;
-		let height = option.height;
-		let callback = option.callback;
-
-		let dialogOption = {
-			title: title,
-			width: width,
-			height: height,
-			shadow: true,
-			resize: true,
-			maximize: false,
-			minimize: false,
-			movable: true,
-			callback: function(callbackData) {
-				if (typeof callback === 'function') {
-					callback(callbackData);
+			let dialogOption = {
+				title: title,
+				width: width,
+				height: height,
+				shadow: true,
+				resize: true,
+				maximize: false,
+				minimize: false,
+				movable: true,
+				callback: function(callbackData) {
+					if (typeof callback === 'function') {
+						callback(callbackData);
+					}
 				}
 			}
+
+			let $content = this.getIndexTemplate("[data-index-template-dialog-alert]");
+
+			$('[data-index-template-dialog-alert-message]', $content).html(message);
+
+			let $dialogComponent = this.dialog(dialogOption, $content);
+
+			$('[data-index-template-dialog-alert-close]', $content).click(() => {
+				$dialogComponent.doClose();
+			});
+		} else {
+			top.DarkSpring.alert(option);
 		}
-
-		let $content = this.getIndexTemplate("[data-index-template-dialog-alert]");
-
-		$('[data-index-template-dialog-alert-message]', $content).html(message);
-
-		let $dialogComponent = this.dialog(dialogOption, $content);
-
-		$('[data-index-template-dialog-alert-close]', $content).click(() => {
-			$dialogComponent.doClose();
-		});
-
 	}
 
 	confirm(option = {}) {
-		let title = option.title || "";
-		let message = option.message || "";
-		let width = option.width;
-		let height = option.height;
-		let callback = option.callback;
+		if (this === top.DarkSpring) {
+			let title = option.title || "";
+			let message = option.message || "";
+			let width = option.width;
+			let height = option.height;
+			let callback = option.callback;
 
-		let dialogOption = {
-			title: title,
-			width: width,
-			height: height,
-			shadow: true,
-			resize: true,
-			maximize: false,
-			minimize: false,
-			movable: true,
-			callback: function(callbackData) {
-				if (typeof callback === 'function') {
-					callback(callbackData);
+			let dialogOption = {
+				title: title,
+				width: width,
+				height: height,
+				shadow: true,
+				resize: true,
+				maximize: false,
+				minimize: false,
+				movable: true,
+				callback: function(callbackData) {
+					if (typeof callback === 'function') {
+						callback(callbackData);
+					}
 				}
 			}
+
+			let $content = this.getIndexTemplate("[data-index-template-dialog-confirm]");
+
+			$('[data-index-template-dialog-confirm-message]', $content).html(message);
+
+			let $dialogComponent = this.dialog(dialogOption, $content);
+
+			$dialogComponent.data("callbackData", false);
+
+			$('[data-index-template-dialog-confirm-cancel]', $content).click(() => {
+				$dialogComponent.doClose();
+			});
+
+			$('[data-index-template-dialog-confirm-accept]', $content).click(() => {
+				$dialogComponent.data("callbackData", true);
+				$dialogComponent.doClose();
+			});
+		} else {
+			top.DarkSpring.confirm(option);
 		}
-
-		let $content = this.getIndexTemplate("[data-index-template-dialog-confirm]");
-
-		$('[data-index-template-dialog-confirm-message]', $content).html(message);
-
-		let $dialogComponent = this.dialog(dialogOption, $content);
-
-		$dialogComponent.data("callbackData", false);
-
-		$('[data-index-template-dialog-confirm-cancel]', $content).click(() => {
-			$dialogComponent.doClose();
-		});
-
-		$('[data-index-template-dialog-confirm-accept]', $content).click(() => {
-			$dialogComponent.data("callbackData", true);
-			$dialogComponent.doClose();
-		});
-
 	}
 
 	window(option = {}) {
-		let title = option.title || "";
-		let url = option.url || "";
-		let width = option.width;
-		let height = option.height;
-		let callback = option.callback;
-		let shadow = option.shadow === false ? false : true;
-		let resize = option.resize === false ? false : true;
-		let maximize = option.maximize === false ? false : true;
-		let minimize = option.minimize === false ? false : true;
-		let movable = option.movable === false ? false : true;
+		if (this === top.DarkSpring) {
+			let title = option.title || "";
+			let url = option.url || "";
+			let width = option.width;
+			let height = option.height;
+			let callback = option.callback;
+			let shadow = option.shadow === false ? false : true;
+			let resize = option.resize === false ? false : true;
+			let maximize = option.maximize === false ? false : true;
+			let minimize = option.minimize === false ? false : true;
+			let movable = option.movable === false ? false : true;
 
-		let dialogOption = {
-			title: title,
-			width: width,
-			height: height,
-			shadow: shadow,
-			resize: resize,
-			maximize: maximize,
-			minimize: minimize,
-			movable: movable,
-			callback: function(callbackData) {
-				if (typeof callback === 'function') {
-					callback(callbackData);
+			let dialogOption = {
+				title: title,
+				width: width,
+				height: height,
+				shadow: shadow,
+				resize: resize,
+				maximize: maximize,
+				minimize: minimize,
+				movable: movable,
+				callback: function(callbackData) {
+					if (typeof callback === 'function') {
+						callback(callbackData);
+					}
 				}
 			}
+
+			let $content = this.getIndexTemplate("[data-index-template-dialog-window]");
+
+			let uuid = this.randomUUID();
+
+			$content.attr("src", url);
+
+			let $dialogComponent = this.dialog(dialogOption, $content);
+
+			$dialogComponent.attr('id', uuid);
+
+			$dialogComponent.data("doCloseCallback", function(callbackData) {
+				try {
+					$dialogComponent.data("callbackData", callbackData);
+				} catch (e) {
+					DarkSpring.error(e);
+				} finally {
+					$dialogComponent.doClose();
+				}
+			});
+
+			$content.on("load", () => {
+				let $iframeBody = $content.contents().find('body');
+				let doCloseScript = [];
+				doCloseScript.push("<script>");
+				doCloseScript.push("function doCloseWindow(callbackData) {");
+				doCloseScript.push("DarkSpring.closeWindow('" + uuid + "', callbackData);");
+				doCloseScript.push("}");
+				doCloseScript.push("</script>");
+				$iframeBody.append($(doCloseScript.join(" ")));
+			});
+		} else {
+			top.DarkSpring.window(option);
 		}
-
-		let $content = this.getIndexTemplate("[data-index-template-dialog-window]");
-
-		let uuid = this.randomUUID();
-
-		$content.attr("src", url);
-
-		let $dialogComponent = this.dialog(dialogOption, $content);
-
-		$dialogComponent.attr('id', uuid);
-
-		$dialogComponent.data("doCloseCallback", function(callbackData) {
-			$dialogComponent.data("callbackData", callbackData);
-			$dialogComponent.doClose();
-		});
-
-		$content.on("load", () => {
-			let $iframeBody = $content.contents().find('body');
-			let doCloseScript = [];
-			doCloseScript.push("<script>");
-			doCloseScript.push("function doCloseWindow(callbackData) {");
-			doCloseScript.push("DarkSpring.closeWindow('" + uuid + "', callbackData);");
-			doCloseScript.push("}");
-			doCloseScript.push("</script>");
-			$iframeBody.append($(doCloseScript.join(" ")));
-		});
 	}
 
 	closeWindow(uuid, callbackData) {

@@ -48,6 +48,7 @@ $(document).ready(function(){
 				if(callbackData){
 					DarkSpring.info(callbackData);
 				}
+				$('#window-callback-result').html(callbackData);
 			}
 		});
 	});
@@ -119,6 +120,11 @@ $(document).ready(function(){
 	               <div class="m-n2">
 	                   <button type="button" id="window-button" class="btn btn-light m-2">Window</button>
 	               </div>
+	               
+	                <div id="window-callback-result" class="m-n2">
+	                
+	                </div>
+	               
 	           </div>
 	       </div>
 	       

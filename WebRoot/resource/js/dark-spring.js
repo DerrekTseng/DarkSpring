@@ -1,40 +1,53 @@
 
 "use strict"
 
+/**
+ * DarkSpring JS 元件
+ *
+ * @author DerrekTseng
+ *
+ */
 class Dark {
 
+	/** 當前的 document */
 	document;
-	fading;
 
+	/** 建構子 */
 	constructor(document) {
 		this.document = document;
-		this.fading = 300;
 	}
 
+	/** 增加 Element 至 top 的元件存放區 */
 	appendToTopObjectContainer($element) {
-		$element.appendTo(this.getTopObjectContiner());
+		this.getTopObjectContiner().append($element);
 	}
 
+	/** 取得 top 的元件存放區 */
 	getTopObjectContiner() {
 		return $('#top-object-container', this.getTopDocument());
 	}
 
+	/** 取得 top 的 docuemnt */
 	getTopDocument() {
 		return this.getTopDark().document;
 	}
 
+	/** 取得位於 top 的 Dark 物件  */
 	getTopDark() {
 		return top['dark'];
 	}
 
+	/** 判斷當前執行區域是否是 top */
 	isTop() {
 		return this === this.getTopDark();
 	}
 
+	/** 取得 index 的 template */
 	getIndexTemplate(selector) {
 		return $(selector, $('#index-template', this.getTopDocument())).clone(false);
 	}
 
+	/** 畫面遮蓋 */
 	spinner(show) {
 		if (show) {
 			$('#spinner', this.document).addClass('show');
@@ -43,16 +56,19 @@ class Dark {
 		}
 	}
 
+	/* AJAX GET */
 	doGet(option = {}) {
 		option.method = "GET";
 		this.doService(option);
 	}
 
+	/* AJAX POST */
 	doPost(option = {}) {
 		option.method = "POST";
 		this.doService(option);
 	}
 
+	/** AJAX */
 	doService(option = {}) {
 		let $this = this;
 
@@ -100,6 +116,9 @@ class Dark {
 		});
 	}
 
+	/**
+	 * 上傳檔案
+	 */
 	doUpload(options = {}) {
 
 		let $this = this;
@@ -108,11 +127,11 @@ class Dark {
 
 			let url = options.url || "";
 			let data = options.data || {};
-			let beforeSend = options.beforeSend || null;
-			let abort = options.abort || null;
-			let success = options.success || null;
-			let error = options.error || null;
-			let type = options.type || 'file';  // file; files; folder
+			let beforeSend = options.beforeSend || null; // (files, callback) => { callback(true); }
+			let abort = options.abort || null; // () => {}
+			let success = options.success || null;  // (response) => { }
+			let error = options.error || null; // (response) => { }
+			let type = options.type || 'file';  // 'file'、'files'、'folder'
 
 			let message = options.message || {
 				list: "上傳清單",
@@ -139,25 +158,18 @@ class Dark {
 					formdata.append("files", $fileUpload.files[i]);
 					files.push($fileUpload.files[i]);
 				}
-				formdata.append("data", JSON.stringify(data));
-				if (typeof beforeSend === 'function') {
-					beforeSend(files, (beforeSendResult) => {
-						if (beforeSendResult) {
-							doUpload();
-						}
-					});
-				} else {
-					doUpload();
-				}
 
-				function doUpload() {
+				formdata.append("data", JSON.stringify(data));
+
+				let doUpload = () => {
 
 					let uploading = {};
 
 					let $xhr = new window.XMLHttpRequest();
-					$xhr.upload.addEventListener("progress", function(evt) {
+
+					$xhr.upload.addEventListener("progress", (evt) => {
 						if (evt.lengthComputable) {
-							var percentComplete = evt.loaded / evt.total;
+							let percentComplete = evt.loaded / evt.total;
 							percentComplete = parseInt(percentComplete * 100);
 							$uploadMinimizeComponent.updateProgressBar(percentComplete);
 							$uploadDialogContent.updateProgressBar(percentComplete);
@@ -288,6 +300,17 @@ class Dark {
 						}
 					});
 				}
+
+				if (typeof beforeSend === 'function') {
+					beforeSend(files, (beforeSendResult) => {
+						if (beforeSendResult) {
+							doUpload();
+						}
+					});
+				} else {
+					doUpload();
+				}
+
 			});
 
 			$fileUpload.click();
@@ -297,6 +320,9 @@ class Dark {
 		}
 	}
 
+	/**
+	 * 下載檔案
+	 */
 	doDownolad(option = {}) {
 		if (this.isTop()) {
 			let url = option.url || "";
@@ -311,30 +337,45 @@ class Dark {
 		}
 	}
 
+	/**
+	 * 彈跳出 info 訊息
+	 */
 	info(message) {
 		let $prompt = this.getIndexTemplate("[data-index-template-prompt]");
 		$prompt.addClass("alert-dark");
 		this.prompt(message, $prompt, 1500);
 	}
 
+	/**
+	 * 彈跳出 success 訊息
+	 */
 	success(message) {
 		let $prompt = this.getIndexTemplate("[data-index-template-prompt]");
 		$prompt.addClass("alert-success");
 		return this.prompt(message, $prompt, 1500);
 	}
 
+	/**
+	 * 彈跳出 warning 訊息
+	 */
 	warning(message) {
 		let $prompt = this.getIndexTemplate("[data-index-template-prompt]");
 		$prompt.addClass("alert-warning");
 		return this.prompt(message, $prompt, 1500);
 	}
 
+	/**
+	 * 彈跳出 error 訊息
+	 */
 	error(message) {
 		let $prompt = this.getIndexTemplate("[data-index-template-prompt]");
 		$prompt.addClass("alert-danger");
 		return this.prompt(message, $prompt, 3000);
 	}
 
+	/**
+	 * 產生 Prompt 物件
+	 */
 	prompt(message, $prompt, dismiss) {
 		let $this = this;
 		if ($this.isTop()) {
@@ -359,6 +400,9 @@ class Dark {
 		}
 	}
 
+	/**
+	 * 產生 Dialog 物件
+	 */
 	dialog(option = {}, $content = "") {
 		let $this = this;
 		if ($this.isTop()) {
@@ -428,9 +472,9 @@ class Dark {
 				let $resizeBottomRight = $(".dark-spring-dialog-resize-bottom-right", $dialog);
 				let $resizeBottomLeft = $(".dark-spring-dialog-resize-bottom-left", $dialog);
 
-				$dialog.resizing = function(enabled) {
+				$dialog.resizing = (enabled) => {
 
-					function releaseEvent() {
+					let releaseEvent = () => {
 						if ($this.isMobileDevice()) {
 							$(top).unbind('touchend');
 							$(top).unbind('touchmove');
@@ -442,7 +486,7 @@ class Dark {
 						$contentContainer.show();
 					}
 
-					function registerInfo(e) {
+					let registerInfo = (e) => {
 						if ($this.isMobileDevice()) {
 							$dialog.data('mousedownX', e.originalEvent.touches[0].pageX);
 							$dialog.data('mousedownY', e.originalEvent.touches[0].pageY);
@@ -457,7 +501,7 @@ class Dark {
 						e.preventDefault();
 					}
 
-					function resolveSizing(mousemovedX, mousemovedY, name) {
+					let resolveSizing = (mousemovedX, mousemovedY, name) => {
 
 						$contentContainer.hide();
 
@@ -515,7 +559,7 @@ class Dark {
 
 					}
 
-					function registerMoveingEvent($resizer, name) {
+					let registerMoveingEvent = ($resizer, name) => {
 						releaseEvent();
 						if ($this.isMobileDevice()) {
 
@@ -553,7 +597,7 @@ class Dark {
 						}
 					}
 
-					function registerHolderEvent($resizer, name) {
+					let registerHolderEvent = ($resizer, name) => {
 						if ($this.isMobileDevice()) {
 							$resizer.on('touchstart', (e) => {
 								registerInfo(e);
@@ -594,7 +638,7 @@ class Dark {
 
 				$dialog.resizing(true);
 			} else {
-				$dialog.resizing = function() { };
+				$dialog.resizing = () => { };
 				$(".dark-spring-dialog-resize", $dialog).css("cursor", "default");
 			}
 
@@ -691,11 +735,11 @@ class Dark {
 
 			if (movable) {
 
-				$dialog.movable = function(enabled) {
+				$dialog.movable = (enabled) => {
 
 					let $header = $(".dark-spring-dialog-header-title", $dialog);
 
-					function resolveMoving(mousemoveX, mousemoveY) {
+					let resolveMoving = (mousemoveX, mousemoveY) => {
 
 						$contentContainer.hide();
 
@@ -730,7 +774,7 @@ class Dark {
 						});
 					}
 
-					function registerEvent() {
+					let registerEvent = () => {
 
 						releaseEvent();
 
@@ -775,7 +819,7 @@ class Dark {
 						}
 					}
 
-					function releaseEvent() {
+					let releaseEvent = () => {
 
 						$contentContainer.show();
 
@@ -840,7 +884,7 @@ class Dark {
 				$dialog.movable(true);
 
 			} else {
-				$dialog.movable = function() { };
+				$dialog.movable = () => { };
 				$('.dark-spring-dialog-header-title', $dialog).removeClass("moveable");
 			}
 
@@ -878,6 +922,9 @@ class Dark {
 		}
 	}
 
+	/**
+	 * 彈跳出 Alert 視窗
+	 */
 	alert(option = {}) {
 		let $this = this;
 
@@ -897,7 +944,7 @@ class Dark {
 				maximize: false,
 				minimize: false,
 				movable: true,
-				callback: function(callbackData) {
+				callback: (callbackData) => {
 					if (typeof callback === 'function') {
 						callback(callbackData);
 					}
@@ -923,6 +970,9 @@ class Dark {
 		}
 	}
 
+	/**
+	 * 彈跳出 confirm 視窗
+	 */
 	confirm(option = {}) {
 
 		let $this = this;
@@ -943,7 +993,7 @@ class Dark {
 				maximize: false,
 				minimize: false,
 				movable: true,
-				callback: function(callbackData) {
+				callback: (callbackData) => {
 					if (typeof callback === 'function') {
 						callback(callbackData);
 					}
@@ -976,6 +1026,9 @@ class Dark {
 		}
 	}
 
+	/**
+	 * 彈跳出 window 視窗
+	 */
 	window(option = {}) {
 
 		let $this = this;
@@ -1002,7 +1055,7 @@ class Dark {
 				maximize: maximize,
 				minimize: minimize,
 				movable: movable,
-				callback: function(callbackData) {
+				callback: (callbackData) => {
 					if (typeof callback === 'function') {
 						callback(callbackData);
 					}
@@ -1017,7 +1070,7 @@ class Dark {
 
 			let uuid = $dialogComponent.data('id');
 
-			$dialogComponent.data("doCloseCallback", function(callbackData) {
+			$dialogComponent.data("doCloseCallback", (callbackData) => {
 				try {
 					$dialogComponent.data("callbackData", callbackData);
 				} catch (e) {
@@ -1032,7 +1085,7 @@ class Dark {
 				let doCloseScript = [];
 				doCloseScript.push("<script>");
 				doCloseScript.push("function doCloseWindow(callbackData) {");
-				doCloseScript.push("dark.closeWindow('" + uuid + "', callbackData);");
+				doCloseScript.push("dark.closeDialog('" + uuid + "', callbackData);");
 				doCloseScript.push("}");
 
 				doCloseScript.push("$(document).ready(function(){");
@@ -1050,15 +1103,22 @@ class Dark {
 		}
 	}
 
-	closeWindow(uuid, callbackData) {
+	/**
+	 * 關閉指定 uuid 的 dialog
+	 *
+	 */
+	closeDialog(uuid, callbackData) {
 		let $this = this;
 		if ($this.isTop()) {
 			$('#' + uuid, top.document).data("doCloseCallback")(callbackData);
 		} else {
-			$this.getTopDark().closeWindow(uuid, callbackData);
+			$this.getTopDark().closeDialog(uuid, callbackData);
 		}
 	}
 
+	/**
+	 * 設定指定 dialog 至最上層
+	 */
 	setDialogTop(uuid) {
 
 		let $this = this;
@@ -1088,6 +1148,9 @@ class Dark {
 		}
 	}
 
+	/**
+	 * Grid 設定
+	 */
 	gridConfig() {
 		class GridConfig {
 			constructor() {
@@ -1138,6 +1201,10 @@ class Dark {
 		return new GridConfig();
 	}
 
+	/**
+	 * 產生 Grid 物件
+	 *
+	 */
 	grid(gridConfig = this.gridConfig()) {
 
 		let $dark = this;
@@ -1383,7 +1450,11 @@ class Dark {
 		return new Grid(gridConfig);
 	}
 
-	tableDefaultSorter() {
+	/**
+	 * Grid 預設的 Thead Sorter
+	 *
+	 */
+	gridDefaultSorter() {
 		return ($grid, $th, key) => {
 
 			if (!$grid.data('original-list')) {
@@ -1433,7 +1504,7 @@ class Dark {
 						let aText = '', bText = '';
 						if (sortkeyArray) {
 							let aTextBuffer = [], bTextBuffer = [];
-							key.forEach(function(item) {
+							key.forEach((item) => {
 								aTextBuffer.push(JSON.stringify(a.value[item]));
 								bTextBuffer.push(JSON.stringify(b.value[item]));
 							});
@@ -1450,7 +1521,7 @@ class Dark {
 						}
 					}).map((obj) => {
 						return obj.index;
-					}).forEach(function(item) {
+					}).forEach((item) => {
 						sortedData.push(originalList[item]);
 					});
 					$grid.$gridConfig.data = sortedData;
@@ -1462,6 +1533,11 @@ class Dark {
 		}
 	}
 
+	/**
+	 * 無分頁 Table
+	 *
+	 *
+	 */
 	table(option = {}) {
 
 		let $this = this;
@@ -1488,7 +1564,7 @@ class Dark {
 
 		config.setTbodyRendered(tbodyEach);
 
-		config.setTheadSorter(this.tableDefaultSorter());
+		config.setTheadSorter($this.gridDefaultSorter());
 
 		let $grid = $this.grid(config);
 
@@ -1515,6 +1591,11 @@ class Dark {
 		return $grid;
 	}
 
+	/**
+	 * 前端分頁 Table
+	 *
+	 *
+	 */
 	pageTable(option = {}) {
 
 		let $this = this;
@@ -1543,7 +1624,7 @@ class Dark {
 
 		config.setTbodyRendered(tbodyEach);
 
-		config.setTheadSorter(this.tableDefaultSorter());
+		config.setTheadSorter($this.gridDefaultSorter());
 
 		config.setPagerEnabled(true);
 
@@ -1593,6 +1674,12 @@ class Dark {
 		return $grid;
 	}
 
+	/**
+	 * 後端分頁 Table
+	 *
+	 *
+	 *
+	 */
 	fetchTable(option = {}) {
 
 		let $this = this;
@@ -1713,6 +1800,7 @@ class Dark {
 		return $this.grid(config);
 	}
 
+	/** 判斷是否是移動裝置 */
 	isMobileDevice() {
 		if (/Android|webOS|iPhone|iPad|Mac|Macintosh|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 			return true;
@@ -1721,18 +1809,20 @@ class Dark {
 		}
 	}
 
+	/** 隨機一個 UUID */
 	randomUUID() {
 		let d = Date.now();
 		if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
 			d += performance.now();
 		}
-		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
 			let r = (d + Math.random() * 16) % 16 | 0;
 			d = Math.floor(d / 16);
 			return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
 		});
 	}
 
+	/** 將物件轉換成 url 的 Querystring */
 	objectToQuerystring(obj = {}) {
 		return Object.keys(obj).filter((key) => obj[key] != undefined && obj[key] != '').reduce((str, key, i) => {
 			let delimiter, val;
@@ -1760,6 +1850,7 @@ class Dark {
 		}, '');
 	}
 
+	/** 取得物件的 html */
 	getHtmlString(obj = null) {
 		if (obj) {
 			if (typeof obj === 'string') {
@@ -1776,8 +1867,9 @@ class Dark {
 		}
 	}
 
+	/** 將字串的 @{key} 轉換成 item 的值 */
 	tranPattern(text, item) {
-		Object.keys(item).forEach(function(k) {
+		Object.keys(item).forEach((k) => {
 			let key = "@{" + k + "}";
 			while (text.includes(key)) {
 				text = text.replace(key, item[k]);

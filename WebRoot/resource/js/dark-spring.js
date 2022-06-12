@@ -1,25 +1,38 @@
 
 "use strict"
 
-class darkspring {
+class Dark {
+
+	document;
+	fading;
 
 	constructor(document) {
 		this.document = document;
 		this.fading = 300;
 	}
 
-	/** 將 element 加入至 top-object-container */
 	appendToTopObjectContainer($element) {
-		$element.appendTo(DarkSpring.getTopObjectContiner());
+		$element.appendTo(this.getTopObjectContiner());
 	}
 
 	getTopObjectContiner() {
-		return $('#top-object-container', top.DarkSpring.document);
+		return $('#top-object-container', this.getTopDocument());
 	}
 
-	/** 取得 index-template.jsp 中的模板 */
+	getTopDocument() {
+		return this.getTopDark().document;
+	}
+
+	getTopDark() {
+		return top['dark'];
+	}
+
+	isTop() {
+		return this === this.getTopDark();
+	}
+
 	getIndexTemplate(selector) {
-		return $(selector, $('#index-template', top.DarkSpring.document)).clone(false);
+		return $(selector, $('#index-template', this.getTopDocument())).clone(false);
 	}
 
 	spinner(show) {
@@ -48,7 +61,6 @@ class darkspring {
 		let method = option.method || null;
 		let data = option.data || {};
 		let async = option.async === false ? false : true;
-		let beforeSend = option.beforeSend || null;
 		let success = option.success || null;
 		let error = option.error || null;
 		let spinner = option.spinner === false ? false : true;
@@ -63,20 +75,6 @@ class darkspring {
 			method: method,
 			data: data,
 			async: async,
-			beforeSend: function(jqXHR, settings) {
-				if (typeof beforeSend === "function") {
-					if (beforeSend(jqXHR, settings)) {
-						return true;
-					} else {
-						if (spinner) {
-							$this.spinner(false);
-						}
-						return false;
-					}
-				} else {
-					return true;
-				}
-			},
 			success: function(res) {
 				try {
 					if (typeof success === "function") {
@@ -104,7 +102,9 @@ class darkspring {
 
 	doUpload(options = {}) {
 
-		if (this === top.DarkSpring) {
+		let $this = this;
+
+		if ($this.isTop()) {
 
 			let url = options.url || "";
 			let data = options.data || {};
@@ -167,11 +167,11 @@ class darkspring {
 						}
 					}, false);
 
-					let title = "Uploading " + files.length + " files";
+					let title = "Upload " + files.length + " files";
 
-					let $uploadMinimizeComponent = DarkSpring.getIndexTemplate("[data-index-template-min-upload-component]");
+					let $uploadMinimizeComponent = $this.getIndexTemplate("[data-index-template-min-upload-component]");
 
-					$uploadMinimizeComponent.appendTo($('#top-uploadings-container', top.document));
+					$uploadMinimizeComponent.appendTo($('#top-uploadings-container', $this.getTopDocument()));
 
 					uploading.min = $uploadMinimizeComponent;
 
@@ -185,11 +185,11 @@ class darkspring {
 						$('[data-index-template-min-upload-progress-bar]', $uploadMinimizeComponent).css('width', percent + '%').attr('aria-valuenow', percent);
 					};
 
-					let $uploadDialogContent = DarkSpring.getIndexTemplate("[data-index-template-dialog-upload-component");
-					
+					let $uploadDialogContent = $this.getIndexTemplate("[data-index-template-dialog-upload-component");
+
 					let canceled = false;
-					
-					DarkSpring.table({
+
+					$this.table({
 						table: $('table', $uploadDialogContent),
 						data: files,
 						thead: [[
@@ -202,7 +202,7 @@ class darkspring {
 						]],
 						theadEach: ($theads) => {
 							$('button', $theads[0]).click(() => {
-								uploading.cencalDialog = DarkSpring.confirm({
+								uploading.cencalDialog = $this.confirm({
 									title: message.cancelTitle,
 									message: message.cancelMessage,
 									callback: (confirmResult) => {
@@ -239,7 +239,7 @@ class darkspring {
 						$('span', $uploadDialogContent).html(percent + "%");
 					}
 
-					let $uploadDialogComponent = DarkSpring.dialog({
+					let $uploadDialogComponent = $this.dialog({
 						title: title,
 						shadow: true,
 						resize: true,
@@ -282,7 +282,7 @@ class darkspring {
 							}
 						});
 						if (typeof error === 'function') {
-							if(!canceled){
+							if (!canceled) {
 								error(response);
 							}
 						}
@@ -293,18 +293,22 @@ class darkspring {
 			$fileUpload.click();
 
 		} else {
-			top.DarkSpring.doUpload(options);
+			$this.getTopDark().doUpload(options);
 		}
 	}
 
 	doDownolad(option = {}) {
-		let url = option.url || "";
-		let data = option.data || {};
-		let urlQueryString = url + this.objectToQuerystring(data);
-		let $a = document.createElement("a");
-		$a.setAttribute("href", urlQueryString);
-		$a.setAttribute("download", "");
-		$a.click();
+		if (this.isTop()) {
+			let url = option.url || "";
+			let data = option.data || {};
+			let urlQueryString = url + this.objectToQuerystring(data);
+			let $a = this.getTopDocument().createElement("a");
+			$a.setAttribute("href", urlQueryString);
+			$a.setAttribute("download", "");
+			$a.click();
+		} else {
+			this.getTopDark().doDownolad(option);
+		}
 	}
 
 	info(message) {
@@ -316,24 +320,24 @@ class darkspring {
 	success(message) {
 		let $prompt = this.getIndexTemplate("[data-index-template-prompt]");
 		$prompt.addClass("alert-success");
-		this.prompt(message, $prompt, 1500);
+		return this.prompt(message, $prompt, 1500);
 	}
 
 	warning(message) {
 		let $prompt = this.getIndexTemplate("[data-index-template-prompt]");
 		$prompt.addClass("alert-warning");
-		this.prompt(message, $prompt, 1500);
+		return this.prompt(message, $prompt, 1500);
 	}
 
 	error(message) {
 		let $prompt = this.getIndexTemplate("[data-index-template-prompt]");
 		$prompt.addClass("alert-danger");
-		this.prompt(message, $prompt, 3000);
+		return this.prompt(message, $prompt, 3000);
 	}
 
 	prompt(message, $prompt, dismiss) {
-		if (this === top.DarkSpring) {
-			let $this = this;
+		let $this = this;
+		if ($this.isTop()) {
 			message = message || "";
 			dismiss = isNaN(dismiss) ? 3000 : dismiss;
 			$('span', $prompt).html(message);
@@ -349,14 +353,15 @@ class darkspring {
 				$prompt.remove();
 			});
 
+			return $prompt;
 		} else {
-			top.DarkSpring.prompt(message, $prompt, dismiss);
+			return $this.getTopDark().prompt(message, $prompt, dismiss);
 		}
 	}
 
 	dialog(option = {}, $content = "") {
-		if (this === top.DarkSpring) {
-			let $this = this;
+		let $this = this;
+		if ($this.isTop()) {
 
 			let title = option.title || "";
 			let width = option.width || "300px";
@@ -850,7 +855,7 @@ class darkspring {
 				$dialogComponent.doClose();
 			});
 
-			this.appendToTopObjectContainer($dialogComponent);
+			$this.appendToTopObjectContainer($dialogComponent);
 
 			$('.dark-spring-dialog-header-title', $dialog).css({
 				width: "calc( 100% - " + toolbarSize + "px )"
@@ -862,19 +867,21 @@ class darkspring {
 
 
 			$(".dark-spring-dialog-header", $dialog).on($this.isMobileDevice() ? "touchstart" : "mousedown", () => {
-				DarkSpring.setDialogTop(uuid);
+				$this.setDialogTop(uuid);
 			});
 
-			DarkSpring.setDialogTop(uuid);
+			$this.setDialogTop(uuid);
 
 			return $dialogComponent;
 		} else {
-			return top.DarkSpring.dialog(option, $content);
+			return $this.getTopDark().dialog(option, $content);
 		}
 	}
 
 	alert(option = {}) {
-		if (this === top.DarkSpring) {
+		let $this = this;
+
+		if ($this.isTop()) {
 			let title = option.title || "";
 			let message = option.message || "";
 			let width = option.width;
@@ -897,11 +904,11 @@ class darkspring {
 				}
 			}
 
-			let $content = this.getIndexTemplate("[data-index-template-dialog-alert]");
+			let $content = $this.getIndexTemplate("[data-index-template-dialog-alert]");
 
 			$('[data-index-template-dialog-alert-message]', $content).html(message);
 
-			let $dialogComponent = this.dialog(dialogOption, $content);
+			let $dialogComponent = $this.dialog(dialogOption, $content);
 
 			$("[data-index-template-shadow]", $dialogComponent).css("z-index", "2147483646");
 			$("[data-index-template-dialog]", $dialogComponent).css("z-index", "2147483647");
@@ -912,12 +919,15 @@ class darkspring {
 
 			return $dialogComponent;
 		} else {
-			return top.DarkSpring.alert(option);
+			return $this.getTopDark().alert(option);
 		}
 	}
 
 	confirm(option = {}) {
-		if (this === top.DarkSpring) {
+
+		let $this = this;
+
+		if ($this.isTop()) {
 			let title = option.title || "";
 			let message = option.message || "";
 			let width = option.width;
@@ -940,11 +950,11 @@ class darkspring {
 				}
 			}
 
-			let $content = this.getIndexTemplate("[data-index-template-dialog-confirm]");
+			let $content = $this.getIndexTemplate("[data-index-template-dialog-confirm]");
 
 			$('[data-index-template-dialog-confirm-message]', $content).html(message);
 
-			let $dialogComponent = this.dialog(dialogOption, $content);
+			let $dialogComponent = $this.dialog(dialogOption, $content);
 
 			$("[data-index-template-shadow]", $dialogComponent).css("z-index", "2147483646");
 			$("[data-index-template-dialog]", $dialogComponent).css("z-index", "2147483647");
@@ -962,12 +972,16 @@ class darkspring {
 
 			return $dialogComponent;
 		} else {
-			return top.DarkSpring.confirm(option);
+			return $this.getTopDark().confirm(option);
 		}
 	}
 
 	window(option = {}) {
-		if (this === top.DarkSpring) {
+
+		let $this = this;
+
+		if ($this.isTop()) {
+
 			let title = option.title || "";
 			let url = option.url || "";
 			let width = option.width;
@@ -995,11 +1009,11 @@ class darkspring {
 				}
 			}
 
-			let $content = this.getIndexTemplate("[data-index-template-dialog-window]");
+			let $content = $this.getIndexTemplate("[data-index-template-dialog-window]");
 
 			$content.attr("src", url);
 
-			let $dialogComponent = this.dialog(dialogOption, $content);
+			let $dialogComponent = $this.dialog(dialogOption, $content);
 
 			let uuid = $dialogComponent.data('id');
 
@@ -1007,7 +1021,7 @@ class darkspring {
 				try {
 					$dialogComponent.data("callbackData", callbackData);
 				} catch (e) {
-					DarkSpring.error(e);
+					$this.error(e);
 				} finally {
 					$dialogComponent.doClose();
 				}
@@ -1018,12 +1032,12 @@ class darkspring {
 				let doCloseScript = [];
 				doCloseScript.push("<script>");
 				doCloseScript.push("function doCloseWindow(callbackData) {");
-				doCloseScript.push("DarkSpring.closeWindow('" + uuid + "', callbackData);");
+				doCloseScript.push("dark.closeWindow('" + uuid + "', callbackData);");
 				doCloseScript.push("}");
 
 				doCloseScript.push("$(document).ready(function(){");
-				doCloseScript.push("$('html').on(DarkSpring.isMobileDevice() ? 'touchstart' : 'mousedown', () => {");
-				doCloseScript.push("DarkSpring.setDialogTop('" + uuid + "')");
+				doCloseScript.push("$('html').on(dark.isMobileDevice() ? 'touchstart' : 'mousedown', () => {");
+				doCloseScript.push("dark.setDialogTop('" + uuid + "')");
 				doCloseScript.push("});});");
 
 				doCloseScript.push("</script>");
@@ -1032,21 +1046,26 @@ class darkspring {
 
 			return $dialogComponent;
 		} else {
-			return top.DarkSpring.window(option);
+			return $this.getTopDark().window(option);
 		}
 	}
 
 	closeWindow(uuid, callbackData) {
-		if (this === top.DarkSpring) {
+		let $this = this;
+		if ($this.isTop()) {
 			$('#' + uuid, top.document).data("doCloseCallback")(callbackData);
 		} else {
-			top.DarkSpring.closeWindow(uuid, callbackData);
+			$this.getTopDark().closeWindow(uuid, callbackData);
 		}
 	}
 
 	setDialogTop(uuid) {
-		if (this === top.DarkSpring) {
-			let topObjectContiner = DarkSpring.getTopObjectContiner();
+
+		let $this = this;
+
+		if ($this.isTop()) {
+
+			let topObjectContiner = $this.getTopObjectContiner();
 
 			let dialogComponents = $('[data-index-template-dialog-component]', topObjectContiner);
 
@@ -1065,7 +1084,7 @@ class darkspring {
 			$('[data-index-template-dialog]', targetDialogComponent).css('z-index', nextZindex++);
 
 		} else {
-			top.DarkSpring.setDialogTop(uuid);
+			$this.getTopDark().setDialogTop(uuid);
 		}
 	}
 
@@ -1120,6 +1139,9 @@ class darkspring {
 	}
 
 	grid(gridConfig = this.gridConfig()) {
+
+		let $dark = this;
+
 		class Grid {
 			constructor(gridConfig) {
 				let $this = this;
@@ -1130,7 +1152,7 @@ class darkspring {
 
 				$this.$table = $this.$gridConfig.table;
 				$this.$title = $("<caption align='top' class='container-fluid'>");
-				$this.$spinner = DarkSpring.getIndexTemplate("[data-index-template-table-spinner]");
+				$this.$spinner = $dark.getIndexTemplate("[data-index-template-table-spinner]");
 				$this.$title.append($this.$spinner);
 
 				new ResizeSensor($this.$table.parent(), () => {
@@ -1202,7 +1224,7 @@ class darkspring {
 								let $tr = $('<tr>');
 								meta.forEach((item) => {
 									let $td = $('<td>');
-									$td.html(DarkSpring.tranPattern(DarkSpring.getHtmlString(item.content), listItem));
+									$td.html($dark.tranPattern($dark.getHtmlString(item.content), listItem));
 									if (typeof item.attrs === "object") {
 										Object.keys(item.attrs).forEach((key) => {
 											$td.attr(key, item.attrs[key]);
@@ -1280,7 +1302,7 @@ class darkspring {
 				}
 
 				$this.renderer.pagerEvent = () => {
-					let $pager = DarkSpring.getIndexTemplate("[data-index-template-table-pager]");
+					let $pager = $dark.getIndexTemplate("[data-index-template-table-pager]");
 					$this.$pager.append($pager);
 
 					$("[data-pager-first]", $pager).click(() => {
@@ -1442,6 +1464,8 @@ class darkspring {
 
 	table(option = {}) {
 
+		let $this = this;
+
 		let table = option.table || null;
 		let data = option.data || [];
 		let thead = option.thead || [];
@@ -1449,7 +1473,7 @@ class darkspring {
 		let tbody = option.tbody || [];
 		let tbodyEach = option.tbodyEach || null;
 
-		let config = this.gridConfig();
+		let config = $this.gridConfig();
 
 		config.setTable(table);
 		config.setData(data);
@@ -1466,7 +1490,7 @@ class darkspring {
 
 		config.setTheadSorter(this.tableDefaultSorter());
 
-		let $grid = this.grid(config);
+		let $grid = $this.grid(config);
 
 		$grid.doFilter = (key, value) => {
 			$grid.filterKey = key;
@@ -1492,6 +1516,9 @@ class darkspring {
 	}
 
 	pageTable(option = {}) {
+
+		let $this = this;
+
 		let table = option.table || null;
 		let data = option.data || [];
 		let thead = option.thead || [];
@@ -1501,7 +1528,7 @@ class darkspring {
 		let pageNum = option.pageNum || 1;
 		let pageSize = option.pageSize || 10;
 
-		let config = this.gridConfig();
+		let config = $this.gridConfig();
 
 		config.setTable(table);
 		config.setData(data);
@@ -1555,7 +1582,7 @@ class darkspring {
 			callback(returnList.slice(sliceStart, sliceEnd));
 		});
 
-		let $grid = this.grid(config);
+		let $grid = $this.grid(config);
 
 		$grid.doFilter = (key, value) => {
 			$grid.filterKey = key;
@@ -1567,6 +1594,9 @@ class darkspring {
 	}
 
 	fetchTable(option = {}) {
+
+		let $this = this;
+
 		let table = option.table || null;
 		let url = option.url || null;
 		let parameter = option.parameter || {};
@@ -1577,7 +1607,7 @@ class darkspring {
 		let pageNum = option.pageNum || 1;
 		let pageSize = option.pageSize || 10;
 
-		let config = this.gridConfig();
+		let config = $this.gridConfig();
 
 		config.fetch = {};
 		config.fetch.url = url;
@@ -1665,7 +1695,7 @@ class darkspring {
 				orderby: orderby
 			});
 
-			DarkSpring.doPost({
+			$this.doPost({
 				url: url,
 				data: parameter,
 				spinner: false,
@@ -1680,7 +1710,7 @@ class darkspring {
 
 		});
 
-		return this.grid(config);
+		return $this.grid(config);
 	}
 
 	isMobileDevice() {
@@ -1689,15 +1719,6 @@ class darkspring {
 		} else {
 			return false;
 		}
-	}
-
-	marginString(top, right, bottom, left) {
-		let margins = [];
-		margins.push(top.trim());
-		margins.push(right.trim());
-		margins.push(bottom.trim());
-		margins.push(left.trim());
-		return margins.join(" ");
 	}
 
 	randomUUID() {
@@ -1828,4 +1849,4 @@ class darkspring {
 
 }
 
-var DarkSpring = new darkspring(document);
+var dark = new Dark(document);

@@ -150,7 +150,7 @@ $(document).ready(function(){
 });
 
 function doQuery(callback){
-	DarkSpring.doPost({
+	dark.doPost({
 		url : "getTableData",
 		success : (data) => {
 			callback(data.data);
@@ -160,7 +160,7 @@ function doQuery(callback){
 
 function renderTable(){
 	doQuery((data) => {
-		$table = DarkSpring.table({
+		$table = dark.table({
 			table : $('#table'),
 			data : data,
 			thead : theadMeta,
@@ -171,7 +171,7 @@ function renderTable(){
 
 function renderPageTable(){
 	doQuery((data) => {
-		$table = DarkSpring.pageTable({
+		$table = dark.pageTable({
 			table : $('#table'),
 			data : data,
 			thead : theadMeta,
@@ -181,7 +181,7 @@ function renderPageTable(){
 }
 
 function renderFetchTable(){
-	$table = DarkSpring.fetchTable({
+	$table = dark.fetchTable({
 		table : $('#table'),
 		url : "getTableData",
 		thead : theadMeta,

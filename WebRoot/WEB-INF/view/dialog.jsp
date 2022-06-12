@@ -10,31 +10,31 @@
 $(document).ready(function(){
 	
 	$('#alert-button').click(() => {
-		DarkSpring.alert({
+		dark.alert({
 			title : "Alert Dialog",
 			message : "Messages....",
 			callback : function(){
-				DarkSpring.info("Alert Closed!");
+				dark.info("Alert Closed!");
 			}
 		});
 	});
 	
 	$('#confirm-button').click(() => {
-		DarkSpring.confirm({
+		dark.confirm({
 			title : "Confirm Dialog ",
 			message : "Messages....",
 			callback : function(confirm){
 				if(confirm) {
-					DarkSpring.info("Confirm Accept!");
+					dark.info("Confirm Accept!");
 				} else {
-					DarkSpring.info("Confirm Cancel!");
+					dark.info("Confirm Cancel!");
 				}
 			}
 		});
 	});
 	
 	$('#window-button').click(() => {
-		DarkSpring.window({
+		dark.window({
 			title : "Window Confirm",
 			width: "600px",
 			height: "400px",
@@ -46,7 +46,7 @@ $(document).ready(function(){
 			url : "dialog-window",
 			callback : function (callbackData){
 				if(callbackData){
-					DarkSpring.info(callbackData);
+					dark.info(callbackData);
 				}
 				$('#window-callback-result').html(callbackData);
 			}

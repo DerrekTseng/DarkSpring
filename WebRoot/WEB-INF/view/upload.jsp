@@ -10,7 +10,7 @@
 $(document).ready(function(){
 	    
 	$('#file-button').click(() => {
-		DarkSpring.doUpload({
+		dark.doUpload({
 			url : "doUpload",
 			type : 'file',
 			data : {},
@@ -18,19 +18,19 @@ $(document).ready(function(){
 				callback(true);
 			},
 			abort : () => {
-				DarkSpring.info("上傳取消");
+				dark.info("上傳取消");
 			},
 			success : (response) => {
-				DarkSpring.success("上傳成功");
+				dark.success("上傳成功");
 			},
 			error : () => {
-				DarkSpring.error("上傳失敗");
+				dark.error("上傳失敗");
 			}
 		});
 	});
 	
 	$('#files-button').click(() => {
-		DarkSpring.doUpload({
+		dark.doUpload({
 			url : "doUpload",
 			type : 'files',
 			data : {},
@@ -38,19 +38,19 @@ $(document).ready(function(){
 				callback(true);
 			},
 			abort : () => {
-				DarkSpring.info("上傳取消");
+				dark.info("上傳取消");
 			},
 			success : (response) => {
-				DarkSpring.success("上傳成功");
+				dark.success("上傳成功");
 			},
 			error : () => {
-				DarkSpring.error("上傳失敗");
+				dark.error("上傳失敗");
 			}
 		});
 	});
 	
 	$('#folder-button').click(() => {
-		DarkSpring.doUpload({
+		dark.doUpload({
 			url : "doUpload",
 			type : 'folder',
 			data : {},
@@ -58,13 +58,13 @@ $(document).ready(function(){
 				callback(true);
 			},
 			abort : () => {
-				DarkSpring.info("上傳取消");
+				dark.info("上傳取消");
 			},
 			success : (response) => {
-				DarkSpring.success("上傳成功");
+				dark.success("上傳成功");
 			},
 			error : () => {
-				DarkSpring.error("上傳失敗");
+				dark.error("上傳失敗");
 			}
 		});
 	});

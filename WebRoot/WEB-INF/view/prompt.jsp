@@ -10,19 +10,19 @@
 $(document).ready(function(){
 	
 	$('#info-prompt-button').click(() => {
-		DarkSpring.info($('#info-prompt-message').val());
+		dark.info($('#info-prompt-message').val());
 	});
 	
 	$('#success-prompt-button').click(() => {
-		DarkSpring.success($('#success-prompt-message').val());
+		dark.success($('#success-prompt-message').val());
 	});
 	
 	$('#warning-prompt-button').click(() => {
-		DarkSpring.warning($('#warning-prompt-message').val());
+		dark.warning($('#warning-prompt-message').val());
 	});
 	
 	$('#error-prompt-button').click(() => {
-		DarkSpring.error($('#error-prompt-message').val());
+		dark.error($('#error-prompt-message').val());
 	});
 	
 });

@@ -234,7 +234,7 @@ function registerIndexWindowEvent(){
 					width : dialogDefaultWidth,
 					height : dialogDefaultHeight,
 					inset: '0px',
-					margin : DarkSpring.marginString(heightGap, widthGap, heightGap, widthGap)
+					margin : "auto"
 				});
 				
 			}
@@ -308,7 +308,7 @@ function registerIndexWindowEvent(){
         <div id="top-uploadings-component" class="nav-item dropdown" style="display: none">
 			<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
 				<i class="fas fa-cloud-upload-alt me-lg-2"></i>
-				<span class="d-none d-lg-inline-flex">Upload</span>
+				<span class="d-none d-lg-inline-flex">Uploading</span>
 			</a>
 			<div id="top-uploadings-container" class="dark-spring-dropdown-menu dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
 				
@@ -319,7 +319,7 @@ function registerIndexWindowEvent(){
         <div class="nav-item dropdown">
             <a class="nav-link dropdown-toggle none-select clickable" data-bs-toggle="dropdown">
                 <i class="fa fa-user me-lg-2"></i>
-                <span class="d-none d-lg-inline-flex">Derrek Tseng</span>
+                <span class="d-none d-lg-inline-flex">Dark User</span>
             </a>
             <div class="dark-spring-dropdown-menu dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
                 <a class="dropdown-item none-select clickable">My Profile</a>

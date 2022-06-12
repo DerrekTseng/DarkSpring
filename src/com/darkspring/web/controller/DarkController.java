@@ -188,10 +188,17 @@ public class DarkController {
 	public void doUpload(RequestFile requestFile) {
 		requestFile.getData();
 	}
-	
+
 	@GetMapping("icons")
 	public ModelAndView icons() {
 		ModelAndView view = new ModelAndView("icons");
+		return view;
+	}
+
+	@GetMapping("openIconView")
+	public ModelAndView openIconView(String className) {
+		ModelAndView view = new ModelAndView("icon-view");
+		view.addObject("className", className);
 		return view;
 	}
 

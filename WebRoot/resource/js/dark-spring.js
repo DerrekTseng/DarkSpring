@@ -1061,6 +1061,7 @@ class Dark {
 
 			let title = option.title || "";
 			let url = option.url || "";
+			let data = option.data || {};
 			let width = option.width;
 			let height = option.height;
 			let callback = option.callback;
@@ -1088,7 +1089,7 @@ class Dark {
 
 			let $content = $this.getIndexTemplate("[data-index-template-dialog-window]");
 
-			$content.attr("src", url);
+			$content.attr("src", url + $this.objectToQuerystring(data));
 
 			let $dialogComponent = $this.dialog(dialogOption, $content);
 

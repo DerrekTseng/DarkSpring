@@ -53,6 +53,22 @@ $(document).ready(function(){
 	
 });
 
+function openIconView(e){
+	let className = $('i', e)[0].className;
+	dark.window({
+		title : className,
+		url : "openIconView",
+		width: "310px",
+		height: "270px",
+		maximize : false,
+		minimize : false,
+		shadow : false,
+		data : {
+			className : className
+		}
+	});
+}
+
 </script>
   <style>
     .icons {
@@ -80,7 +96,7 @@ $(document).ready(function(){
 </head>
 
 <content tag="template">
-	<div data-icon-box class="icon">
+	<div data-icon-box class="icon clickable" onClick="openIconView(this)">
          <i style=' margin: .25rem; font-size: 2.5rem;'></i>
          <div class='label'></div>
     </div>
@@ -89,7 +105,7 @@ $(document).ready(function(){
 <content tag="body">
 	<div class="container-fluid bg-secondary rounded mt-4 p-2">
 		<div style="width:100%; margin-bottom:8px">
-			<input id="filter-input" class="form-control" type='text'/>
+			<input placeholder="Filter Icons" id="filter-input" class="form-control" type='text'/>
 		</div>
 		<div data-target class="icons"></div>
 	</div>

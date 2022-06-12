@@ -242,7 +242,7 @@ function registerIndexWindowEvent(){
 			if( topWidth < topHeight ){ // 直立
 				
 				$('#main-page').css({
-					height: "calc( 100% - 180px)"
+					height: "calc( 100% - 164px)"
 				});
 				
 			} else { // 橫放

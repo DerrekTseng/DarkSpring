@@ -189,7 +189,7 @@ function registerIndexWindowEvent(){
 		 subtree : true
 	});
 	
-	$(window).resize(() => {
+	let windowResize = () => {
 		
 		let topWidth = $(top).width();
 		let topHeight = $(top).height();
@@ -241,7 +241,45 @@ function registerIndexWindowEvent(){
 			
 		});
 		
+		if(dark.isMobileDevice()){
+			
+			$('#test-width').html(topWidth);
+			$('#test-height').html(topHeight);
+			
+			if( topWidth < topHeight ){ // 直立
+				
+				$('#main-page').css({
+					height: "calc( 100% - 180px)"
+				});
+				
+			} else { // 橫放
+				
+				$('#main-page').css({
+					height: "calc( 100% - 90px)"
+				});
+			}
+			
+			$('#index-main-container').css({
+				"max-height": topHeight + "px",
+				overflow: "hidden"
+			})
+			
+			topHeight -= 92;
+			
+			$("#sidebar").css({
+				"max-height": topHeight + "px",
+				overflow: "auto"
+			})
+			
+		}
+	}
+	
+	$(window).resize(() => {
+		windowResize();
 	});
+	
+	windowResize();
+	
 }
 
 

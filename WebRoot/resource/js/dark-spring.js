@@ -901,6 +901,30 @@ class Dark {
 
 			$this.appendToTopObjectContainer($dialogComponent);
 
+
+			let shownDialogWidth = parseInt($dialog.width());
+			let shownDialogHeight = parseInt($dialog.height());
+
+			let shownTopWidth = parseInt($(top).width());
+			let shownTopHeight = parseInt($(top).height());
+
+			if (shownDialogWidth > shownTopWidth) {
+				$dialog.css({
+					width: shownTopWidth + "px"
+				});
+				$dialog.data("defaultWidth", shownTopWidth + "px");
+			}
+
+			if (shownDialogHeight > shownTopHeight) {
+				$dialog.css({
+					height: shownTopHeight + "px"
+				});
+				$dialog.data("defaultHeight", shownTopHeight + "px");
+			}
+
+			$dialog.data("defaultWidth", width);
+			$dialog.data("defaultHeight", height);
+
 			$('.dark-spring-dialog-header-title', $dialog).css({
 				width: "calc( 100% - " + toolbarSize + "px )"
 			});

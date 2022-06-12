@@ -11,9 +11,8 @@ $(document).ready(function() {
 	};
 	spinner();
 
-
 	// Back to top button
-	$(window).scroll(function() {
+	$('.dark-spring-main-container, window').scroll(function() {
 		if ($(this).scrollTop() > 300) {
 			$('.back-to-top').fadeIn('fast');
 		} else {
@@ -22,7 +21,9 @@ $(document).ready(function() {
 	});
 	
 	$('.back-to-top').on("click", function() {
-		$('html, body', document).animate({ scrollTop: 0 }, 0, 'easeInOutExpo');
+		$('.dark-spring-main-container, html, body', document).animate({ 
+			scrollTop: 0 
+		}, 500);
 		return false;
 	});
 

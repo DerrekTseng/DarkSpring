@@ -12,6 +12,7 @@
 <%-- Icon Font Stylesheet --%>
 <link href="<c:url value='/resource/lib/font-awesome-5.15.3/css/all.min.css' />" rel="stylesheet">
 <link href="<c:url value='/resource/lib/bootstrap-icons-1.8.2/bootstrap-icons.css' />" rel="stylesheet">
+<link href="<c:url value='/resource/lib/glyphicons/css/glyphicons.css' />" rel="stylesheet">
 
 <%-- Libraries Stylesheet --%>
 <link href="<c:url value='/resource/lib/owlcarousel/assets/owl.carousel.min.css' />" rel="stylesheet">

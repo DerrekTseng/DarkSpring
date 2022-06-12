@@ -66,8 +66,9 @@ var menus = [
 		items : [
 			{ url : "grid", text : "Grid"},
 			{ url : "prompt", text : "Prompt"},
+			{ url : "upload", text : "Upload"},
 			{ url : "dialog", text : "Dialog"},
-			{ url : "upload", text : "Upload"}
+			{ url : "icons", text : "Icons"}
 		]
 	}
 	
@@ -82,14 +83,6 @@ $(document).ready(function(){
 	$sidebar = $('#sidebar');
 	
 	renderMenu(menus);
-	
-	// Progress Bar
-    $('.pg-bar').waypoint(function () {
-        $('.progress .progress-bar').each(function () {
-            $(this).css("width", $(this).attr("aria-valuenow") + '%');
-        });
-    }, {offset: '80%'});
-	
 	
 });
 

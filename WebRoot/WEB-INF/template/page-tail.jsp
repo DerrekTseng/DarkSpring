@@ -3,7 +3,6 @@
 <script src="<c:url value='/resource/lib/bootstrap/js/bootstrap.bundle.min.js' />"></script>
 <script src="<c:url value='/resource/lib/chart/chart.min.js' />"></script>
 <script src="<c:url value='/resource/lib/easing/easing.min.js' />"></script>
-<script src="<c:url value='/resource/lib/waypoints/waypoints.min.js' />"></script>
 <script src="<c:url value='/resource/lib/owlcarousel/owl.carousel.min.js' />"></script>
 <script src="<c:url value='/resource/lib/tempusdominus/js/moment.min.js' />"></script>
 <script src="<c:url value='/resource/lib/tempusdominus/js/moment-timezone.min.js' />"></script>

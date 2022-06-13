@@ -10,6 +10,8 @@
 <script src="<c:url value='/resource/lib/css-element-queries/ElementQueries.js' />"></script>
 <script src="<c:url value='/resource/lib/css-element-queries/ResizeSensor.js' />"></script>
 
+<script src="<c:url value='/resource/js/bootstrap-with-jquery.js?v=' /> <%= java.util.UUID.randomUUID().toString() %>"></script>
+
 <%-- Template Javascript --%>
 <script src="<c:url value='/resource/js/main.js?v=' /> <%= java.util.UUID.randomUUID().toString() %>"></script>
 

@@ -182,8 +182,12 @@ class Dark {
 					let title = "Upload " + files.length + " files";
 
 					let $uploadMinimizeComponent = $this.getIndexTemplate("[data-index-template-min-upload-component]");
+					
+					let $topUploadingsComponent = $('#top-uploadings-component', $this.getTopDocument());
+					
+					let $topUploadMinimizeContainer = $('#top-uploadings-container', $topUploadingsComponent);
 
-					$uploadMinimizeComponent.appendTo($('#top-uploadings-container', $this.getTopDocument()));
+					$uploadMinimizeComponent.appendTo($topUploadMinimizeContainer);
 
 					uploading.min = $uploadMinimizeComponent;
 
@@ -261,6 +265,8 @@ class Dark {
 						width: "70vw",
 						height: "70vh"
 					}, $uploadDialogContent).hide();
+
+					$('.dropdown-toggle', $topUploadingsComponent).bs().dropdown().show();
 
 					uploading.dialog = $uploadDialogComponent;
 

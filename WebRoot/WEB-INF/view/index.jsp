@@ -68,7 +68,8 @@ var menus = [
 			{ url : "prompt", text : "Prompt"},
 			{ url : "upload", text : "Upload"},
 			{ url : "dialog", text : "Dialog"},
-			{ url : "icons", text : "Icons"}
+			{ url : "icons", text : "Icons"},
+			{ url : "test", text : "Test"}
 		]
 	}
 	

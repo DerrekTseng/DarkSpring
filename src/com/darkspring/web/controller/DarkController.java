@@ -201,5 +201,11 @@ public class DarkController {
 		view.addObject("className", className);
 		return view;
 	}
+	
+	@GetMapping("test")
+	public ModelAndView test() {
+		ModelAndView view = new ModelAndView("test");
+		return view;
+	}
 
 }

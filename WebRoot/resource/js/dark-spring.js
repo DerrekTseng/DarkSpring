@@ -182,9 +182,9 @@ class Dark {
 					let title = "Upload " + files.length + " files";
 
 					let $uploadMinimizeComponent = $this.getIndexTemplate("[data-index-template-min-upload-component]");
-					
+
 					let $topUploadingsComponent = $('#top-uploadings-component', $this.getTopDocument());
-					
+
 					let $topUploadMinimizeContainer = $('#top-uploadings-container', $topUploadingsComponent);
 
 					$uploadMinimizeComponent.appendTo($topUploadMinimizeContainer);
@@ -1828,6 +1828,50 @@ class Dark {
 		});
 
 		return $this.grid(config);
+	}
+
+	/**
+	 * 利用 Template 產生物件
+	 * 
+	 * 參數 option:
+	 * target = Jquery 物件，會將產生完的物件加入進去
+	 * mode =  加入的模式 append | prepend ， 預設值 append
+	 * data = Json Array
+	 * template = 支援3種物件 Jquery Object, Dom Object, Html String 
+	 *            會將裡面的 @{key} 轉換成 data 的 value
+	 *            使用方式:
+	 *					1. template : $('#template')
+	 *					2. template : "<div>@{name}</div>"
+	 *					3. template : document.getElementById("template")
+	 *
+	 * itemEach = function，每一個物件產生完成後後觸發 itemEach : ($e, data) => { }
+	 *
+	 */
+	template(option = {}) {
+		let $this = this;
+
+		let target = option.target;
+		let mode = (option.mode || "append").toLowerCase();
+		let data = option.data || [];
+		let itemEach = option.itemEach || null;
+		let template = $this.getHtmlString(option.template) || "";
+
+		let itemEachIsFunction = typeof itemEach === 'function';
+
+		data.forEach(function(dataItem) {
+
+			let $e = $($this.tranPattern(template, dataItem));
+
+			if (mode == 'prepend') {
+				target.prepend($e);
+			} else {
+				target.append($e);
+			}
+
+			if (itemEachIsFunction) {
+				itemEach($e, dataItem);
+			}
+		});
 	}
 
 	/** 判斷是否是移動裝置 */

@@ -236,9 +236,6 @@ function registerIndexWindowEvent(){
 		
 		if(dark.isMobileDevice()){
 			
-			$('#test-width').html(topWidth);
-			$('#test-height').html(topHeight);
-			
 			if( topWidth < topHeight ){ // 直立
 				
 				$('#main-page').css({

@@ -19,9 +19,9 @@ var menus = [
 		icon : "fa fa-laptop me-2",
 		text : "Elements",
 		items : [
-			{ url : "button", text : "Buttons"},
-			{ url : "typography", text : "Typography"},
-			{ url : "element", text : "Other Elements"}
+			{ type : "PAGE", url : "button", text : "Buttons"},
+			{ type : "PAGE", url : "typography", text : "Typography"},
+			{ type : "PAGE", url : "element", text : "Other Elements"}
 		]
 	},
 	{ 
@@ -53,10 +53,10 @@ var menus = [
 		icon : "far fa-file-alt me-2",
 		text : "Pages",
 		items : [
-			{ url : "signin", text : "Sign In"},
-			{ url : "signup", text : "Sign Up"},
-			{ url : "error", text : "404 Error"},
-			{ url : "blank", text : "Blank Page"}
+			{ type : "PAGE", url : "signin", text : "Sign In"},
+			{ type : "PAGE", url : "signup", text : "Sign Up"},
+			{ type : "PAGE", url : "error", text : "404 Error"},
+			{ type : "PAGE", url : "blank", text : "Blank Page"}
 		]
 	},
 	{
@@ -64,50 +64,50 @@ var menus = [
 		icon : "fas fa-object-group me-2",
 		text : "Components",
 		items : [
-			{ url : "grid", text : "Grid"},
-			{ url : "prompt", text : "Prompt"},
-			{ url : "upload", text : "Upload"},
-			{ url : "dialog", text : "Dialog"},
-			{ url : "icons", text : "Icons"},
-			{ url : "test", text : "Test"}
+			{ type : "PAGE", url : "grid", text : "Grid"},
+			{ type : "PAGE", url : "prompt", text : "Prompt"},
+			{ type : "PAGE", url : "upload", text : "Upload"},
+			{ type : "PAGE", url : "dialog", text : "Dialog"},
+			{ type : "PAGE", url : "icons", text : "Icons"},
+			{ type : "PAGE", url : "test", text : "Test"}
 		]
 	}
 	
 ];
 
-var $sidebar;
-
 $(document).ready(function(){
 	
 	registerIndexWindowEvent();
 	
-	$sidebar = $('#sidebar');
-	
-	renderMenu(menus);
+	renderMenu($('#sidebar'), menus);
 	
 });
 
-function renderMenu(data){
-	
-	$sidebar.empty();
-	
-	let first;
+function renderMenu($target, data){
 	
 	data.forEach((item) => {
 		
 		if(item.type === "PAGE"){
+			
 			let $page = getTemplate("[data-menu-page]");
 			
-			$('i', $page).attr('class', item.icon);
+			if(item.icon){
+				$('i', $page).attr('class', item.icon);
+			} else {
+				$('i', $page).remove();
+			}
+			
 			$('span', $page).html(item.text);
 			
 			$page.click( () => {
 				setPage(item.url, $page);
 			});
 
-			$sidebar.append($page);
+			$target.append($page);
 			
-			first = first || $page;
+			if(!$('#main-page').attr('src')){
+				$page.click();
+			}
 			
 		} else if(item.type === "DROPDOWN") {
 			
@@ -115,43 +115,40 @@ function renderMenu(data){
 			
 			let $a = $('a', $dropdown);
 			
-			$('i', $a).attr('class', item.icon);
+			if(item.icon){
+				$('i', $a).attr('class', item.icon);
+			}else{
+				$('i', $a).remove();
+			}
+			
 			$('span', $a).html(item.text);
 			
 			let $dropdownMenu = $('.dropdown-menu', $dropdown);
 			
-			item.items.forEach( (i) => {
-				
-				let $item = getTemplate("[data-menu-dropdown-item]");
-				
-				$item.html(i.text);
-				
-				$item.click((e) => {
-					setPage(i.url, $item, $a);
-					e.stopPropagation();
-				});
-				
-				$dropdownMenu.append($item);
-				
-				first = first || $item;
-			});
+			renderMenu($dropdownMenu, item.items);
 			
-			$sidebar.append($dropdown);
+			$target.append($dropdown);
 		}
 	});
 	
-	first.click();
-	
 }
 
-function setPage(url, i1, i2){
+function setPage(url, $page){
+	$('a', '#sidebar').removeClass("active");
+	setSiderActive($page);
+	$('a:first', $('[data-menu-dropdown]', '#sidebar')).not('.active').each((_index, item) => {
+		if($(item).hasClass('show')){
+			$(item).bs().dropdown().hide();
+		}
+	});
+	
 	$('#main-page').attr('src', url);
-	$('a', $sidebar).removeClass("active");
-	if(i1){
-		i1.addClass("active");
-	}
-	if(i2){
-		i2.addClass("active");
+}
+
+function setSiderActive($e){
+	$e.addClass("active");
+	if($e.parent().hasClass('dropdown-menu')){
+		setSiderActive($('a:first', $e.parent().parent()));
 	}
 }
 
@@ -292,7 +289,7 @@ function registerIndexWindowEvent(){
 	</a>
 	
 	<div data-menu-dropdown class="nav-item dropdown">
-	    <a class="nav-link dropdown-toggle none-select clickable" data-bs-toggle="dropdown">
+	    <a class="nav-link dropdown-toggle none-select clickable" data-bs-auto-close="false" data-bs-toggle="dropdown">
 	    	<i></i>
 	    	<span></span>
 	    </a>

@@ -273,11 +273,10 @@ class Dark {
 						headers: { 'X-Requested-With': 'XMLHttpRequest' },
 						xhr: () => $xhr,
 						method: "POST",
-						data: data,
+						data: formdata,
 						contentType: false,
 						processData: false,
-						mimeType: 'multipart/form-data',
-						data: formdata
+						mimeType: 'multipart/form-data'
 					}).done((response) => {
 						Object.values(uploading).forEach(val => {
 							if (val) {

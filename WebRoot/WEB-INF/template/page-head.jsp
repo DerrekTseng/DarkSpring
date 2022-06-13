@@ -18,8 +18,11 @@
 <link href="<c:url value='/resource/lib/owlcarousel/assets/owl.carousel.min.css' />" rel="stylesheet">
 <link href="<c:url value='/resource/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css' />" rel="stylesheet" />
 
-<%-- Customized Bootstrap Stylesheet --%>
+<%-- Bootstrap Stylesheet --%>
 <link href="<c:url value='/resource/lib/bootstrap/css/bootstrap.min.css' />" rel="stylesheet">
+
+<%-- Customized Bootstrap Override --%>
+<link href="<c:url value='/resource/css/bootstrap-override.css?v=' /> <%= java.util.UUID.randomUUID().toString() %>" rel="stylesheet">
 
 <%-- Template Stylesheet --%>
 <link href="<c:url value='/resource/css/style.css' />" rel="stylesheet">

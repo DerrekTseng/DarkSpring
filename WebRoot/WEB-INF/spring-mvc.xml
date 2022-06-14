@@ -35,7 +35,7 @@
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">
 			<list>
-				<bean class="com.darkspring.core.component.RequestFileParameterConverter"/>
+				<bean class="com.dark.core.component.RequestFileParameterConverter"/>
 			</list>
 		</property>
 	</bean>

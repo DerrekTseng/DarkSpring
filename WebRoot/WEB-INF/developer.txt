@@ -1,6 +1,0 @@
-要整理 javascrip 套件
-
-可以用 import 的方式載入
-$.getScript("my_lovely_script.js", function() {
-   alert("Script loaded but not necessarily executed.");
-});

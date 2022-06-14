@@ -1,4 +1,4 @@
-<%@ page language="java" import="com.darkspring.core.sitemesh.Decorators" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" import="com.dark.core.sitemesh.Decorators" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -68,8 +68,7 @@ var menus = [
 			{ type : "PAGE", url : "prompt", text : "Prompt"},
 			{ type : "PAGE", url : "upload", text : "Upload"},
 			{ type : "PAGE", url : "dialog", text : "Dialog"},
-			{ type : "PAGE", url : "icons", text : "Icons"},
-			{ type : "PAGE", url : "test", text : "Test"}
+			{ type : "PAGE", url : "icons", text : "Icons"}
 		]
 	}
 	

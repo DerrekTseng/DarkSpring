@@ -913,10 +913,15 @@ class Dark {
 			}
 
 			$dialogComponent.doClose = () => {
-				if (typeof callback === "function") {
-					callback($dialogComponent.data("callbackData"));
+				try {
+					if (typeof callback === "function") {
+						callback($dialogComponent.data("callbackData"));
+					}
+				} catch (e) {
+					
+				} finally {
+					$dialogComponent.remove();
 				}
-				$dialogComponent.remove();
 			};
 
 			$("[data-index-template-dialog-close]", $dialog).click(() => {

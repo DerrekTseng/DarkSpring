@@ -72,7 +72,7 @@
 }
 
 :root {
-  --resizer-gap: 8px;
+  --resizer-gap: 16px;
 }
 
 .dark-spring-dialog-resize-top {

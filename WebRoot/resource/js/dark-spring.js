@@ -450,18 +450,21 @@ class Dark {
 				$contentContainer.append($content);
 			}
 
-			if (!shadow) {
-				$shadow.remove();
-			} else {
-				if ($this.isMobileDevice()) {
-					$shadow.on('touchmove', (e) => {
-						e.preventDefault();
-					});
-					$shadow.on('touchstart', (e) => {
-						e.preventDefault();
-					});
-				}
+			$contentContainer.click(() => {
+				$this.setDialogTop(uuid);
+			});
 
+			if (!shadow) {
+				$shadow.hide();
+			}
+
+			if ($this.isMobileDevice()) {
+				$shadow.on('touchmove', (e) => {
+					e.preventDefault();
+				});
+				$shadow.on('touchstart', (e) => {
+					e.preventDefault();
+				});
 			}
 
 			if (resize) {
@@ -489,9 +492,13 @@ class Dark {
 							$resizers.unbind('mouseup');
 						}
 						$contentContainer.show();
+						if (!shadow) {
+							$shadow.hide();
+						}
 					}
 
 					let registerInfo = (e) => {
+
 						if ($this.isMobileDevice()) {
 							$dialog.data('mousedownX', e.originalEvent.touches[0].pageX);
 							$dialog.data('mousedownY', e.originalEvent.touches[0].pageY);
@@ -507,6 +514,8 @@ class Dark {
 					}
 
 					let resolveSizing = (mousemovedX, mousemovedY, name) => {
+
+						$shadow.show();
 
 						$contentContainer.hide();
 
@@ -600,6 +609,9 @@ class Dark {
 							});
 
 						}
+
+						$this.setDialogTop(uuid);
+
 					}
 
 					let registerHolderEvent = ($resizer, name) => {
@@ -607,6 +619,7 @@ class Dark {
 							$resizer.on('touchstart', (e) => {
 								registerInfo(e);
 								registerMoveingEvent($resizer, name);
+
 							});
 						} else {
 							$resizer.mousedown((e) => {
@@ -748,6 +761,8 @@ class Dark {
 
 						$contentContainer.hide();
 
+						$shadow.show();
+
 						let gapX = mousemoveX - $dialog.data('mousedownX');
 						let gapY = mousemoveY - $dialog.data('mousedownY');
 
@@ -835,6 +850,10 @@ class Dark {
 							$(top).unbind('mousemove');
 							$(window).unbind('mouseup');
 							$header.unbind('mouseup');
+						}
+
+						if (!shadow) {
+							$shadow.hide();
 						}
 
 					}
@@ -986,9 +1005,6 @@ class Dark {
 
 			let $dialogComponent = $this.dialog(dialogOption, $content);
 
-			$("[data-index-template-shadow]", $dialogComponent).css("z-index", "2147483646");
-			$("[data-index-template-dialog]", $dialogComponent).css("z-index", "2147483647");
-
 			$('[data-index-template-dialog-alert-close]', $content).click(() => {
 				$dialogComponent.doClose();
 			});
@@ -1034,9 +1050,6 @@ class Dark {
 			$('[data-index-template-dialog-confirm-message]', $content).html(message);
 
 			let $dialogComponent = $this.dialog(dialogOption, $content);
-
-			$("[data-index-template-shadow]", $dialogComponent).css("z-index", "2147483646");
-			$("[data-index-template-dialog]", $dialogComponent).css("z-index", "2147483647");
 
 			$dialogComponent.data("callbackData", false);
 
@@ -1155,23 +1168,27 @@ class Dark {
 
 		if ($this.isTop()) {
 
-			let topObjectContiner = $this.getTopObjectContiner();
+			let $topObjectContiner = $this.getTopObjectContiner();
 
-			let dialogComponents = $('[data-index-template-dialog-component]', topObjectContiner);
+			let $dialogComponents = $('[data-index-template-dialog-component]', $topObjectContiner);
+
+			let $targetDialogComponent = $('#' + uuid, $topObjectContiner);
 
 			let nextZindex = 1000;
 
-			dialogComponents.each((_index, item) => {
-				let dialogZindex = parseInt($('[data-index-template-dialog]', item).css('z-index'));
-				if (nextZindex < dialogZindex) {
-					nextZindex = dialogZindex;
+			$dialogComponents.each((_index, dialogComponent) => {
+				if (!$targetDialogComponent.is(dialogComponent)) {
+					let dialogZindex = $(dialogComponent).data('z-index');
+					if (nextZindex < dialogZindex) {
+						nextZindex = dialogZindex;
+					}
 				}
 			});
 
-			let targetDialogComponent = $('#' + uuid, topObjectContiner);
+			$('[data-index-template-shadow]', $targetDialogComponent).css('z-index', nextZindex++);
+			$('[data-index-template-dialog]', $targetDialogComponent).css('z-index', nextZindex++);
 
-			$('[data-index-template-shadow]', targetDialogComponent).css('z-index', nextZindex++);
-			$('[data-index-template-dialog]', targetDialogComponent).css('z-index', nextZindex++);
+			$targetDialogComponent.data('z-index', nextZindex);
 
 		} else {
 			$this.getTopDark().setDialogTop(uuid);

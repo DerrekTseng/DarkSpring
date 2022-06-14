@@ -918,7 +918,7 @@ class Dark {
 						callback($dialogComponent.data("callbackData"));
 					}
 				} catch (e) {
-					
+
 				} finally {
 					$dialogComponent.remove();
 				}
@@ -963,8 +963,9 @@ class Dark {
 			});
 
 
-			$(".dark-spring-dialog-header", $dialog).on($this.isMobileDevice() ? "touchstart" : "mousedown", () => {
+			$(".dark-spring-dialog-header", $dialog).on($this.isMobileDevice() ? "touchstart" : "mousedown", (e) => {
 				$this.setDialogTop(uuid);
+				e.stopPropagation();
 			});
 
 			$this.setDialogTop(uuid);
@@ -1009,6 +1010,9 @@ class Dark {
 			$('[data-index-template-dialog-alert-message]', $content).html(message);
 
 			let $dialogComponent = $this.dialog(dialogOption, $content);
+
+			$("[data-index-template-shadow]", $dialogComponent).css("z-index", "2147483646");
+			$("[data-index-template-dialog]", $dialogComponent).css("z-index", "2147483647");
 
 			$('[data-index-template-dialog-alert-close]', $content).click(() => {
 				$dialogComponent.doClose();
@@ -1055,6 +1059,9 @@ class Dark {
 			$('[data-index-template-dialog-confirm-message]', $content).html(message);
 
 			let $dialogComponent = $this.dialog(dialogOption, $content);
+
+			$("[data-index-template-shadow]", $dialogComponent).css("z-index", "2147483646");
+			$("[data-index-template-dialog]", $dialogComponent).css("z-index", "2147483647");
 
 			$dialogComponent.data("callbackData", false);
 

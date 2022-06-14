@@ -3,7 +3,7 @@ $.fn.extend({
 		let $this = this;
 		return {
 			dropdown: () => {
-				return bootstrap.Dropdown.getInstance($this[0]);
+				return bootstrap.Dropdown.getOrCreateInstance($this[0]);
 			},
 			modal: (options = {}) => {
 				let $modal = bootstrap.Modal.getOrCreateInstance($this[0]);

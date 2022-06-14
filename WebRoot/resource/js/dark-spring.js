@@ -450,8 +450,9 @@ class Dark {
 				$contentContainer.append($content);
 			}
 
-			$contentContainer.click(() => {
+			$contentContainer.click((e) => {
 				$this.setDialogTop(uuid);
+				e.stopPropagation();
 			});
 
 			if (!shadow) {

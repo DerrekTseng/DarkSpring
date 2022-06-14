@@ -1,6 +1,9 @@
 package com.dark.core.listener;
 
 import java.io.Closeable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -53,6 +56,18 @@ public class SpringApplicationListener implements ApplicationListener<Applicatio
 
 			// 載入 log4j2 的設定檔
 			loggerContext = Configurator.initialize(null, log4j2ConfigLocation.getFile().getAbsolutePath());
+
+			// 設定 MyBatis 的 log 為 slf4j
+			org.apache.ibatis.logging.LogFactory.useSlf4jLogging();
+
+			// 設定 log4jdbc 的 log 為 slf4j
+			System.setProperty("log4jdbc.spylogdelegator.name", "net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator");
+
+			// 為 log4jdbc 的 DriverSpy 內加入額為的 Driver
+			List<String> additionalDrivers = new ArrayList<>();
+			additionalDrivers.add("org.sqlite.JDBC");
+			additionalDrivers.add("com.mysql.cj.jdbc.Driver");
+			System.setProperty("log4jdbc.drivers", additionalDrivers.stream().collect(Collectors.joining(",")));
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);

@@ -2,11 +2,24 @@ package com.dark.core.component;
 
 import java.util.Collection;
 
+import com.github.pagehelper.PageInfo;
+
 public class FetchTable {
 	Integer pageNum;
 	Integer pageSize;
-	Integer totalSize;
+	Long totalSize;
 	Collection<?> data;
+
+	public FetchTable() {
+
+	}
+
+	public void setPageInfo(PageInfo<?> pageInfo) {
+		pageNum = pageInfo.getPageNum();
+		pageSize = pageInfo.getSize();
+		totalSize = pageInfo.getTotal();
+		data = pageInfo.getList();
+	}
 
 	public Integer getPageNum() {
 		return pageNum;
@@ -24,11 +37,11 @@ public class FetchTable {
 		this.pageSize = pageSize;
 	}
 
-	public Integer getTotalSize() {
+	public Long getTotalSize() {
 		return totalSize;
 	}
 
-	public void setTotalSize(Integer totalSize) {
+	public void setTotalSize(Long totalSize) {
 		this.totalSize = totalSize;
 	}
 

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-autowire="byName" 
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation=
+	"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd ">
+	
+	<!-- 資料庫代理 DBProxy 依賴注入 -->
+	<bean id="dbProxy" class="com.dark.core.mybatis.DBProxy" scope="singleton"/>
+	
+	<!-- 讀取 Property 檔 -->
+	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="locations">
+			<!-- 依序讀取，後面的 properties 如果有相同的 key 則會取代前面的。 -->
+			<list>
+				<value>/WEB-INF/dataSource.properties</value>
+				<value>file:${catalina.base}/dataSource.properties</value> 
+			</list>
+		</property>
+		<property name="fileEncoding" value="utf-8" />
+	</bean>
+	
+	<bean id="mybatisUtil" class="com.dark.core.mybatis.MybatisUtil">
+		<property name="sqlSessionTemplate" ref="sqlSession" />
+	</bean>
+	
+	<!-- 連線資訊 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close"> 
+	    <property name="driverClassName"> 
+	        <value>net.sf.log4jdbc.sql.jdbcapi.DriverSpy</value> 
+	    </property> 
+	    <property name="url"> 
+	         <value>${mysql.url}</value>  
+	    </property> 
+	    <property name="username"> 
+	         <value>${mysql.username}</value>  
+	    </property> 
+	    <property name="password"> 
+	         <value>${mysql.password}</value>  
+	    </property> 
+	 </bean> 
+     
+    <!-- 連線池設定 -->
+	<bean id="dataSourceConnectionFactoryBean" class="org.apache.commons.dbcp2.DataSourceConnectionFactory">
+		<constructor-arg ref="dataSource"/>
+	</bean>
+    
+	<bean id="poolableConnectionFactoryBean" class="org.apache.commons.dbcp2.PoolableConnectionFactory">
+		<constructor-arg index="0" ref="dataSourceConnectionFactoryBean"/>
+		<constructor-arg index="1"><null/></constructor-arg>
+	</bean>
+    
+	<bean id="genericObjectPoolBean" class="org.apache.commons.pool2.impl.GenericObjectPool">
+		<constructor-arg ref="poolableConnectionFactoryBean"/>
+	</bean>
+    
+	<bean id="poolingDataSourceBean" class="org.apache.commons.dbcp2.PoolingDataSource">
+		<constructor-arg ref="genericObjectPoolBean"/>
+	</bean>
+	
+	<!-- myBatis 設定 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="poolingDataSourceBean" />
+		<property name="configLocation" value="/WEB-INF/mybatis-configuration.xml" />  	<!-- mybatis 參數檔 -->
+		<property name="mapperLocations">		<!-- mybats sql xml 存放路徑 -->
+			<list>
+				<value>/WEB-INF/mybatis-mapper/*.xml</value>
+				<value>/WEB-INF/mybatis-mapper/**/*.xml</value>
+			</list>
+		</property>
+	</bean>
+	 
+	<!-- 啟動聲明式 @Transactional 注解 ，當函式有@Transactional 注解時，則啟動資料庫交易 -->
+	<!-- 當函式丟出 Exception 時會自動 rollback，成功完成時則自動 commit -->
+	<tx:annotation-driven transaction-manager="springTransactionManager" />
+	
+	<!-- 資料庫交易 管理 --> 
+    <bean id="springTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    	<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- 資料庫 Session --> 
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	
+</beans>

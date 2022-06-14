@@ -147,7 +147,7 @@ public class DarkController {
 			}
 			fetchTable.setPageNum(pageNum);
 			fetchTable.setPageSize(pageSize);
-			fetchTable.setTotalSize(tableData.size());
+			fetchTable.setTotalSize(Long.valueOf(tableData.size()));
 
 			List<Map<String, String>> copy = tableData.stream().collect(Collectors.toList());
 

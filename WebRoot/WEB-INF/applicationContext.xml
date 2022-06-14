@@ -14,10 +14,13 @@
 	
 	<!-- Spring 應用程式啟動和結束的事件監聽器 -->
 	<bean id="springApplicationListener" class="com.dark.core.listener.SpringApplicationListener">
-		<property name="log4j2ConfigLocation" value="/WEB-INF/log4j2.xml"/>
+		<property name="log4j2ConfigLocation" value="/WEB-INF/log4j2-configuration.xml"/>
 	</bean>
 	
 	<import resource="spring-mvc.xml" />
+	<import resource="spring-data.xml" />
+	<import resource="spring-security.xml" />
+	<import resource="spring-aop.xml" />
 	<import resource="spring-scheduler.xml" />
 	
 </beans>

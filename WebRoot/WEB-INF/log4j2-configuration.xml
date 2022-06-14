@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+
+	<Properties>
+		<Property name="project">DarkSpring</Property>
+		<Property name="date">%d{yyyy-MM-dd}</Property>
+		<Property name="destination">${sys:catalina.base}/logs</Property>
+		<Property name="out.pattern">[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%p] [%X{client}] (%F:%M:%L) - %m%n</Property>
+	</Properties>
+
+	<Appenders>
+	
+		<Console name="ConsoleLog" target="SYSTEM_OUT">
+			<PatternLayout>
+				<Pattern>${out.pattern}</Pattern>
+			</PatternLayout>
+		</Console>
+		
+		<RollingFile name="FileLog" immediateFlush="true"
+			fileName="${destination}/${project}.log" filePattern="${destination}/${project}.${date}.log">
+			<PatternLayout>
+				<Pattern>${out.pattern}</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+			<DefaultRolloverStrategy>
+				<Delete basePath="${destination}/" maxDepth="1">
+					<IfLastModified age="P30D" />
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>   
+		
+	</Appenders>
+
+	<Loggers>
+			
+		<logger name="jdbc.connection" level="INFO" additivity="false">
+			<AppenderRef ref="ConsoleLog" />
+			<AppenderRef ref="FileLog" />
+		</logger>
+
+		<logger name="jdbc.audit" level="ERROR" additivity="false">
+			<AppenderRef ref="ConsoleLog" />
+			<AppenderRef ref="FileLog" />
+		</logger>
+
+		<logger name="jdbc.sqlonly" level="INFO" additivity="false">
+			<AppenderRef ref="ConsoleLog" />
+			<AppenderRef ref="FileLog" />
+		</logger>
+
+		<logger name="jdbc.sqltiming" level="ERROR" additivity="false">
+			<AppenderRef ref="ConsoleLog" />
+			<AppenderRef ref="FileLog" />
+		</logger>
+
+		<logger name="jdbc.resultset" level="ERROR" additivity="false">
+			<AppenderRef ref="ConsoleLog" />
+			<AppenderRef ref="FileLog" />
+		</logger>
+
+		<logger name="jdbc.resultsettable" level="ERROR" additivity="false">
+			<AppenderRef ref="ConsoleLog" />
+			<AppenderRef ref="FileLog" />
+		</logger>
+
+		<logger name="log4jdbc.debug" level="ERROR" additivity="false">
+			<AppenderRef ref="ConsoleLog" />
+			<AppenderRef ref="FileLog" />
+		</logger>	
+			
+		<Root level="INFO">
+			<AppenderRef ref="ConsoleLog" />
+			<AppenderRef ref="FileLog" />
+		</Root>
+
+	</Loggers>
+	
+</Configuration>

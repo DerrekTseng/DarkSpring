@@ -80,7 +80,7 @@
 	
 	<!-- 資料庫交易 管理 --> 
     <bean id="springTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-    	<property name="dataSource" ref="dataSource" />
+    	<property name="dataSource" ref="poolingDataSourceBean" />
 	</bean>
 	
 	<!-- 資料庫 Session --> 

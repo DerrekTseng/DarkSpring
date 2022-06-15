@@ -1,4 +1,4 @@
-package com.app.web.controller;
+package com.app.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;

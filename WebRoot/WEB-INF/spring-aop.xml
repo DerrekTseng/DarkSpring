@@ -15,14 +15,14 @@
 	
 	<aop:config>
 		<aop:aspect ref="controllerInterceptor">
-			<aop:pointcut id="controllerIntercept" expression="(execution(public * com.app.*.controller.*.*(..)))"/>
+			<aop:pointcut id="controllerIntercept" expression="(execution(public * com.app.controller.*.*(..)))"/>
 			<aop:before pointcut-ref="controllerIntercept" method="before"/>
 			<aop:after pointcut-ref="controllerIntercept" method="after"/>
 			<aop:after-returning pointcut-ref="controllerIntercept" returning="returnValue" method="afterReturning"/>
 			<aop:after-throwing pointcut-ref="controllerIntercept" throwing="throwable" method="afterThrowing"/>
 		</aop:aspect>
 		<aop:aspect ref="serviceInterceptor">
-			<aop:pointcut id="serviceIntercept" expression="(execution(public * com.app.*.service.*.*(..)))"/>
+			<aop:pointcut id="serviceIntercept" expression="(execution(public * com.app.service.*.*(..)))"/>
 			<aop:before pointcut-ref="serviceIntercept" method="before"/>
 			<aop:after pointcut-ref="serviceIntercept" method="after"/>
 			<aop:after-returning pointcut-ref="serviceIntercept" returning="returnValue" method="afterReturning"/>

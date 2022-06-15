@@ -14,11 +14,11 @@ public class FetchTable {
 
 	}
 
-	public void setPageInfo(PageInfo<?> pageInfo) {
-		pageNum = pageInfo.getPageNum();
-		pageSize = pageInfo.getSize();
-		totalSize = pageInfo.getTotal();
-		data = pageInfo.getList();
+	public FetchTable(PageInfo<?> pageInfo) {
+		this.pageNum = pageInfo.getPageNum();
+		this.pageSize = pageInfo.getSize();
+		this.totalSize = pageInfo.getTotal();
+		this.data = pageInfo.getList();
 	}
 
 	public Integer getPageNum() {

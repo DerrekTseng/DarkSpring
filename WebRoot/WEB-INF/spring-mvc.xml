@@ -35,7 +35,7 @@
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">
 			<list>
-				<bean class="com.dark.core.component.RequestFileParameterConverter"/>
+				<bean class="net.derrek.spring.component.RequestFileParameterConverter"/>
 			</list>
 		</property>
 	</bean>
@@ -49,6 +49,25 @@
 	<bean class="org.springframework.http.converter.StringHttpMessageConverter">
 		<constructor-arg value="UTF-8" />
 		<property name="writeAcceptCharset" value="false" />
+	</bean>
+	
+	<!-- 多語系擴充 -->
+	<mvc:interceptors>
+	    <bean class="net.derrek.spring.translang.TranslangViewInterceptor" />
+	</mvc:interceptors>
+	<bean id="translangSupport" class="net.derrek.spring.translang.TranslangSupport" scope="singleton">
+		<property name="defalutKey" value="zh-tw"/>
+		<property name="reloadable" value="true"/>
+		<constructor-arg index="0">
+			<value>/WEB-INF/translang/language.properties</value>
+		</constructor-arg>
+		
+		<constructor-arg index="1">
+			<util:map>
+	            <entry key="zh-tw" value="/WEB-INF/translang/zh-tw.properties" />
+	            <entry key="en" value="/WEB-INF/translang/en.properties" />
+	        </util:map>
+		</constructor-arg>
 	</bean>
 	
 </beans>

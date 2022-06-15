@@ -8,12 +8,13 @@
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 	<context:spring-configured />
-	
+	 
 	<!-- 使用註解的包，包括子集 -->
-	<context:component-scan base-package="com.dark" />
+	<context:component-scan base-package="com.app" />
+	<context:component-scan base-package="net.derrek" />
 	
 	<!-- Spring 應用程式啟動和結束的事件監聽器 -->
-	<bean id="springApplicationListener" class="com.dark.core.listener.SpringApplicationListener">
+	<bean id="springApplicationListener" class="net.derrek.spring.listener.SpringApplicationListener">
 		<property name="log4j2ConfigLocation" value="/WEB-INF/log4j2-configuration.xml"/>
 	</bean>
 	

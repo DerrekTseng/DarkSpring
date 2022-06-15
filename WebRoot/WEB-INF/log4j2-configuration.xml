@@ -2,77 +2,119 @@
 <Configuration status="INFO">
 
 	<Properties>
-		<Property name="project">DarkSpring</Property>
+		<Property name="project">app</Property>
 		<Property name="date">%d{yyyy-MM-dd}</Property>
 		<Property name="destination">${sys:catalina.base}/logs</Property>
-		<Property name="out.pattern">[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%p] [%X{client}] (%F:%M:%L) - %m%n</Property>
+		
+		<Property name="pattern.web">[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%p] [%X{client}] (%F:%M:%L) - %m%n</Property>
+		<Property name="pattern.scheduler">[%d{yyy-MM-dd HH:mm:ss.SSS}] [%p] (%F:%M:%L) - %m%n</Property>
+		
 	</Properties>
 
 	<Appenders>
 	
-		<Console name="ConsoleLog" target="SYSTEM_OUT">
-			<PatternLayout>
-				<Pattern>${out.pattern}</Pattern>
-			</PatternLayout>
-		</Console>
+		<Routing name="ConsoleLogRouting">
+			<Routes pattern="${ctx:jobid}">
+				<Route key="${ctx:jobid}"> <!-- 當key有值時 因為沒有設定 RoutingInit 所以不會使用此 Route 的 Appender -->
+					<Console name="WebConsoleLogRouting" target="SYSTEM_OUT">
+						<PatternLayout>
+							<Pattern>${pattern.web}</Pattern>
+						</PatternLayout>
+					</Console>
+				</Route>
+				<Route>
+					<Console name="SchedulerConsoleLogRouting" target="SYSTEM_OUT">
+						<PatternLayout>
+							<Pattern>${pattern.scheduler}</Pattern>
+						</PatternLayout>
+					</Console>
+				</Route>
+			</Routes>
+		</Routing>
 		
-		<RollingFile name="FileLog" immediateFlush="true"
-			fileName="${destination}/${project}.log" filePattern="${destination}/${project}.${date}.log">
-			<PatternLayout>
-				<Pattern>${out.pattern}</Pattern>
-			</PatternLayout>
-			<Policies>
-				<TimeBasedTriggeringPolicy />
-			</Policies>
-			<DefaultRolloverStrategy>
-				<Delete basePath="${destination}/" maxDepth="1">
-					<IfLastModified age="P30D" />
-				</Delete>
-			</DefaultRolloverStrategy>
-		</RollingFile>   
+		<Routing name="FileLogRouting">
+			<Routes pattern="${ctx:jobid}">
+				<Route key="${ctx:jobid}"> <!-- 當key有值時 因為沒有設定 RoutingInit 所以不會使用此 Route 的 Appender -->
+					<RollingFile name="WebFileLogRouting"
+						immediateFlush="true"
+						fileName="${destination}/${project}.log"
+						filePattern="${destination}/${project}.${date}.log">
+						<PatternLayout>
+							<Pattern>${pattern.web}</Pattern>
+						</PatternLayout>
+						<Policies>
+							<TimeBasedTriggeringPolicy />
+						</Policies>
+						<DefaultRolloverStrategy>
+							<Delete basePath="${destination}/" maxDepth="1">
+								<IfLastModified age="P30D" />
+							</Delete>
+						</DefaultRolloverStrategy>
+					</RollingFile>
+				</Route>
+				<Route>
+					<RollingFile name="SchedulerFileLogRouting" 
+						immediateFlush="true"
+						fileName="${destination}/jobs/${ctx:jobid}.log" 
+						filePattern="${destination}/jobs/${ctx:jobid}.${date}.log">
+						<PatternLayout>
+							<Pattern>${pattern.scheduler}</Pattern>
+						</PatternLayout>
+						<Policies>
+							<TimeBasedTriggeringPolicy />
+						</Policies>
+						<DefaultRolloverStrategy>
+							<Delete basePath="${destination}/jobs/" maxDepth="1">
+								<IfLastModified age="P30D" />
+							</Delete>
+						</DefaultRolloverStrategy>
+					</RollingFile>
+				</Route>
+			</Routes>
+		</Routing>   
 		
 	</Appenders>
 
 	<Loggers>
-			
+
 		<logger name="jdbc.connection" level="INFO" additivity="false">
-			<AppenderRef ref="ConsoleLog" />
-			<AppenderRef ref="FileLog" />
+			<appender-ref ref="ConsoleLogRouting" />
+			<appender-ref ref="FileLogRouting" />
 		</logger>
 
 		<logger name="jdbc.audit" level="ERROR" additivity="false">
-			<AppenderRef ref="ConsoleLog" />
-			<AppenderRef ref="FileLog" />
+			<appender-ref ref="ConsoleLogRouting" />
+			<appender-ref ref="FileLogRouting" />
 		</logger>
 
 		<logger name="jdbc.sqlonly" level="INFO" additivity="false">
-			<AppenderRef ref="ConsoleLog" />
-			<AppenderRef ref="FileLog" />
+			<appender-ref ref="ConsoleLogRouting" />
+			<appender-ref ref="FileLogRouting" />
 		</logger>
 
 		<logger name="jdbc.sqltiming" level="ERROR" additivity="false">
-			<AppenderRef ref="ConsoleLog" />
-			<AppenderRef ref="FileLog" />
+			<appender-ref ref="ConsoleLogRouting" />
+			<appender-ref ref="FileLogRouting" />
 		</logger>
 
 		<logger name="jdbc.resultset" level="ERROR" additivity="false">
-			<AppenderRef ref="ConsoleLog" />
-			<AppenderRef ref="FileLog" />
+			<appender-ref ref="ConsoleLogRouting" />
+			<appender-ref ref="FileLogRouting" />
 		</logger>
 
 		<logger name="jdbc.resultsettable" level="ERROR" additivity="false">
-			<AppenderRef ref="ConsoleLog" />
-			<AppenderRef ref="FileLog" />
+			<appender-ref ref="ConsoleLogRouting" />
+			<appender-ref ref="FileLogRouting" />
 		</logger>
 
 		<logger name="log4jdbc.debug" level="ERROR" additivity="false">
-			<AppenderRef ref="ConsoleLog" />
-			<AppenderRef ref="FileLog" />
-		</logger>	
-			
+			<appender-ref ref="ConsoleLogRouting" />
+			<appender-ref ref="FileLogRouting" />
+		</logger>
+
 		<Root level="INFO">
-			<AppenderRef ref="ConsoleLog" />
-			<AppenderRef ref="FileLog" />
+			<AppenderRef ref="ConsoleLogRouting" />
+			<AppenderRef ref="FileLogRouting" />
 		</Root>
 
 	</Loggers>

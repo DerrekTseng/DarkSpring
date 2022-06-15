@@ -20,7 +20,7 @@
 		<sitemesh:write property="page.template" />
 	</div>
 	
-	<div class="container-fluid position-relative d-flex p-0 dark-spring-main-container" style="overflow-y:scroll; height: 100vh">
+	<div class="container-fluid position-relative d-flex pb-0 dark-spring-main-container" style="overflow-y:scroll; height: 100vh">
 	
         <div id="spinner" class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
@@ -28,15 +28,17 @@
             </div>
         </div>
 
-		<div class="container-fluid" style="padding-bottom: 24px;" >
-		       
-			<sitemesh:write property="page.body" />
+		<div class="w-100">
+		
+		    <sitemesh:write property="page.body" />
 			
 			<a class="btn btn-lg btn-primary btn-lg-square back-to-top" style="display:none">
 				<i class="bi bi-arrow-up"></i>
 			</a>
-		
-		</div>
+			
+			<div class="w-100 py-3"></div>
+			
+	    </div>  
         
 	</div>
 	

@@ -28,7 +28,7 @@
 		</security:headers>
 	</security:http>
   
-	<bean id="authenticateProcessingFilter" class="com.dark.core.security.AuthenticateProcessingFilter">
+	<bean id="authenticateProcessingFilter" class="net.derrek.spring.security.AuthenticateProcessingFilter">
 		<constructor-arg type="java.lang.String">
 			<value>/**</value>
 		</constructor-arg>

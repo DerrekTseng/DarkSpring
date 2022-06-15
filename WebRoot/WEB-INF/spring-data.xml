@@ -9,7 +9,7 @@
 	 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd ">
 	
 	<!-- 資料庫代理 DBProxy 依賴注入 -->
-	<bean id="dbProxy" class="com.dark.core.mybatis.DBProxy" scope="singleton"/>
+	<bean id="dbProxy" class="net.derrek.spring.mybatis.DBProxy" scope="singleton"/>
 	
 	<!-- 讀取 Property 檔 -->
 	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
@@ -24,7 +24,7 @@
 		<property name="fileEncoding" value="utf-8" />
 	</bean>
 	
-	<bean id="mybatisUtil" class="com.dark.core.mybatis.MybatisUtil">
+	<bean id="mybatisUtil" class="net.derrek.spring.mybatis.MybatisUtil">
 		<property name="sqlSessionTemplate" ref="sqlSession" />
 	</bean>
 	

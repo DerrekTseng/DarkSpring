@@ -326,6 +326,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>DarkSpring</finalName>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>

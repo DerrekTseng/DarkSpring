@@ -40,7 +40,7 @@ public class MybatisGenerator {
 	private static final String TARGET_PROJECT = new File(USER_DIR, "src").getPath();
 
 	// 儲存的 package 名稱
-	private static final String targetPackage = "com.app";
+	private static final String targetPackage = "com.dao";
 	private static final String targetPackage_model = "model";
 	private static final String targetPackage_mapper = "mapper";
 	private static final String targetPackage_xml = "xml";

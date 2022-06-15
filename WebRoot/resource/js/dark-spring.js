@@ -92,27 +92,25 @@ class Dark {
 			data: data,
 			async: async,
 			success: function(res) {
-				try {
+				if (res.statusCode === '200') {
 					if (typeof success === "function") {
-						success(res);
+						success(res.data);
 					}
-				} finally {
-					if (spinner) {
-						$this.spinner(false);
+				} else if (res.statusCode === '500') {
+					if (typeof error === "function") {
+						error(res.data);
+					} else {
+						$this.error(res.message);
 					}
 				}
 			},
 			error: function(err) {
-				try {
-					if (typeof error === "function") {
-						error(err);
-					}
-				} finally {
-					if (spinner) {
-						$this.spinner(false);
-					}
+				if (typeof error === "function") {
+					error(err);
 				}
 			}
+		}).done(() => {
+			$this.spinner(false);
 		});
 	}
 

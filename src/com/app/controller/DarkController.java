@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import net.derrek.spring.component.FetchTable;
 import net.derrek.spring.component.RequestFile;
+import net.derrek.spring.component.ResponseData;
 
 @Controller
 @RequestMapping
@@ -138,7 +139,9 @@ public class DarkController {
 
 	@ResponseBody
 	@PostMapping("getTableData")
-	public FetchTable getTableData(Integer pageNum, Integer pageSize, String orderby) throws InterruptedException {
+	public ResponseData<FetchTable> getTableData(Integer pageNum, Integer pageSize, String orderby) throws InterruptedException {
+		ResponseData<FetchTable> responseData = new ResponseData<>();
+
 		FetchTable fetchTable = new FetchTable();
 		if (pageNum != null && pageSize != null) {
 			Thread.sleep(100);
@@ -174,7 +177,10 @@ public class DarkController {
 		} else {
 			fetchTable.setData(tableData);
 		}
-		return fetchTable;
+
+		responseData.setData(fetchTable);
+
+		return responseData;
 	}
 
 	@GetMapping("upload")

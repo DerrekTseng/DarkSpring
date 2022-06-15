@@ -328,3 +328,24 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #bc1212; 
 }
+
+.dark-template-selection {
+	text-align: center;
+	-webkit-appearance: none !important; 
+	appearance: none !important;
+	background: transparent;
+	color: var(--bs-primary);
+}
+
+.dark-template-selection > option {
+  background: #000;
+  color: var(--bs-primary);
+}
+
+.dark-template-selection:focus {
+	outline: none;
+}
+
+.dark-template-selection::-ms-expand {
+    display: none;
+}

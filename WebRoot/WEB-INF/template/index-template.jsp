@@ -15,6 +15,10 @@
 	word-break: break-all;
 }
 
+.dark-spring-prompt>button:focus {
+	box-shadow: none;
+}
+
 .dark-spring-shadow {
 	background: white;
 	opacity: 0.2;
@@ -286,22 +290,22 @@
 	    <div class="col-md-6 text-center">
 		     <div class="btn-group" role="group">
 		     
-		        <button data-pager-first type="button" class="btn btn-outline-primary" style="width: 52px;">
+		        <button data-pager-first type="button" class="btn btn-outline-primary" style="width: 42px;">
 		        	<i class="fas fa-angle-double-left"></i>
 		        </button>
 		        
-		        <button data-pager-previous type="button" class="btn btn-outline-primary" style="width: 52px;">
+		        <button data-pager-previous type="button" class="btn btn-outline-primary" style="width: 42px;">
 		        	<i class="fas fa-angle-left"></i>
 		        </button>
     
-		        <select data-pager-num class="form-select form-select-sm" style="width: 82px; text-align: center;">
+		        <select data-pager-num class="dark-template-selection" style="width: 52px; border-color: var(--bs-primary) #000 var(--bs-primary) #000">
 		        </select>
 		        
-	            <button data-pager-next type="button" class="btn btn-outline-primary" style="width: 52px;">
+	            <button data-pager-next type="button" class="btn btn-outline-primary" style="width: 42px;">
 		       		<i class="fas fa-angle-right"></i>
 		        </button>
 		        
-		        <button data-pager-last type="button" class="btn btn-outline-primary" style="width: 52px;">
+		        <button data-pager-last type="button" class="btn btn-outline-primary" style="width: 42px;">
 		        	<i class="fas fa-angle-double-right"></i>
 		        </button>
 		     

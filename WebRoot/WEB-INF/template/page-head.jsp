@@ -25,7 +25,7 @@
 <link href="<c:url value='/resource/css/bootstrap-override.css?v=' /> <%= java.util.UUID.randomUUID().toString() %>" rel="stylesheet">
 
 <%-- Template Stylesheet --%>
-<link href="<c:url value='/resource/css/style.css' />" rel="stylesheet">
+<link href="<c:url value='/resource/css/style.css?v=' /> <%= java.util.UUID.randomUUID().toString() %>" rel="stylesheet">
 
 <%-- JQuery --%>
 <script src="<c:url value='/resource/lib/jquery-3.6.0/jquery-3.6.0.min.js' />"></script>

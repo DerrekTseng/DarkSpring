@@ -92,15 +92,17 @@ class Dark {
 			data: data,
 			async: async,
 			success: function(res) {
-				if (res.statusCode === '200') {
-					if (typeof success === "function") {
-						success(res.data);
-					}
-				} else if (res.statusCode === '500') {
-					if (typeof error === "function") {
-						error(res.data);
-					} else {
-						$this.error(res.message);
+				if (res) {
+					if (res.statusCode === '200') {
+						if (typeof success === "function") {
+							success(res.data);
+						}
+					} else if (res.statusCode === '500') {
+						if (typeof error === "function") {
+							error(res.data);
+						} else {
+							$this.error(res.message);
+						}
 					}
 				}
 			},
@@ -125,6 +127,7 @@ class Dark {
 
 			let url = options.url || "";
 			let data = options.data || {};
+			let accept = options.accept || "";
 			let beforeSend = options.beforeSend || null; // (files, callback) => { callback(true); }
 			let abort = options.abort || null; // () => {}
 			let success = options.success || null;  // (response) => { }
@@ -146,6 +149,10 @@ class Dark {
 			} else if (type.toLocaleLowerCase() === 'folder') {
 				$fileUpload.setAttribute("multiple", "multiple");
 				$fileUpload.setAttribute("webkitdirectory", "");
+			}
+
+			if (accept) {
+				$fileUpload.setAttribute("accept", accept);
 			}
 
 			$fileUpload.addEventListener("change", () => {
@@ -240,7 +247,11 @@ class Dark {
 							{ content: "", attrs: { colspan: "3" } }
 						]],
 						tbodyEach: ($trs, data) => {
-							$("td", $trs[0]).html(data.webkitRelativePath)
+							if (type.toLocaleLowerCase() === 'folder') {
+								$("td", $trs[0]).html(data.webkitRelativePath)
+							} else {
+								$("td", $trs[0]).html(data.name)
+							}
 						}
 					});
 

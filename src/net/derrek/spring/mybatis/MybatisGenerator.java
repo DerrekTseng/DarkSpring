@@ -47,26 +47,16 @@ public class MybatisGenerator {
 
 	// 資料庫連線資訊
 	private static final String driverClass = "com.mysql.cj.jdbc.Driver";
-	private static final String connectionURL = "jdbc:mysql://www.derrek.net:55559/LitePlatform";
-	private static final String userId = "root";
-	private static final String password = "123456789";
+	private static final String connectionURL = "jdbc:mysql://127.0.0.1:3306/DatabaseName";
+	private static final String username = "username";
+	private static final String password = "password";
 
 	// 要產生的 Table
 	private static final Set<TableInfo> tableInfos = new HashSet<>();
 	static {
-		addTable("LitePlatform", "BannedList");
-		addTable("LitePlatform", "EpubImage");
-		addTable("LitePlatform", "EpubPage");
-		addTable("LitePlatform", "EpubRead");
-		addTable("LitePlatform", "Menu");
-		addTable("LitePlatform", "Note");
-		addTable("LitePlatform", "ServerFile");
-		addTable("LitePlatform", "ServerLogging");
-		addTable("LitePlatform", "User");
-		addTable("LitePlatform", "UserFolder");
-		addTable("LitePlatform", "UserMenu");
-		addTable("LitePlatform", "UserToken");
-		addTable("LitePlatform", "UserFileViewHistory");
+		addTable("schema name", "table name");
+		addTable("schema name", "table name");
+		addTable("schema name", "table name");
 	}
 
 	/******************************************************************************/
@@ -156,7 +146,7 @@ public class MybatisGenerator {
 		JDBCConnectionConfiguration jdbcConnectionConfiguration = new JDBCConnectionConfiguration();
 		jdbcConnectionConfiguration.setDriverClass(driverClass);
 		jdbcConnectionConfiguration.setConnectionURL(connectionURL);
-		jdbcConnectionConfiguration.setUserId(userId);
+		jdbcConnectionConfiguration.setUserId(username);
 		jdbcConnectionConfiguration.setPassword(password);
 		jdbcConnectionConfiguration.addProperty("nullCatalogMeansCurrent", "true");
 		return jdbcConnectionConfiguration;

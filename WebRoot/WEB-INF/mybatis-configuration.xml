@@ -82,7 +82,7 @@
     
     <!-- 全局別名設置，在映射文件中只需寫別名，而不必寫出整個類路徑 -->  
      <mappers>
-		<package name="lite.dao.mapper"/>
+		<package name="com.dao.mapper"/>
      </mappers>
    
 </configuration>  

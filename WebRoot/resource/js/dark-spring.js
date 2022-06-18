@@ -91,19 +91,21 @@ class Dark {
 			method: method,
 			data: data,
 			async: async,
-			success: function(res) {
-				if (res) {
-					if (res.statusCode === '200') {
-						if (typeof success === "function") {
-							success(res.data);
-						}
-					} else if (res.statusCode === '500') {
-						if (typeof error === "function") {
-							error(res.data);
-						} else {
-							$this.error(res.message);
+			success: function(res) { // 要判斷是否是 void 回傳
+				if (typeof success === "function") {
+					if (res !== null && res !== undefined && typeof res === 'object') {
+						if (res.hasOwnProperty('statusCode')) {
+							let statusCode = res['statusCode'];
+							let data = res['data'];
+							if (statusCode == 200) {
+								success(data);
+							} else if (statusCode == 500 && typeof error === "function") {
+								error(message, data);
+							}
+							return;
 						}
 					}
+					success(res);
 				}
 			},
 			error: function(err) {
